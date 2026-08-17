@@ -117,4 +117,15 @@ class HeroHeaderView: UIView {
         ])
         return container
     }
+    
+    func updateHeroData(title: String, imageName: String) {
+        UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve, animations: {
+            self.titleLabel.text = title
+            if imageName.hasPrefix("http") {
+                self.heroImageView.setImage(from: imageName)
+            } else {
+                self.heroImageView.image = UIImage(named: imageName) ?? UIImage(named: "hero_back")
+            }
+        }, completion: nil)
+    }
 }

@@ -47,6 +47,13 @@ class ViewController: UIViewController {
         view.bringSubviewToFront(sideMenuView)
         view.bringSubviewToFront(menuButton)
 
+        // Initial load par 0th index ka data Hero Card me set karein
+        if viewModel.numberOfShows() > 0 {
+            let firstShow = viewModel.showItem(at: 0)
+            self.heroHeaderView.updateHeroData(title: firstShow.title, imageName: firstShow.imageName)
+        }
+
+        // Focus trigger karein
         setNeedsFocusUpdate()
         updateFocusIfNeeded()
     }
@@ -55,9 +62,28 @@ class ViewController: UIViewController {
     private func bindViewModel() {
         heroHeaderView.configure(with: viewModel.heroData)
 
+        // Side menu select hone par
         viewModel.onSideMenuSelectionChanged = { [weak self] selectedIndex in
-            print("Selected Tab Index: \(selectedIndex)")
-            self?.closeSideMenu()
+            guard let self = self else { return }
+            let selectedCategory = self.viewModel.sideMenuItems[selectedIndex].title
+            self.sectionTitleLabel.text = "\(selectedCategory) Videos"
+            self.closeSideMenu()
+        }
+
+        // API Response aane par Collection View reload
+        viewModel.onDataUpdated = { [weak self] in
+            guard let self = self else { return }
+            self.collectionView.reloadData()
+            
+            // Pehle item ka banner upar show karein
+            if self.viewModel.numberOfShows() > 0 {
+                let firstItem = self.viewModel.showItem(at: 0)
+                self.heroHeaderView.updateHeroData(title: firstItem.title, imageName: firstItem.imageName)
+            }
+        }
+
+        viewModel.onError = { errorMessage in
+            print("API Error: \(errorMessage)")
         }
     }
 
@@ -110,7 +136,7 @@ class ViewController: UIViewController {
         sideMenuView.addSubview(logoImageView)
 
         sideMenuStack.axis = .vertical
-        sideMenuStack.spacing = 10
+        sideMenuStack.spacing = 8
         sideMenuStack.alignment = .fill
         sideMenuView.addSubview(sideMenuStack)
 
@@ -120,6 +146,12 @@ class ViewController: UIViewController {
             btn.addTarget(self, action: #selector(sideItemTapped(_:)), for: .primaryActionTriggered)
             btn.translatesAutoresizingMaskIntoConstraints = false
             btn.heightAnchor.constraint(equalToConstant: 48).isActive = true
+            
+            // Login button (id == 5) se theek pehle extra 35pt space
+            if item.id == 5 {
+                sideMenuStack.setCustomSpacing(35, after: sideMenuStack.arrangedSubviews.last!)
+            }
+            
             sideMenuStack.addArrangedSubview(btn)
         }
     }
@@ -216,9 +248,17 @@ class ViewController: UIViewController {
         viewModel.isSideMenuOpen ? closeSideMenu() : openSideMenu()
     }
 
+    private func refreshSideMenuAppearance() {
+        for case let btn as SideMenuCapsuleButton in sideMenuStack.arrangedSubviews {
+            btn.isItemSelected = (btn.tag == viewModel.selectedSideMenuIndex)
+        }
+    }
+
+    // openSideMenu() me isko call karein:
     private func openSideMenu() {
         viewModel.isSideMenuOpen = true
         sideMenuLeadingConstraint.constant = 0
+        refreshSideMenuAppearance()
 
         view.bringSubviewToFront(dimView)
         view.bringSubviewToFront(sideMenuView)
@@ -252,12 +292,13 @@ class ViewController: UIViewController {
     // MARK: - Preferred Focus
     override var preferredFocusEnvironments: [UIFocusEnvironment] {
         if viewModel.isSideMenuOpen {
-            if let selectedBtn = sideMenuStack.arrangedSubviews.first(where: { ($0 as? UIButton)?.tag == viewModel.selectedSideMenuIndex }) {
-                return [selectedBtn]
+            // Menu khulte hi jo selected index hai usi button par focus jayega
+            if let targetButton = sideMenuStack.arrangedSubviews.first(where: { ($0 as? UIButton)?.tag == viewModel.selectedSideMenuIndex }) {
+                return [targetButton]
             }
             return sideMenuStack.arrangedSubviews
         }
-        return [menuButton]
+        return [collectionView]
     }
 }
 
@@ -278,17 +319,37 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
         return true
     }
 
+    // 1. FOCUS CHANGE HONE PAR (Remote navigation par upar card change hoga)
+    func collectionView(_ collectionView: UICollectionView, didUpdateFocusIn context: UICollectionViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        if let nextIndexPath = context.nextFocusedIndexPath {
+            let selectedShow = viewModel.showItem(at: nextIndexPath.item)
+            // Upar Hero Card ka title aur image change karein
+            self.heroHeaderView.updateHeroData(title: selectedShow.title, imageName: selectedShow.imageName)
+        }
+    }
+
+    // 2. CLICK / SELECT HONE PAR
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedShow = viewModel.showItem(at: indexPath.item)
-        let detailVC = DetailViewController(show: selectedShow)
         
-        // Agar UINavigationController hai:
+        // Upar card update karein
+        self.heroHeaderView.updateHeroData(title: selectedShow.title, imageName: selectedShow.imageName)
+        
+        // Detail screen par jana ho:
+        let detailVC = DetailViewController(show: selectedShow)
         if let nav = navigationController {
             nav.pushViewController(detailVC, animated: true)
         } else {
-            // Agar Direct Modal Present karna hai:
             detailVC.modalPresentationStyle = .fullScreen
             present(detailVC, animated: true)
         }
     }
 }
+
+extension ViewController {
+    func indexPathForPreferredFocusedView(in collectionView: UICollectionView) -> IndexPath? {
+        // Hamesha pehle item (Index: 0) par focus rakhega
+        return IndexPath(item: 0, section: 0)
+    }
+}
+						

@@ -54,9 +54,13 @@ class ShowCell: UICollectionViewCell {
 
     func configure(with item: ShowItem) {
         titleLabel.text = item.title
-        imageView.image = UIImage(named: item.imageName) ?? UIImage(named: "hero_back")
+        if item.imageName.hasPrefix("http") {
+            imageView.setImage(from: item.imageName)
+        } else {
+            imageView.image = UIImage(named: item.imageName) ?? UIImage(named: "hero_back")
+        }
     }
-
+    
     override var canBecomeFocused: Bool { true }
 
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
@@ -73,5 +77,21 @@ class ShowCell: UICollectionViewCell {
                 self.transform = .identity
             }
         }, completion: nil)
+    }
+}
+
+extension UIImageView {
+    func setImage(from urlString: String?, placeholder: String = "hero_back") {
+        self.image = UIImage(named: placeholder)
+        
+        guard let urlString = urlString, let url = URL(string: urlString) else { return }
+
+        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+            guard let data = data, error == nil, let image = UIImage(data: data) else { return }
+            
+            DispatchQueue.main.async {
+                self?.image = image
+            }
+        }.resume()
     }
 }

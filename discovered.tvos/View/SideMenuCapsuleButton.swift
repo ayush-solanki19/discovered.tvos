@@ -6,10 +6,16 @@
 //
 
 import Foundation
-
 import UIKit
 
 class SideMenuCapsuleButton: UIButton {
+    
+    var isItemSelected: Bool = false {
+        didSet {
+            updateAppearance()
+        }
+    }
+    
     private let iconImageView = UIImageView()
     private let nameLabel = UILabel()
 
@@ -24,24 +30,24 @@ class SideMenuCapsuleButton: UIButton {
     }
 
     private func setupLayout() {
-        layer.cornerRadius = 24
+        layer.cornerRadius = 10
         clipsToBounds = true
 
         iconImageView.contentMode = .scaleAspectFit
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(iconImageView)
 
-        nameLabel.font = .systemFont(ofSize: 15, weight: .semibold)
+        nameLabel.font = .systemFont(ofSize: 16, weight: .medium)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(nameLabel)
 
         NSLayoutConstraint.activate([
-            iconImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 18),
+            iconImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             iconImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
             iconImageView.widthAnchor.constraint(equalToConstant: 22),
             iconImageView.heightAnchor.constraint(equalToConstant: 22),
 
-            nameLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 14),
+            nameLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 16),
             nameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             nameLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
@@ -68,12 +74,14 @@ class SideMenuCapsuleButton: UIButton {
 
     private func updateAppearance() {
         if isFocused {
-            backgroundColor = UIColor(white: 0.94, alpha: 1.0)
-            iconImageView.tintColor = UIColor(white: 0.10, alpha: 1.0)
-            nameLabel.textColor = UIColor(white: 0.10, alpha: 1.0)
+            // Sirf Focused item par Dark Grey Box + Pure White Text & Icon
+            backgroundColor = UIColor(white: 0.22, alpha: 1.0)
+            iconImageView.tintColor = .white
+            nameLabel.textColor = .white
             transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
         } else {
-            backgroundColor = UIColor(white: 0.18, alpha: 1.0)
+            // Baaki sabhi transparent rahenge (Chahe selected ho ya na ho)
+            backgroundColor = .clear
             iconImageView.tintColor = UIColor(white: 0.75, alpha: 1.0)
             nameLabel.textColor = UIColor(white: 0.75, alpha: 1.0)
             transform = .identity

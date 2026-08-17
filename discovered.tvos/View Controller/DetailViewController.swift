@@ -41,8 +41,10 @@ class DetailViewController: UIViewController {
     private let descriptionLabel = UILabel()
     private let starringLabel = UILabel()
 
-    // Action Button
+    // Action Buttons
+    private let actionButtonStack = UIStackView()
     private let playButton = CustomPlayButton()
+    private let visitProfileButton = CustomProfileButton()
 
     // Similar Content Section
     private let similarTitleLabel = UILabel()
@@ -78,7 +80,7 @@ class DetailViewController: UIViewController {
         view.bringSubviewToFront(dimView)
         view.bringSubviewToFront(sideMenuView)
         view.bringSubviewToFront(menuButton)
-        
+
         setNeedsFocusUpdate()
         updateFocusIfNeeded()
     }
@@ -176,14 +178,18 @@ class DetailViewController: UIViewController {
         starringLabel.numberOfLines = 2
         contentView.addSubview(starringLabel)
 
-        // Play Button
-        playButton.setTitle(" ▶   Play", for: .normal)
-        playButton.titleLabel?.font = .systemFont(ofSize: 15, weight: .bold)
-        playButton.setTitleColor(.white, for: .normal)
-        playButton.backgroundColor = UIColor(red: 0.88, green: 0.08, blue: 0.08, alpha: 1.0)
-        playButton.layer.cornerRadius = 6
+        // Action Buttons (Play & Visit Profile)
+        actionButtonStack.axis = .horizontal
+        actionButtonStack.spacing = 16
+        actionButtonStack.alignment = .fill
+        actionButtonStack.distribution = .fill
+        contentView.addSubview(actionButtonStack)
+
         playButton.addTarget(self, action: #selector(didTapPlay), for: .primaryActionTriggered)
-        contentView.addSubview(playButton)
+        actionButtonStack.addArrangedSubview(playButton)
+
+        visitProfileButton.addTarget(self, action: #selector(didTapVisitProfile), for: .primaryActionTriggered)
+        actionButtonStack.addArrangedSubview(visitProfileButton)
 
         // Similar Content
         similarTitleLabel.text = "Similar Content"
@@ -236,6 +242,12 @@ class DetailViewController: UIViewController {
             btn.addTarget(self, action: #selector(sideItemTapped(_:)), for: .primaryActionTriggered)
             btn.translatesAutoresizingMaskIntoConstraints = false
             btn.heightAnchor.constraint(equalToConstant: 48).isActive = true
+            
+            // Login button (id == 5) se theek pehle Gaming ke baad 35pt ka extra space
+            if item.id == 5, let previousButton = sideMenuStack.arrangedSubviews.last {
+                sideMenuStack.setCustomSpacing(35, after: previousButton)
+            }
+            
             sideMenuStack.addArrangedSubview(btn)
         }
     }
@@ -274,7 +286,8 @@ class DetailViewController: UIViewController {
     private func setupConstraints() {
         [scrollView, contentView, bannerImageView, menuButton,
          titleLabel, metaStackView, descriptionLabel, starringLabel,
-         playButton, similarTitleLabel, similarCollectionView,
+         actionButtonStack, playButton, visitProfileButton,
+         similarTitleLabel, similarCollectionView,
          dimView, sideMenuView, logoImageView, sideMenuStack
         ].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
 
@@ -321,11 +334,13 @@ class DetailViewController: UIViewController {
             starringLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
             starringLabel.trailingAnchor.constraint(equalTo: descriptionLabel.trailingAnchor),
 
-            // Play Button
-            playButton.topAnchor.constraint(equalTo: starringLabel.bottomAnchor, constant: 22),
-            playButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
+            // Action Buttons Stack (Play + Visit Profile)
+            actionButtonStack.topAnchor.constraint(equalTo: starringLabel.bottomAnchor, constant: 22),
+            actionButtonStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
+            actionButtonStack.heightAnchor.constraint(equalToConstant: 46),
+
             playButton.widthAnchor.constraint(equalToConstant: 130),
-            playButton.heightAnchor.constraint(equalToConstant: 44),
+            visitProfileButton.widthAnchor.constraint(equalToConstant: 160),
 
             // Similar Content
             similarTitleLabel.topAnchor.constraint(equalTo: bannerImageView.bottomAnchor, constant: 20),
@@ -366,13 +381,13 @@ class DetailViewController: UIViewController {
         view.addLayoutGuide(backToPlayFocusGuide)
 
         NSLayoutConstraint.activate([
-            playToSimilarFocusGuide.topAnchor.constraint(equalTo: playButton.bottomAnchor),
+            playToSimilarFocusGuide.topAnchor.constraint(equalTo: actionButtonStack.bottomAnchor),
             playToSimilarFocusGuide.bottomAnchor.constraint(equalTo: similarCollectionView.topAnchor),
             playToSimilarFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             playToSimilarFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
             backToPlayFocusGuide.topAnchor.constraint(equalTo: menuButton.bottomAnchor),
-            backToPlayFocusGuide.bottomAnchor.constraint(equalTo: playButton.topAnchor),
+            backToPlayFocusGuide.bottomAnchor.constraint(equalTo: actionButtonStack.topAnchor),
             backToPlayFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             backToPlayFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
@@ -418,18 +433,15 @@ class DetailViewController: UIViewController {
     @objc private func sideItemTapped(_ sender: UIButton) {
         let selectedIndex = sender.tag
         HomeViewModel.shared.selectSideMenu(at: selectedIndex)
-        
-        // Side drawer close karein aur root ViewController par wapas chale jayein
+
         closeSideMenu()
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
             guard let self = self else { return }
-            
+
             if let nav = self.navigationController {
-                // Agar Navigation Controller me push kiya tha to root ViewController par wapas jayein
                 nav.popToRootViewController(animated: true)
             } else {
-                // Agar modal present kiya tha to dismiss karke wapas jayein
                 self.dismiss(animated: true, completion: nil)
             }
         }
@@ -437,6 +449,14 @@ class DetailViewController: UIViewController {
 
     @objc private func didTapPlay() {
         print("Play Movie Triggered")
+    }
+
+    @objc private func didTapVisitProfile() {
+        if let navigationController = navigationController {
+            navigationController.popViewController(animated: true)
+        } else {
+            dismiss(animated: true, completion: nil)
+        }
     }
 
     // MARK: - Preferred Focus

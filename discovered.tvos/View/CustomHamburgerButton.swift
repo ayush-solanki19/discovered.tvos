@@ -64,6 +64,6 @@ class CustomHamburgerButton: UIButton {
             backgroundColor = UIColor(white: 0.18, alpha: 0.9)
             iconImageView.tintColor = .white
             transform = .identity
-        }
+            }
     }
 }
