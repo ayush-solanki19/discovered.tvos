@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     // Views
     private let dimView = UIView()
     private let sideMenuView = UIView()
+    private let logoImageView = UIImageView()
     private let sideMenuStack = UIStackView()
 
     private let mainContainer = UIView()
@@ -70,12 +71,12 @@ class ViewController: UIViewController {
         scrollView.addSubview(contentView)
 
         contentView.addSubview(heroHeaderView)
-
+        
         sectionTitleLabel.text = "Critically Acclaimed TV Shows"
         sectionTitleLabel.font = .systemFont(ofSize: 20, weight: .bold)
         sectionTitleLabel.textColor = .white
         contentView.addSubview(sectionTitleLabel)
-
+        
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width: 350, height: 250)
@@ -100,8 +101,13 @@ class ViewController: UIViewController {
         dimView.addGestureRecognizer(tap)
         view.addSubview(dimView)
 
+        // Side Menu setup
         sideMenuView.backgroundColor = UIColor(white: 0.06, alpha: 1.0)
         view.addSubview(sideMenuView)
+
+        logoImageView.image = UIImage(named: "Logo Dark")
+        logoImageView.contentMode = .scaleAspectFit
+        sideMenuView.addSubview(logoImageView)
 
         sideMenuStack.axis = .vertical
         sideMenuStack.spacing = 10
@@ -122,12 +128,13 @@ class ViewController: UIViewController {
     private func setupConstraints() {
         [mainContainer, scrollView, contentView,
          heroHeaderView, sectionTitleLabel, collectionView,
-         menuButton, dimView, sideMenuView, sideMenuStack
+         menuButton, dimView, sideMenuView, logoImageView, sideMenuStack
         ].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
 
         sideMenuLeadingConstraint = sideMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -sideMenuWidth)
-
+        
         NSLayoutConstraint.activate([
+            // Main & Scroll
             mainContainer.topAnchor.constraint(equalTo: view.topAnchor),
             mainContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             mainContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -144,16 +151,19 @@ class ViewController: UIViewController {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
 
+            // Top Menu Button
             menuButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             menuButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             menuButton.widthAnchor.constraint(equalToConstant: 48),
             menuButton.heightAnchor.constraint(equalToConstant: 48),
 
+            // Hero Header
             heroHeaderView.topAnchor.constraint(equalTo: contentView.topAnchor),
             heroHeaderView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             heroHeaderView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            heroHeaderView.heightAnchor.constraint(equalToConstant: 540),
+            heroHeaderView.heightAnchor.constraint(equalToConstant: 680),
 
+            // Section Label & Collection View
             sectionTitleLabel.topAnchor.constraint(equalTo: heroHeaderView.bottomAnchor, constant: 28),
             sectionTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
 
@@ -163,19 +173,28 @@ class ViewController: UIViewController {
             collectionView.heightAnchor.constraint(equalToConstant: 270),
             collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
 
+            // Dim Overlay
             dimView.topAnchor.constraint(equalTo: view.topAnchor),
             dimView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             dimView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             dimView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
+            // Side Drawer
             sideMenuLeadingConstraint,
             sideMenuView.topAnchor.constraint(equalTo: view.topAnchor),
             sideMenuView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             sideMenuView.widthAnchor.constraint(equalToConstant: sideMenuWidth),
 
-            sideMenuStack.topAnchor.constraint(equalTo: sideMenuView.safeAreaLayoutGuide.topAnchor, constant: 40),
-            sideMenuStack.leadingAnchor.constraint(equalTo: sideMenuView.leadingAnchor, constant: 12),
-            sideMenuStack.trailingAnchor.constraint(equalTo: sideMenuView.trailingAnchor, constant: -12)
+            // Logo Constraints (Top safe area se 30pt niche)
+            logoImageView.topAnchor.constraint(equalTo: sideMenuView.safeAreaLayoutGuide.topAnchor, constant: 35),
+            logoImageView.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor), // Centre me lane ke liye
+            logoImageView.widthAnchor.constraint(equalToConstant: 200),
+            logoImageView.heightAnchor.constraint(equalToConstant: 60),
+            
+            // Side Menu Stack (Logo ke theek 50pt niche)
+            sideMenuStack.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 50),
+            sideMenuStack.leadingAnchor.constraint(equalTo: sideMenuView.leadingAnchor, constant: 16),
+            sideMenuStack.trailingAnchor.constraint(equalTo: sideMenuView.trailingAnchor, constant: -16)
         ])
     }
 

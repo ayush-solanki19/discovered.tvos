@@ -61,6 +61,21 @@ class HomeViewModel {
             ShowItem(title: "THE FUTURE IS NOW", imageName: "poster2"),
             ShowItem(title: "THE GUEST INNOVATION & LEADERSHIP", imageName: "poster3"),
             ShowItem(title: "UNLEASHING CREATIVITY", imageName: "poster4"),
+            ShowItem(title: "THE FUTURE OF INNOVATION SHOW", imageName: "poster5"),
+            ShowItem(title: "THE LEADERSHIP FORUM", imageName: "poster1"),
+            ShowItem(title: "THE FUTURE IS NOW", imageName: "poster2"),
+            ShowItem(title: "THE GUEST INNOVATION & LEADERSHIP", imageName: "poster3"),
+            ShowItem(title: "UNLEASHING CREATIVITY", imageName: "poster4"),
+            ShowItem(title: "THE FUTURE OF INNOVATION SHOW", imageName: "poster5"),
+            ShowItem(title: "THE LEADERSHIP FORUM", imageName: "poster1"),
+            ShowItem(title: "THE FUTURE IS NOW", imageName: "poster2"),
+            ShowItem(title: "THE GUEST INNOVATION & LEADERSHIP", imageName: "poster3"),
+            ShowItem(title: "UNLEASHING CREATIVITY", imageName: "poster4"),
+            ShowItem(title: "THE FUTURE OF INNOVATION SHOW", imageName: "poster5"),
+            ShowItem(title: "THE LEADERSHIP FORUM", imageName: "poster1"),
+            ShowItem(title: "THE FUTURE IS NOW", imageName: "poster2"),
+            ShowItem(title: "THE GUEST INNOVATION & LEADERSHIP", imageName: "poster3"),
+            ShowItem(title: "UNLEASHING CREATIVITY", imageName: "poster4"),
             ShowItem(title: "THE FUTURE OF INNOVATION SHOW", imageName: "poster5")
         ]
     }
