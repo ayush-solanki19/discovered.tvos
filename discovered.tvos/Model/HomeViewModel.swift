@@ -1,19 +1,13 @@
-//
-//  HomeViewModel.swift
-//  discovered.tvos
-//
-//  Created by mac mini on 17/08/26.
-//
-
 import Foundation
 
 class HomeViewModel {
     
-    // MARK: - Observables / Callbacks
+    // Shared Instance (Taaki DetailViewController aur ViewController same data share karein)
+    static let shared = HomeViewModel()
+
     var onSideMenuSelectionChanged: ((Int) -> Void)?
     var onDataLoaded: (() -> Void)?
 
-    // MARK: - Data State
     private(set) var heroData: HeroContent!
     private(set) var sideMenuItems: [SideMenuItem] = []
     private(set) var shows: [ShowItem] = []
@@ -26,12 +20,10 @@ class HomeViewModel {
     
     var isSideMenuOpen: Bool = false
 
-    // MARK: - Init
     init() {
         loadMockData()
     }
 
-    // MARK: - Data Fetching
     private func loadMockData() {
         heroData = HeroContent(
             title: "The Hunting\nWives",
@@ -61,42 +53,12 @@ class HomeViewModel {
             ShowItem(title: "THE FUTURE IS NOW", imageName: "poster2"),
             ShowItem(title: "THE GUEST INNOVATION & LEADERSHIP", imageName: "poster3"),
             ShowItem(title: "UNLEASHING CREATIVITY", imageName: "poster4"),
-            ShowItem(title: "THE FUTURE OF INNOVATION SHOW", imageName: "poster5"),
-            ShowItem(title: "THE LEADERSHIP FORUM", imageName: "poster1"),
-            ShowItem(title: "THE FUTURE IS NOW", imageName: "poster2"),
-            ShowItem(title: "THE GUEST INNOVATION & LEADERSHIP", imageName: "poster3"),
-            ShowItem(title: "UNLEASHING CREATIVITY", imageName: "poster4"),
-            ShowItem(title: "THE FUTURE OF INNOVATION SHOW", imageName: "poster5"),
-            ShowItem(title: "THE LEADERSHIP FORUM", imageName: "poster1"),
-            ShowItem(title: "THE FUTURE IS NOW", imageName: "poster2"),
-            ShowItem(title: "THE GUEST INNOVATION & LEADERSHIP", imageName: "poster3"),
-            ShowItem(title: "UNLEASHING CREATIVITY", imageName: "poster4"),
-            ShowItem(title: "THE FUTURE OF INNOVATION SHOW", imageName: "poster5"),
-            ShowItem(title: "THE LEADERSHIP FORUM", imageName: "poster1"),
-            ShowItem(title: "THE FUTURE IS NOW", imageName: "poster2"),
-            ShowItem(title: "THE GUEST INNOVATION & LEADERSHIP", imageName: "poster3"),
-            ShowItem(title: "UNLEASHING CREATIVITY", imageName: "poster4"),
             ShowItem(title: "THE FUTURE OF INNOVATION SHOW", imageName: "poster5")
         ]
     }
 
-    // MARK: - Helper Methods for Views
-    func numberOfShows() -> Int {
-        return shows.count
-    }
-
-    func showItem(at index: Int) -> ShowItem {
-        return shows[index]
-    }
-
-    func numberOfSideMenuItems() -> Int {
-        return sideMenuItems.count
-    }
-
-    func sideMenuItem(at index: Int) -> SideMenuItem {
-        return sideMenuItems[index]
-    }
-
+    func numberOfShows() -> Int { shows.count }
+    func showItem(at index: Int) -> ShowItem { shows[index] }
     func selectSideMenu(at index: Int) {
         selectedSideMenuIndex = index
     }

@@ -279,6 +279,16 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.cellForItem(at: indexPath)?.setNeedsFocusUpdate()
+        let selectedShow = viewModel.showItem(at: indexPath.item)
+        let detailVC = DetailViewController(show: selectedShow)
+        
+        // Agar UINavigationController hai:
+        if let nav = navigationController {
+            nav.pushViewController(detailVC, animated: true)
+        } else {
+            // Agar Direct Modal Present karna hai:
+            detailVC.modalPresentationStyle = .fullScreen
+            present(detailVC, animated: true)
+        }
     }
 }
