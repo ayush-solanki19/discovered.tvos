@@ -19,24 +19,25 @@ class TVPlayerViewController: UIViewController {
     private let playerView = UIView()
     private let playerLayer = AVPlayerLayer()
 
-    private let controlsContainer = UIView()
-    private let progressContainer = UIView()
-    private let progressTrack = UIView()
-    private let progressBar = UIView()
-    private let progressThumb = UIView()
-    private var progressWidthConstraint: NSLayoutConstraint?
+    private let controlsOverlay = UIView()
+    private let scrubberContainer = UIView()
+    private let scrubberTrack = UIView()
+    private let scrubberFill = UIView()
+    private let scrubberThumb = UIView()
+    private var scrubberWidthConstraint: NSLayoutConstraint?
 
-    private let currentTimeLabel = UILabel()
+    private let timeLabel = UILabel()
     private let durationLabel = UILabel()
 
-    private let playPauseButton = UIButton()
+    private let playButton = UIButton()
+    private let backwardButton = UIButton()
+    private let forwardButton = UIButton()
     private let volumeButton = UIButton()
-    private let ccButton = UIButton()
-    private let likeButton = UIButton()
-    private let dislikeButton = UIButton()
-    private let addButton = UIButton()
+    private let captionsButton = UIButton()
     private let settingsButton = UIButton()
     private let fullscreenButton = UIButton()
+
+    private let titleLabel = UILabel()
 
     private let loadingIndicator = UIActivityIndicatorView(style: .medium)
     private let errorContainerView = UIView()
@@ -94,88 +95,89 @@ class TVPlayerViewController: UIViewController {
         loadingIndicator.hidesWhenStopped = true
         view.addSubview(loadingIndicator)
 
-        // Controls Container - YouTube style
-        controlsContainer.backgroundColor = UIColor.black.withAlphaComponent(0.7)
-        controlsContainer.alpha = 1
-        view.addSubview(controlsContainer)
+        // Modern Controls Overlay at bottom
+        controlsOverlay.backgroundColor = UIColor(white: 0, alpha: 0.6)
+        controlsOverlay.alpha = 1
+        view.addSubview(controlsOverlay)
 
-        // Progress bar area
-        progressContainer.backgroundColor = .clear
-        controlsContainer.addSubview(progressContainer)
+        // Scrubber/Timeline bar (top of controls)
+        scrubberContainer.backgroundColor = .clear
+        controlsOverlay.addSubview(scrubberContainer)
 
-        progressTrack.backgroundColor = UIColor.white.withAlphaComponent(0.3)
-        progressTrack.layer.cornerRadius = 2
-        progressTrack.clipsToBounds = true
-        progressContainer.addSubview(progressTrack)
+        scrubberTrack.backgroundColor = UIColor(white: 1, alpha: 0.25)
+        scrubberTrack.layer.cornerRadius = 1.5
+        scrubberTrack.clipsToBounds = true
+        scrubberContainer.addSubview(scrubberTrack)
 
-        progressBar.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
-        progressBar.layer.cornerRadius = 2
-        progressTrack.addSubview(progressBar)
+        scrubberFill.backgroundColor = UIColor(red: 1, green: 0.2, blue: 0.2, alpha: 1)
+        scrubberFill.layer.cornerRadius = 1.5
+        scrubberTrack.addSubview(scrubberFill)
 
-        progressThumb.backgroundColor = .white
-        progressThumb.layer.cornerRadius = 6
-        progressThumb.clipsToBounds = true
-        progressTrack.addSubview(progressThumb)
+        scrubberThumb.backgroundColor = .white
+        scrubberThumb.layer.cornerRadius = 5
+        scrubberThumb.clipsToBounds = true
+        scrubberContainer.addSubview(scrubberThumb)
 
-        currentTimeLabel.text = "0:00"
-        currentTimeLabel.textColor = .white
-        currentTimeLabel.font = .systemFont(ofSize: 12, weight: .medium)
-        progressContainer.addSubview(currentTimeLabel)
+        // Time labels
+        timeLabel.text = "0:00"
+        timeLabel.textColor = UIColor(white: 1, alpha: 0.9)
+        timeLabel.font = .systemFont(ofSize: 11, weight: .medium)
+        scrubberContainer.addSubview(timeLabel)
 
         durationLabel.text = "0:00"
-        durationLabel.textColor = .white
-        durationLabel.font = .systemFont(ofSize: 12, weight: .medium)
+        durationLabel.textColor = UIColor(white: 1, alpha: 0.9)
+        durationLabel.font = .systemFont(ofSize: 11, weight: .medium)
         durationLabel.textAlignment = .right
-        progressContainer.addSubview(durationLabel)
+        scrubberContainer.addSubview(durationLabel)
 
-        // Button config
+        // Title label (top of overlay for context)
+        titleLabel.text = "Video"
+        titleLabel.textColor = UIColor(white: 1, alpha: 0.95)
+        titleLabel.font = .systemFont(ofSize: 13, weight: .semibold)
+        titleLabel.numberOfLines = 1
+        controlsOverlay.addSubview(titleLabel)
+
+        // Button configuration - Clean, minimal style
         var buttonConfig = UIButton.Configuration.plain()
-        buttonConfig.baseForegroundColor = .white
-        buttonConfig.contentInsets = NSDirectionalEdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6)
+        buttonConfig.baseForegroundColor = UIColor(white: 1, alpha: 0.9)
+        buttonConfig.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
 
-        // Play/Pause button
-        playPauseButton.configuration = buttonConfig
-        playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
-        playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .selected)
-        playPauseButton.addTarget(self, action: #selector(playPauseDidTap), for: .primaryActionTriggered)
-        controlsContainer.addSubview(playPauseButton)
+        // Backward button (skip back)
+        backwardButton.configuration = buttonConfig
+        backwardButton.setImage(UIImage(systemName: "gobackward.10"), for: .normal)
+        backwardButton.addTarget(self, action: #selector(rewindDidTap), for: .primaryActionTriggered)
+        controlsOverlay.addSubview(backwardButton)
 
-        // Volume button
+        // Play/Pause button (centered, largest)
+        playButton.configuration = buttonConfig
+        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        playButton.setImage(UIImage(systemName: "pause.fill"), for: .selected)
+        playButton.addTarget(self, action: #selector(playPauseDidTap), for: .primaryActionTriggered)
+        controlsOverlay.addSubview(playButton)
+
+        // Forward button (skip forward)
+        forwardButton.configuration = buttonConfig
+        forwardButton.setImage(UIImage(systemName: "goforward.10"), for: .normal)
+        forwardButton.addTarget(self, action: #selector(fastForwardDidTap), for: .primaryActionTriggered)
+        controlsOverlay.addSubview(forwardButton)
+
+        // Right side controls
         volumeButton.configuration = buttonConfig
-        volumeButton.setImage(UIImage(systemName: "speaker.wave.2.fill"), for: .normal)
-        controlsContainer.addSubview(volumeButton)
+        volumeButton.setImage(UIImage(systemName: "speaker.wave.2"), for: .normal)
+        controlsOverlay.addSubview(volumeButton)
 
-        // CC (Captions) button
-        ccButton.configuration = buttonConfig
-        ccButton.setImage(UIImage(systemName: "captions.bubble.fill"), for: .normal)
-        controlsContainer.addSubview(ccButton)
+        captionsButton.configuration = buttonConfig
+        captionsButton.setImage(UIImage(systemName: "captions.bubble"), for: .normal)
+        controlsOverlay.addSubview(captionsButton)
 
-        // Like button
-        likeButton.configuration = buttonConfig
-        likeButton.setImage(UIImage(systemName: "hand.thumbsup"), for: .normal)
-        controlsContainer.addSubview(likeButton)
-
-        // Dislike button
-        dislikeButton.configuration = buttonConfig
-        dislikeButton.setImage(UIImage(systemName: "hand.thumbsdown"), for: .normal)
-        controlsContainer.addSubview(dislikeButton)
-
-        // Add to playlist button
-        addButton.configuration = buttonConfig
-        addButton.setImage(UIImage(systemName: "plus.square"), for: .normal)
-        controlsContainer.addSubview(addButton)
-
-        // Settings button
         settingsButton.configuration = buttonConfig
-        settingsButton.setImage(UIImage(systemName: "gear"), for: .normal)
-        controlsContainer.addSubview(settingsButton)
+        settingsButton.setImage(UIImage(systemName: "gearshape"), for: .normal)
+        controlsOverlay.addSubview(settingsButton)
 
-        // Fullscreen button
         fullscreenButton.configuration = buttonConfig
-        fullscreenButton.setImage(UIImage(systemName: "arrowshape.expand.fill"), for: .normal)
-        controlsContainer.addSubview(fullscreenButton)
+        fullscreenButton.setImage(UIImage(systemName: "arrowshape.expand"), for: .normal)
+        controlsOverlay.addSubview(fullscreenButton)
 
-        // Setup preferred focus
         setNeedsFocusUpdate()
         updateFocusIfNeeded()
     }
@@ -208,14 +210,15 @@ class TVPlayerViewController: UIViewController {
     }
 
     private func setupConstraints() {
-        [playerView, controlsContainer, progressContainer, progressTrack, progressBar, progressThumb,
-         currentTimeLabel, durationLabel, playPauseButton, volumeButton, ccButton, likeButton,
-         dislikeButton, addButton, settingsButton, fullscreenButton,
+        [playerView, controlsOverlay, scrubberContainer, scrubberTrack, scrubberFill, scrubberThumb,
+         timeLabel, durationLabel, titleLabel, playButton, backwardButton, forwardButton,
+         volumeButton, captionsButton, settingsButton, fullscreenButton,
          loadingIndicator, errorContainerView, errorLabel, errorRetryButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
 
         NSLayoutConstraint.activate([
+            // Player view
             playerView.topAnchor.constraint(equalTo: view.topAnchor),
             playerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             playerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -224,84 +227,84 @@ class TVPlayerViewController: UIViewController {
             loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
 
-            // YouTube-style controls at bottom
-            controlsContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            controlsContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            controlsContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            controlsContainer.heightAnchor.constraint(equalToConstant: 80),
+            // Modern controls overlay at bottom
+            controlsOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            controlsOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            controlsOverlay.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            controlsOverlay.heightAnchor.constraint(equalToConstant: 100),
 
-            // Progress bar area (top of controls)
-            progressContainer.leadingAnchor.constraint(equalTo: controlsContainer.leadingAnchor, constant: 16),
-            progressContainer.trailingAnchor.constraint(equalTo: controlsContainer.trailingAnchor, constant: -16),
-            progressContainer.topAnchor.constraint(equalTo: controlsContainer.topAnchor, constant: 8),
-            progressContainer.heightAnchor.constraint(equalToConstant: 28),
+            // Title (top of overlay)
+            titleLabel.leadingAnchor.constraint(equalTo: controlsOverlay.leadingAnchor, constant: 20),
+            titleLabel.topAnchor.constraint(equalTo: controlsOverlay.topAnchor, constant: 8),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: controlsOverlay.trailingAnchor, constant: -20),
 
-            // Progress track
-            progressTrack.leadingAnchor.constraint(equalTo: progressContainer.leadingAnchor, constant: 40),
-            progressTrack.trailingAnchor.constraint(equalTo: progressContainer.trailingAnchor, constant: -40),
-            progressTrack.centerYAnchor.constraint(equalTo: progressContainer.centerYAnchor),
-            progressTrack.heightAnchor.constraint(equalToConstant: 4),
+            // Scrubber container
+            scrubberContainer.leadingAnchor.constraint(equalTo: controlsOverlay.leadingAnchor, constant: 20),
+            scrubberContainer.trailingAnchor.constraint(equalTo: controlsOverlay.trailingAnchor, constant: -20),
+            scrubberContainer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6),
+            scrubberContainer.heightAnchor.constraint(equalToConstant: 20),
 
-            // Progress bar fill
-            progressBar.leadingAnchor.constraint(equalTo: progressTrack.leadingAnchor),
-            progressBar.topAnchor.constraint(equalTo: progressTrack.topAnchor),
-            progressBar.bottomAnchor.constraint(equalTo: progressTrack.bottomAnchor),
+            // Scrubber track
+            scrubberTrack.leadingAnchor.constraint(equalTo: scrubberContainer.leadingAnchor, constant: 30),
+            scrubberTrack.trailingAnchor.constraint(equalTo: scrubberContainer.trailingAnchor, constant: -30),
+            scrubberTrack.centerYAnchor.constraint(equalTo: scrubberContainer.centerYAnchor, constant: -2),
+            scrubberTrack.heightAnchor.constraint(equalToConstant: 3),
 
-            // Progress thumb
-            progressThumb.widthAnchor.constraint(equalToConstant: 12),
-            progressThumb.heightAnchor.constraint(equalToConstant: 12),
-            progressThumb.centerYAnchor.constraint(equalTo: progressTrack.centerYAnchor),
+            // Scrubber fill
+            scrubberFill.leadingAnchor.constraint(equalTo: scrubberTrack.leadingAnchor),
+            scrubberFill.topAnchor.constraint(equalTo: scrubberTrack.topAnchor),
+            scrubberFill.bottomAnchor.constraint(equalTo: scrubberTrack.bottomAnchor),
+
+            // Scrubber thumb
+            scrubberThumb.widthAnchor.constraint(equalToConstant: 10),
+            scrubberThumb.heightAnchor.constraint(equalToConstant: 10),
+            scrubberThumb.centerYAnchor.constraint(equalTo: scrubberTrack.centerYAnchor),
 
             // Time labels
-            currentTimeLabel.leadingAnchor.constraint(equalTo: progressContainer.leadingAnchor),
-            currentTimeLabel.centerYAnchor.constraint(equalTo: progressTrack.centerYAnchor),
-            currentTimeLabel.widthAnchor.constraint(equalToConstant: 36),
+            timeLabel.leadingAnchor.constraint(equalTo: scrubberContainer.leadingAnchor),
+            timeLabel.centerYAnchor.constraint(equalTo: scrubberTrack.centerYAnchor),
+            timeLabel.widthAnchor.constraint(equalToConstant: 28),
 
-            durationLabel.trailingAnchor.constraint(equalTo: progressContainer.trailingAnchor),
-            durationLabel.centerYAnchor.constraint(equalTo: progressTrack.centerYAnchor),
-            durationLabel.widthAnchor.constraint(equalToConstant: 36),
+            durationLabel.trailingAnchor.constraint(equalTo: scrubberContainer.trailingAnchor),
+            durationLabel.centerYAnchor.constraint(equalTo: scrubberTrack.centerYAnchor),
+            durationLabel.widthAnchor.constraint(equalToConstant: 28),
 
-            // Buttons (bottom row)
-            playPauseButton.leadingAnchor.constraint(equalTo: controlsContainer.leadingAnchor, constant: 16),
-            playPauseButton.topAnchor.constraint(equalTo: progressContainer.bottomAnchor, constant: 8),
-            playPauseButton.widthAnchor.constraint(equalToConstant: 32),
-            playPauseButton.heightAnchor.constraint(equalToConstant: 32),
+            // Playback buttons (centered)
+            backwardButton.centerXAnchor.constraint(equalTo: controlsOverlay.centerXAnchor, constant: -60),
+            backwardButton.topAnchor.constraint(equalTo: scrubberContainer.bottomAnchor, constant: 12),
+            backwardButton.widthAnchor.constraint(equalToConstant: 40),
+            backwardButton.heightAnchor.constraint(equalToConstant: 40),
 
-            volumeButton.leadingAnchor.constraint(equalTo: playPauseButton.trailingAnchor, constant: 8),
-            volumeButton.centerYAnchor.constraint(equalTo: playPauseButton.centerYAnchor),
-            volumeButton.widthAnchor.constraint(equalToConstant: 28),
-            volumeButton.heightAnchor.constraint(equalToConstant: 28),
+            playButton.centerXAnchor.constraint(equalTo: controlsOverlay.centerXAnchor),
+            playButton.topAnchor.constraint(equalTo: scrubberContainer.bottomAnchor, constant: 8),
+            playButton.widthAnchor.constraint(equalToConstant: 48),
+            playButton.heightAnchor.constraint(equalToConstant: 48),
 
-            ccButton.leadingAnchor.constraint(equalTo: volumeButton.trailingAnchor, constant: 8),
-            ccButton.centerYAnchor.constraint(equalTo: playPauseButton.centerYAnchor),
-            ccButton.widthAnchor.constraint(equalToConstant: 28),
-            ccButton.heightAnchor.constraint(equalToConstant: 28),
+            forwardButton.centerXAnchor.constraint(equalTo: controlsOverlay.centerXAnchor, constant: 60),
+            forwardButton.topAnchor.constraint(equalTo: scrubberContainer.bottomAnchor, constant: 12),
+            forwardButton.widthAnchor.constraint(equalToConstant: 40),
+            forwardButton.heightAnchor.constraint(equalToConstant: 40),
 
-            // Right side buttons
-            fullscreenButton.trailingAnchor.constraint(equalTo: controlsContainer.trailingAnchor, constant: -16),
-            fullscreenButton.centerYAnchor.constraint(equalTo: playPauseButton.centerYAnchor),
-            fullscreenButton.widthAnchor.constraint(equalToConstant: 28),
-            fullscreenButton.heightAnchor.constraint(equalToConstant: 28),
+            // Right side controls
+            volumeButton.trailingAnchor.constraint(equalTo: controlsOverlay.trailingAnchor, constant: -16),
+            volumeButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor),
+            volumeButton.widthAnchor.constraint(equalToConstant: 36),
+            volumeButton.heightAnchor.constraint(equalToConstant: 36),
 
-            settingsButton.trailingAnchor.constraint(equalTo: fullscreenButton.leadingAnchor, constant: -8),
-            settingsButton.centerYAnchor.constraint(equalTo: playPauseButton.centerYAnchor),
-            settingsButton.widthAnchor.constraint(equalToConstant: 28),
-            settingsButton.heightAnchor.constraint(equalToConstant: 28),
+            captionsButton.trailingAnchor.constraint(equalTo: volumeButton.leadingAnchor, constant: -8),
+            captionsButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor),
+            captionsButton.widthAnchor.constraint(equalToConstant: 36),
+            captionsButton.heightAnchor.constraint(equalToConstant: 36),
 
-            addButton.trailingAnchor.constraint(equalTo: settingsButton.leadingAnchor, constant: -8),
-            addButton.centerYAnchor.constraint(equalTo: playPauseButton.centerYAnchor),
-            addButton.widthAnchor.constraint(equalToConstant: 28),
-            addButton.heightAnchor.constraint(equalToConstant: 28),
+            settingsButton.trailingAnchor.constraint(equalTo: captionsButton.leadingAnchor, constant: -8),
+            settingsButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor),
+            settingsButton.widthAnchor.constraint(equalToConstant: 36),
+            settingsButton.heightAnchor.constraint(equalToConstant: 36),
 
-            dislikeButton.trailingAnchor.constraint(equalTo: addButton.leadingAnchor, constant: -8),
-            dislikeButton.centerYAnchor.constraint(equalTo: playPauseButton.centerYAnchor),
-            dislikeButton.widthAnchor.constraint(equalToConstant: 28),
-            dislikeButton.heightAnchor.constraint(equalToConstant: 28),
-
-            likeButton.trailingAnchor.constraint(equalTo: dislikeButton.leadingAnchor, constant: -8),
-            likeButton.centerYAnchor.constraint(equalTo: playPauseButton.centerYAnchor),
-            likeButton.widthAnchor.constraint(equalToConstant: 28),
-            likeButton.heightAnchor.constraint(equalToConstant: 28),
+            fullscreenButton.trailingAnchor.constraint(equalTo: settingsButton.leadingAnchor, constant: -8),
+            fullscreenButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor),
+            fullscreenButton.widthAnchor.constraint(equalToConstant: 36),
+            fullscreenButton.heightAnchor.constraint(equalToConstant: 36),
 
             // Error container
             errorContainerView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -328,8 +331,8 @@ class TVPlayerViewController: UIViewController {
             errorBackButton!.heightAnchor.constraint(equalToConstant: 52)
         ])
 
-        progressWidthConstraint = progressBar.widthAnchor.constraint(equalToConstant: 0)
-        progressWidthConstraint?.isActive = true
+        scrubberWidthConstraint = scrubberFill.widthAnchor.constraint(equalToConstant: 0)
+        scrubberWidthConstraint?.isActive = true
     }
 
     private func setupGestureRecognizers() {
@@ -376,7 +379,7 @@ class TVPlayerViewController: UIViewController {
 
     private func updateControlsVisibility() {
         UIView.animate(withDuration: 0.3) {
-            self.controlsContainer.alpha = self.controlsVisible ? 1 : 0
+            self.controlsOverlay.alpha = self.controlsVisible ? 1 : 0
         }
         setNeedsFocusUpdate()
         updateFocusIfNeeded()
@@ -393,7 +396,7 @@ class TVPlayerViewController: UIViewController {
                 return
             }
             UIView.animate(withDuration: 0.3) {
-                self?.controlsContainer.alpha = 0
+                self?.controlsOverlay.alpha = 0
             }
             self?.controlsVisible = false
         }
@@ -413,7 +416,7 @@ class TVPlayerViewController: UIViewController {
     }
 
     override var preferredFocusEnvironments: [UIFocusEnvironment] {
-        controlsVisible ? [playPauseButton] : [playerView]
+        controlsVisible ? [playButton] : [playerView]
     }
 }
 
@@ -424,7 +427,7 @@ extension TVPlayerViewController: TVPlayerEngineDelegate {
             switch newState {
             case .idle:
                 self.loadingIndicator.stopAnimating()
-                self.controlsContainer.isHidden = true
+                self.controlsOverlay.isHidden = true
 
             case .loading:
                 self.loadingIndicator.startAnimating()
@@ -432,27 +435,27 @@ extension TVPlayerViewController: TVPlayerEngineDelegate {
 
             case .ready:
                 self.loadingIndicator.stopAnimating()
-                self.controlsContainer.isHidden = false
-                self.controlsContainer.alpha = 1
+                self.controlsOverlay.isHidden = false
+                self.controlsOverlay.alpha = 1
                 self.controlsVisible = true
 
             case .playing:
-                self.playPauseButton.isSelected = true
+                self.playButton.isSelected = true
                 self.resetControlsHideTimer()
 
             case .paused:
-                self.playPauseButton.isSelected = false
+                self.playButton.isSelected = false
                 self.controlsHideTimer?.invalidate()
 
             case .buffering:
                 self.loadingIndicator.startAnimating()
 
             case .ended:
-                self.playPauseButton.isSelected = false
+                self.playButton.isSelected = false
 
             case .failed(let error):
                 self.loadingIndicator.stopAnimating()
-                self.controlsContainer.isHidden = true
+                self.controlsOverlay.isHidden = true
                 self.errorContainerView.isHidden = false
 
                 if let tvError = error as? TVPlayerError {
@@ -471,7 +474,7 @@ extension TVPlayerViewController: TVPlayerEngineDelegate {
 
     func playerEngine(_ engine: TVPlayerEngine, currentTimeDidChange time: TimeInterval) {
         DispatchQueue.main.async {
-            self.currentTimeLabel.text = self.formatTime(time)
+            self.timeLabel.text = self.formatTime(time)
             self.updateProgressBar()
         }
     }
@@ -489,11 +492,11 @@ extension TVPlayerViewController: TVPlayerEngineDelegate {
     private func updateProgressBar() {
         guard engine.duration > 0 else { return }
         let progress = engine.currentTime / engine.duration
-        let progressWidth = progress * progressTrack.bounds.width
+        let progressWidth = progress * scrubberTrack.bounds.width
 
         UIView.animate(withDuration: 0.05) {
-            self.progressWidthConstraint?.constant = progressWidth
-            self.progressThumb.centerXAnchor.constraint(equalTo: self.progressTrack.leadingAnchor, constant: progressWidth).isActive = true
+            self.scrubberWidthConstraint?.constant = progressWidth
+            self.scrubberThumb.centerXAnchor.constraint(equalTo: self.scrubberTrack.leadingAnchor, constant: progressWidth).isActive = true
             self.view.layoutIfNeeded()
         }
     }
