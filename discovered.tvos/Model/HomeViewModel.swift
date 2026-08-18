@@ -20,18 +20,12 @@ class HomeViewModel {
     }
 
     init() {
-        setupDefaultData()
+        setupSideMenu()
+        // Default launch par Spotlight (mode: 8) call hoga
+        fetchVideos(forMode: 8)
     }
 
-    private func setupDefaultData() {
-        heroData = HeroContent(
-            title: "The Hunting\nWives",
-            metadata: "Drama  •  2025  •  8 Episodes  •  TV-MA",
-            description: "Sophie trades New England for East Texas and falls into a wealthy socialite's magnetic orbit.",
-            backgroundImageName: "hero_back",
-            badges: [("RECENTLY ADDED", "darkGray"), ("TOP 10", "red")]
-        )
-
+    private func setupSideMenu() {
         sideMenuItems = [
             SideMenuItem(id: 0, iconName: "sun.min", title: "Spotlight"),
             SideMenuItem(id: 1, iconName: "headphones", title: "Music"),
@@ -42,39 +36,44 @@ class HomeViewModel {
             SideMenuItem(id: 6, iconName: "questionmark.circle", title: "Help"),
             SideMenuItem(id: 7, iconName: "shield", title: "Policy")
         ]
-
-        shows = [
-            ShowItem(title: "THE LEADERSHIP FORUM", imageName: "poster1"),
-            ShowItem(title: "THE FUTURE IS NOW", imageName: "poster2"),
-            ShowItem(title: "THE GUEST INNOVATION", imageName: "poster3"),
-            ShowItem(title: "UNLEASHING CREATIVITY", imageName: "poster4")
-        ]
     }
 
+    // Dynamic Mode Mapping
     private func handleCategorySelection(index: Int) {
-        if index == 1 { // 1 = Music
-            fetchMusicVideos()
+        switch index {
+        case 0: // Spotlight
+            fetchVideos(forMode: 8)
+        case 1: // Music
+            fetchVideos(forMode: 1)
+        case 2: // Movies
+            fetchVideos(forMode: 2)
+        case 3: // Television
+            fetchVideos(forMode: 3)
+        case 4: // Gaming
+            fetchVideos(forMode: 7)
+        default:
+            break
         }
     }
 
-    // MARK: - Fetch API Data
-    func fetchMusicVideos() {
-        NetworkManager.shared.fetchHomeVideoSpotlight(mode: 8, limit: 2, start: 0, timeZoneOffset: "+250") { [weak self] result in
+    // MARK: - Dynamic API Call
+    func fetchVideos(forMode mode: Int) {
+        NetworkManager.shared.fetchHomeVideoSpotlight(mode: mode, limit: 10, start: 0, timeZoneOffset: "+250") { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    // 1. Cover Video se Hero Card setup
+                    // 1. Cover Video se Hero Banner update karein
                     if let cover = response.coverVideo?.first {
                         self?.heroData = HeroContent(
                             title: cover.title ?? "Featured Video",
-                            metadata: "\(cover.genreName ?? "Music")  •  \(cover.userName ?? "")",
+                            metadata: "\(cover.genreName ?? "")  •  \(cover.userName ?? "")",
                             description: cover.description ?? "",
                             backgroundImageName: cover.preview ?? cover.url ?? "",
                             badges: [("FEATURED", "red")]
                         )
                     }
 
-                    // 2. homeVideos list se videos nikaal kar shows array me map karna
+                    // 2. Videos list parse karein
                     var allVideos: [ShowItem] = []
                     if let homeSections = response.homeVideos {
                         for section in homeSections {
