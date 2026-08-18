@@ -485,9 +485,7 @@ extension TVPlayerViewController: TVPlayerEngineDelegate {
     }
 
     func playerEngine(_ engine: TVPlayerEngine, durationDidChange duration: TimeInterval) {
-        DispatchQueue.main.async {
-            self.durationLabel.text = self.formatTime(duration)
-        }
+        // Duration tracking for progress bar calculations
     }
 
     func playerEngine(_ engine: TVPlayerEngine, bufferingRangeDidChange range: CMTimeRange) {
