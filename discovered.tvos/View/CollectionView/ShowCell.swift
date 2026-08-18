@@ -9,9 +9,13 @@ import UIKit
 
 class ShowCell: UICollectionViewCell {
     static let reuseIdentifier = "ShowCell"
-    
+
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
+    private let playButtonOverlay = UIButton()
+    private let overlayView = UIView()
+
+    var onPlayButtonTapped: (() -> Void)?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -39,6 +43,21 @@ class ShowCell: UICollectionViewCell {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(titleLabel)
 
+        overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        overlayView.alpha = 0
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.addSubview(overlayView)
+
+        var config = UIButton.Configuration.filled()
+        config.baseBackgroundColor = UIColor.red
+        config.baseForegroundColor = .white
+        playButtonOverlay.configuration = config
+        playButtonOverlay.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        playButtonOverlay.addTarget(self, action: #selector(playButtonTapped), for: .primaryActionTriggered)
+        playButtonOverlay.alpha = 0
+        playButtonOverlay.translatesAutoresizingMaskIntoConstraints = false
+        imageView.addSubview(playButtonOverlay)
+
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -48,7 +67,17 @@ class ShowCell: UICollectionViewCell {
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 14),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -14),
             titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
-            titleLabel.heightAnchor.constraint(equalToConstant: 18)
+            titleLabel.heightAnchor.constraint(equalToConstant: 18),
+
+            overlayView.topAnchor.constraint(equalTo: imageView.topAnchor),
+            overlayView.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+            overlayView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
+            overlayView.bottomAnchor.constraint(equalTo: imageView.bottomAnchor),
+
+            playButtonOverlay.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
+            playButtonOverlay.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
+            playButtonOverlay.widthAnchor.constraint(equalToConstant: 70),
+            playButtonOverlay.heightAnchor.constraint(equalToConstant: 70)
         ])
     }
 
@@ -60,7 +89,7 @@ class ShowCell: UICollectionViewCell {
             imageView.image = UIImage(named: item.imageName) ?? UIImage(named: "hero_back")
         }
     }
-    
+
     override var canBecomeFocused: Bool { true }
 
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
@@ -71,12 +100,20 @@ class ShowCell: UICollectionViewCell {
                 self.contentView.layer.borderWidth = 3.5
                 self.contentView.layer.borderColor = UIColor.white.cgColor
                 self.transform = CGAffineTransform(scaleX: 1.04, y: 1.04)
+                self.overlayView.alpha = 1
+                self.playButtonOverlay.alpha = 1
             } else {
                 self.contentView.layer.borderWidth = 0
                 self.contentView.layer.borderColor = UIColor.clear.cgColor
                 self.transform = .identity
+                self.overlayView.alpha = 0
+                self.playButtonOverlay.alpha = 0
             }
         }, completion: nil)
+    }
+
+    @objc private func playButtonTapped() {
+        onPlayButtonTapped?()
     }
 }
 

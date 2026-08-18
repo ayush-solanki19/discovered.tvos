@@ -21,6 +21,9 @@ struct MovieDetailModel {
 
 class DetailViewModel {
     let movieDetail: MovieDetailModel
+    private(set) var relatedVideos: [RelatedVideo] = []
+
+    var onRelatedVideosUpdated: (() -> Void)?
 
     init(show: ShowItem) {
         // Mocking detailed data based on clicked item
@@ -50,5 +53,49 @@ class DetailViewModel {
 
     func similarShow(at index: Int) -> ShowItem {
         return movieDetail.similarShows[index]
+    }
+
+    func fetchRelatedVideos(userId: String) {
+        let boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+        var body = ""
+        body += "--\(boundary)\r\n"
+        body += "Content-Disposition: form-data; name=\"uid\"\r\n\r\n"
+        body += userId + "\r\n"
+        body += "--\(boundary)\r\n"
+        body += "Content-Disposition: form-data; name=\"start\"\r\n\r\n"
+        body += "0\r\n"
+        body += "--\(boundary)\r\n"
+        body += "Content-Disposition: form-data; name=\"limit\"\r\n\r\n"
+        body += "20\r\n"
+        body += "--\(boundary)--\r\n"
+
+        var request = URLRequest(url: URL(string: "https://discovered.tv/api/v3/appdashboard/get_related_video")!)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue("TIZEN", forHTTPHeaderField: "device")
+        request.httpBody = body.data(using: .utf8)
+
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            guard let data = data, error == nil else { return }
+
+            do {
+                let response = try JSONDecoder().decode(RelatedVideoResponse.self, from: data)
+                self?.relatedVideos = response.related_video.slider
+                DispatchQueue.main.async {
+                    self?.onRelatedVideosUpdated?()
+                }
+            } catch {
+                print("Error decoding related videos: \(error)")
+            }
+        }.resume()
+    }
+
+    func numberOfRelatedVideos() -> Int {
+        return relatedVideos.count
+    }
+
+    func relatedVideo(at index: Int) -> RelatedVideo? {
+        guard index >= 0 && index < relatedVideos.count else { return nil }
+        return relatedVideos[index]
     }
 }

@@ -1,17 +1,10 @@
-//
-//  SimilarShowCell.swift
-//  discovered.tvos
-//
-//  Created by mac mini on 17/08/26.
-//
-
-import Foundation
 import UIKit
 
-class SimilarShowCell: UICollectionViewCell {
-    static let reuseIdentifier = "SimilarShowCell"
+class RelatedVideoCell: UICollectionViewCell {
+    static let reuseIdentifier = "RelatedVideoCell"
 
     private let posterImageView = UIImageView()
+    private let titleLabel = UILabel()
     private let playButtonOverlay = UIButton()
     private let overlayView = UIView()
 
@@ -52,11 +45,17 @@ class SimilarShowCell: UICollectionViewCell {
         playButtonOverlay.translatesAutoresizingMaskIntoConstraints = false
         posterImageView.addSubview(playButtonOverlay)
 
+        titleLabel.font = .systemFont(ofSize: 12, weight: .semibold)
+        titleLabel.textColor = .white
+        titleLabel.numberOfLines = 2
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(titleLabel)
+
         NSLayoutConstraint.activate([
             posterImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             posterImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             posterImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            posterImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            posterImageView.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -8),
 
             overlayView.topAnchor.constraint(equalTo: posterImageView.topAnchor),
             overlayView.leadingAnchor.constraint(equalTo: posterImageView.leadingAnchor),
@@ -66,12 +65,18 @@ class SimilarShowCell: UICollectionViewCell {
             playButtonOverlay.centerXAnchor.constraint(equalTo: posterImageView.centerXAnchor),
             playButtonOverlay.centerYAnchor.constraint(equalTo: posterImageView.centerYAnchor),
             playButtonOverlay.widthAnchor.constraint(equalToConstant: 60),
-            playButtonOverlay.heightAnchor.constraint(equalToConstant: 60)
+            playButtonOverlay.heightAnchor.constraint(equalToConstant: 60),
+
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            titleLabel.heightAnchor.constraint(equalToConstant: 32)
         ])
     }
 
-    func configure(with item: ShowItem) {
-        posterImageView.image = UIImage(named: item.imageName) ?? UIImage(named: "hero_back")
+    func configure(with video: RelatedVideo) {
+        titleLabel.text = video.title
+        posterImageView.setImage(from: video.ThumbImage)
     }
 
     override var canBecomeFocused: Bool { true }

@@ -50,6 +50,10 @@ class DetailViewController: UIViewController {
     private let similarTitleLabel = UILabel()
     private var similarCollectionView: UICollectionView!
 
+    // Related Videos Section
+    private let relatedTitleLabel = UILabel()
+    private var relatedVideosCollectionView: UICollectionView!
+
     // MARK: - Init
     init(show: ShowItem) {
         self.viewModel = DetailViewModel(show: show)
@@ -70,6 +74,7 @@ class DetailViewController: UIViewController {
         setupFocusGuides()
         populateData()
         bindSideMenu()
+        bindViewModel()
 
         sideMenuLeadingConstraint.constant = -sideMenuWidth
         dimView.alpha = 0
@@ -95,6 +100,15 @@ class DetailViewController: UIViewController {
         homeViewModel.onSideMenuSelectionChanged = { [weak self] _ in
             self?.closeSideMenu()
         }
+    }
+
+    private func bindViewModel() {
+        viewModel.onRelatedVideosUpdated = { [weak self] in
+            self?.relatedVideosCollectionView.reloadData()
+        }
+
+        let movie = viewModel.movieDetail
+        viewModel.fetchRelatedVideos(userId: "215")
     }
 
     // MARK: - Setup UI
@@ -212,6 +226,27 @@ class DetailViewController: UIViewController {
         similarCollectionView.register(SimilarShowCell.self, forCellWithReuseIdentifier: SimilarShowCell.reuseIdentifier)
         contentView.addSubview(similarCollectionView)
 
+        // Related Videos Section
+        relatedTitleLabel.text = "More From This Creator"
+        relatedTitleLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 22) ?? .systemFont(ofSize: 22, weight: .bold)
+        relatedTitleLabel.textColor = .white
+        contentView.addSubview(relatedTitleLabel)
+
+        let relatedLayout = UICollectionViewFlowLayout()
+        relatedLayout.scrollDirection = .horizontal
+        relatedLayout.itemSize = CGSize(width: 190, height: 340)
+        relatedLayout.minimumLineSpacing = 30
+        relatedLayout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
+
+        relatedVideosCollectionView = UICollectionView(frame: .zero, collectionViewLayout: relatedLayout)
+        relatedVideosCollectionView.backgroundColor = .clear
+        relatedVideosCollectionView.showsHorizontalScrollIndicator = false
+        relatedVideosCollectionView.dataSource = self
+        relatedVideosCollectionView.delegate = self
+        relatedVideosCollectionView.clipsToBounds = false
+        relatedVideosCollectionView.register(RelatedVideoCell.self, forCellWithReuseIdentifier: RelatedVideoCell.reuseIdentifier)
+        contentView.addSubview(relatedVideosCollectionView)
+
         // Hamburger Menu Button
         menuButton.addTarget(self, action: #selector(toggleSideMenu), for: .primaryActionTriggered)
         view.addSubview(menuButton)
@@ -288,6 +323,7 @@ class DetailViewController: UIViewController {
          titleLabel, metaStackView, descriptionLabel, starringLabel,
          actionButtonStack, playButton, visitProfileButton,
          similarTitleLabel, similarCollectionView,
+         relatedTitleLabel, relatedVideosCollectionView,
          dimView, sideMenuView, logoImageView, sideMenuStack
         ].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
 
@@ -350,7 +386,16 @@ class DetailViewController: UIViewController {
             similarCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             similarCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             similarCollectionView.heightAnchor.constraint(equalToConstant: 280),
-            similarCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
+
+            // Related Videos
+            relatedTitleLabel.topAnchor.constraint(equalTo: similarCollectionView.bottomAnchor, constant: 40),
+            relatedTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
+
+            relatedVideosCollectionView.topAnchor.constraint(equalTo: relatedTitleLabel.bottomAnchor, constant: 14),
+            relatedVideosCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            relatedVideosCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            relatedVideosCollectionView.heightAnchor.constraint(equalToConstant: 360),
+            relatedVideosCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
 
             // Dim Overlay
             dimView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -448,7 +493,20 @@ class DetailViewController: UIViewController {
     }
 
     @objc private func didTapPlay() {
-        print("Play Movie Triggered")
+        presentVideoPlayer()
+    }
+
+    private func presentVideoPlayer() {
+        let playerVC = TVPlayerViewController()
+
+        playerVC.onDismiss = { [weak self] in
+            print("Player dismissed")
+        }
+
+        let hlsURL = URL(string: "https://serverguys-s3-trans-cdn.discovered.tv/aud_270/videos/6a34e55d55beb/6a34e55d55beb.m3u8")!
+        playerVC.play(url: hlsURL)
+
+        self.present(playerVC, animated: true)
     }
 
     @objc private func didTapVisitProfile() {
@@ -474,17 +532,50 @@ class DetailViewController: UIViewController {
 // MARK: - CollectionView DataSource & Delegate
 extension DetailViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfSimilarShows()
+        if collectionView == similarCollectionView {
+            return viewModel.numberOfSimilarShows()
+        } else if collectionView == relatedVideosCollectionView {
+            return viewModel.numberOfRelatedVideos()
+        }
+        return 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SimilarShowCell.reuseIdentifier, for: indexPath) as! SimilarShowCell
-        let item = viewModel.similarShow(at: indexPath.item)
-        cell.configure(with: item)
-        return cell
+        if collectionView == similarCollectionView {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SimilarShowCell.reuseIdentifier, for: indexPath) as! SimilarShowCell
+            let item = viewModel.similarShow(at: indexPath.item)
+            cell.configure(with: item)
+            cell.onPlayButtonTapped = { [weak self] in
+                self?.presentVideoPlayer()
+            }
+            return cell
+        } else if collectionView == relatedVideosCollectionView {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RelatedVideoCell.reuseIdentifier, for: indexPath) as! RelatedVideoCell
+            if let video = viewModel.relatedVideo(at: indexPath.item) {
+                cell.configure(with: video)
+                cell.onPlayButtonTapped = { [weak self] in
+                    self?.presentRelatedVideoPlayer(video: video)
+                }
+            }
+            return cell
+        }
+        return UICollectionViewCell()
     }
 
     func collectionView(_ collectionView: UICollectionView, canFocusItemAt indexPath: IndexPath) -> Bool {
         return true
+    }
+
+    private func presentRelatedVideoPlayer(video: RelatedVideo) {
+        let playerVC = TVPlayerViewController()
+
+        playerVC.onDismiss = { [weak self] in
+            print("Player dismissed")
+        }
+
+        if let url = URL(string: video.videoFile) {
+            playerVC.play(url: url)
+            self.present(playerVC, animated: true)
+        }
     }
 }

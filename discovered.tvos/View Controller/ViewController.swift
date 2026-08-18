@@ -321,8 +321,8 @@ class ViewController: UIViewController {
             print("Player dismissed")
         }
 
-        let testHLSURL = URL(string: "https://test-streams.mux.dev/x36xhzz/x3ysqsyx/media.m3u8")!
-        playerVC.play(url: testHLSURL)
+        let hlsURL = URL(string: "https://serverguys-s3-trans-cdn.discovered.tv/aud_270/videos/6a34e55d55beb/6a34e55d55beb.m3u8")!
+        playerVC.play(url: hlsURL)
 
         self.present(playerVC, animated: true)
     }
@@ -354,6 +354,9 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShowCell.reuseIdentifier, for: indexPath) as! ShowCell
         let show = viewModel.showItem(at: indexPath.item)
         cell.configure(with: show)
+        cell.onPlayButtonTapped = { [weak self] in
+            self?.presentVideoPlayer()
+        }
         return cell
     }
 
