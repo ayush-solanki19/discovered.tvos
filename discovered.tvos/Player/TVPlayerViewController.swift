@@ -93,8 +93,8 @@ class TVPlayerViewController: UIViewController {
         loadingIndicator.hidesWhenStopped = true
         view.addSubview(loadingIndicator)
 
-        // Controls Bar - Horizontal compact bar at bottom
-        controlsBar.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+        // Controls Bar - Clean horizontal bar at bottom
+        controlsBar.backgroundColor = UIColor.black.withAlphaComponent(0.85)
         controlsBar.alpha = 1
         view.addSubview(controlsBar)
 
@@ -102,29 +102,30 @@ class TVPlayerViewController: UIViewController {
         buttonConfig.baseBackgroundColor = .clear
         buttonConfig.baseForegroundColor = .white
         buttonConfig.cornerStyle = .capsule
+        buttonConfig.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
 
         // Back button
         backButton.configuration = buttonConfig
-        backButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        backButton.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
         backButton.addTarget(self, action: #selector(dismissDidTap), for: .primaryActionTriggered)
         controlsBar.addSubview(backButton)
 
-        // Timeline
+        // Timeline Container
         timelineContainer.backgroundColor = .clear
         controlsBar.addSubview(timelineContainer)
 
-        timelineBackground.backgroundColor = UIColor.white.withAlphaComponent(0.3)
-        timelineBackground.layer.cornerRadius = 1.5
+        timelineBackground.backgroundColor = UIColor.white.withAlphaComponent(0.25)
+        timelineBackground.layer.cornerRadius = 2
         timelineBackground.clipsToBounds = true
         timelineContainer.addSubview(timelineBackground)
 
-        progressBar.backgroundColor = UIColor.red
-        progressBar.layer.cornerRadius = 1.5
+        progressBar.backgroundColor = UIColor(red: 1, green: 0, blue: 0, alpha: 1)
+        progressBar.layer.cornerRadius = 2
         timelineBackground.addSubview(progressBar)
 
         currentTimeLabel.text = "00:00"
-        currentTimeLabel.textColor = .white
-        currentTimeLabel.font = .systemFont(ofSize: 10, weight: .regular)
+        currentTimeLabel.textColor = UIColor.white.withAlphaComponent(0.9)
+        currentTimeLabel.font = .systemFont(ofSize: 11, weight: .medium)
         timelineContainer.addSubview(currentTimeLabel)
 
         // Rewind button
@@ -148,35 +149,25 @@ class TVPlayerViewController: UIViewController {
 
         // Volume button
         volumeButton.configuration = buttonConfig
-        volumeButton.setImage(UIImage(systemName: "speaker.wave.2.fill"), for: .normal)
+        volumeButton.setImage(UIImage(systemName: "speaker.wave.2"), for: .normal)
         controlsBar.addSubview(volumeButton)
 
         // Title label
         titleLabel.text = "Video Title"
-        titleLabel.textColor = .white
-        titleLabel.font = .systemFont(ofSize: 11, weight: .regular)
+        titleLabel.textColor = UIColor.white.withAlphaComponent(0.85)
+        titleLabel.font = .systemFont(ofSize: 12, weight: .medium)
         titleLabel.numberOfLines = 1
         titleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         controlsBar.addSubview(titleLabel)
-
-        // Info button
-        infoButton.configuration = buttonConfig
-        infoButton.setImage(UIImage(systemName: "info.circle"), for: .normal)
-        controlsBar.addSubview(infoButton)
 
         // Settings button
         settingsButton.configuration = buttonConfig
         settingsButton.setImage(UIImage(systemName: "ellipsis"), for: .normal)
         controlsBar.addSubview(settingsButton)
 
-        // PiP button
-        pipButton.configuration = buttonConfig
-        pipButton.setImage(UIImage(systemName: "pip"), for: .normal)
-        controlsBar.addSubview(pipButton)
-
         // Fullscreen button
         fullscreenButton.configuration = buttonConfig
-        fullscreenButton.setImage(UIImage(systemName: "arrowshape.expand.fill"), for: .normal)
+        fullscreenButton.setImage(UIImage(systemName: "arrowshape.expand"), for: .normal)
         controlsBar.addSubview(fullscreenButton)
 
         // Setup preferred focus
@@ -214,7 +205,7 @@ class TVPlayerViewController: UIViewController {
     private func setupConstraints() {
         [playerView, controlsBar, timelineContainer, timelineBackground, progressBar,
          backButton, rewindButton, playPauseButton, fastForwardButton, volumeButton,
-         titleLabel, infoButton, settingsButton, pipButton, fullscreenButton,
+         titleLabel, settingsButton, fullscreenButton,
          currentTimeLabel, loadingIndicator, errorContainerView, errorLabel, errorRetryButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -228,88 +219,75 @@ class TVPlayerViewController: UIViewController {
             loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
 
-            // Controls Bar - Horizontal at bottom
+            // Controls Bar at bottom
             controlsBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             controlsBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             controlsBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            controlsBar.heightAnchor.constraint(equalToConstant: 50),
+            controlsBar.heightAnchor.constraint(equalToConstant: 60),
 
-            // Back button
-            backButton.leadingAnchor.constraint(equalTo: controlsBar.leadingAnchor, constant: 12),
+            // Back button (left side)
+            backButton.leadingAnchor.constraint(equalTo: controlsBar.leadingAnchor, constant: 16),
             backButton.centerYAnchor.constraint(equalTo: controlsBar.centerYAnchor),
-            backButton.widthAnchor.constraint(equalToConstant: 32),
-            backButton.heightAnchor.constraint(equalToConstant: 32),
+            backButton.widthAnchor.constraint(equalToConstant: 36),
+            backButton.heightAnchor.constraint(equalToConstant: 36),
 
-            // Timeline
-            timelineContainer.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: 8),
+            // Timeline (main content area)
+            timelineContainer.leadingAnchor.constraint(equalTo: backButton.trailingAnchor, constant: 16),
             timelineContainer.centerYAnchor.constraint(equalTo: controlsBar.centerYAnchor),
-            timelineContainer.heightAnchor.constraint(equalToConstant: 16),
+            timelineContainer.heightAnchor.constraint(equalToConstant: 24),
 
             timelineBackground.leadingAnchor.constraint(equalTo: timelineContainer.leadingAnchor),
-            timelineBackground.trailingAnchor.constraint(equalTo: timelineContainer.trailingAnchor),
+            timelineBackground.widthAnchor.constraint(equalToConstant: 200),
             timelineBackground.centerYAnchor.constraint(equalTo: timelineContainer.centerYAnchor),
-            timelineBackground.heightAnchor.constraint(equalToConstant: 3),
+            timelineBackground.heightAnchor.constraint(equalToConstant: 4),
 
             progressBar.leadingAnchor.constraint(equalTo: timelineBackground.leadingAnchor),
             progressBar.topAnchor.constraint(equalTo: timelineBackground.topAnchor),
             progressBar.bottomAnchor.constraint(equalTo: timelineBackground.bottomAnchor),
 
             currentTimeLabel.leadingAnchor.constraint(equalTo: timelineContainer.leadingAnchor),
-            currentTimeLabel.bottomAnchor.constraint(equalTo: timelineBackground.topAnchor, constant: -2),
-            currentTimeLabel.widthAnchor.constraint(equalToConstant: 32),
+            currentTimeLabel.topAnchor.constraint(equalTo: timelineContainer.topAnchor),
+            currentTimeLabel.widthAnchor.constraint(equalToConstant: 40),
+            currentTimeLabel.heightAnchor.constraint(equalToConstant: 14),
 
-            // Rewind button
-            rewindButton.leadingAnchor.constraint(equalTo: timelineContainer.trailingAnchor, constant: 8),
+            // Playback buttons
+            rewindButton.leadingAnchor.constraint(equalTo: timelineContainer.trailingAnchor, constant: 12),
             rewindButton.centerYAnchor.constraint(equalTo: controlsBar.centerYAnchor),
-            rewindButton.widthAnchor.constraint(equalToConstant: 28),
-            rewindButton.heightAnchor.constraint(equalToConstant: 28),
+            rewindButton.widthAnchor.constraint(equalToConstant: 32),
+            rewindButton.heightAnchor.constraint(equalToConstant: 32),
 
-            // Play button
-            playPauseButton.leadingAnchor.constraint(equalTo: rewindButton.trailingAnchor, constant: 6),
+            playPauseButton.leadingAnchor.constraint(equalTo: rewindButton.trailingAnchor, constant: 8),
             playPauseButton.centerYAnchor.constraint(equalTo: controlsBar.centerYAnchor),
-            playPauseButton.widthAnchor.constraint(equalToConstant: 28),
-            playPauseButton.heightAnchor.constraint(equalToConstant: 28),
+            playPauseButton.widthAnchor.constraint(equalToConstant: 36),
+            playPauseButton.heightAnchor.constraint(equalToConstant: 36),
 
-            // Forward button
-            fastForwardButton.leadingAnchor.constraint(equalTo: playPauseButton.trailingAnchor, constant: 6),
+            fastForwardButton.leadingAnchor.constraint(equalTo: playPauseButton.trailingAnchor, constant: 8),
             fastForwardButton.centerYAnchor.constraint(equalTo: controlsBar.centerYAnchor),
-            fastForwardButton.widthAnchor.constraint(equalToConstant: 28),
-            fastForwardButton.heightAnchor.constraint(equalToConstant: 28),
+            fastForwardButton.widthAnchor.constraint(equalToConstant: 32),
+            fastForwardButton.heightAnchor.constraint(equalToConstant: 32),
 
             // Volume button
-            volumeButton.leadingAnchor.constraint(equalTo: fastForwardButton.trailingAnchor, constant: 6),
+            volumeButton.leadingAnchor.constraint(equalTo: fastForwardButton.trailingAnchor, constant: 12),
             volumeButton.centerYAnchor.constraint(equalTo: controlsBar.centerYAnchor),
-            volumeButton.widthAnchor.constraint(equalToConstant: 24),
-            volumeButton.heightAnchor.constraint(equalToConstant: 24),
+            volumeButton.widthAnchor.constraint(equalToConstant: 28),
+            volumeButton.heightAnchor.constraint(equalToConstant: 28),
 
-            // Title label
-            titleLabel.leadingAnchor.constraint(equalTo: volumeButton.trailingAnchor, constant: 8),
+            // Title (flexible)
+            titleLabel.leadingAnchor.constraint(equalTo: volumeButton.trailingAnchor, constant: 12),
             titleLabel.centerYAnchor.constraint(equalTo: controlsBar.centerYAnchor),
-            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: infoButton.leadingAnchor, constant: -8),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: settingsButton.leadingAnchor, constant: -12),
 
-            // Info button
-            infoButton.trailingAnchor.constraint(equalTo: settingsButton.leadingAnchor, constant: -6),
-            infoButton.centerYAnchor.constraint(equalTo: controlsBar.centerYAnchor),
-            infoButton.widthAnchor.constraint(equalToConstant: 24),
-            infoButton.heightAnchor.constraint(equalToConstant: 24),
-
-            // Settings button
-            settingsButton.trailingAnchor.constraint(equalTo: pipButton.leadingAnchor, constant: -6),
+            // Settings button (right side)
+            settingsButton.trailingAnchor.constraint(equalTo: fullscreenButton.leadingAnchor, constant: -8),
             settingsButton.centerYAnchor.constraint(equalTo: controlsBar.centerYAnchor),
-            settingsButton.widthAnchor.constraint(equalToConstant: 24),
-            settingsButton.heightAnchor.constraint(equalToConstant: 24),
+            settingsButton.widthAnchor.constraint(equalToConstant: 28),
+            settingsButton.heightAnchor.constraint(equalToConstant: 28),
 
-            // PiP button
-            pipButton.trailingAnchor.constraint(equalTo: fullscreenButton.leadingAnchor, constant: -6),
-            pipButton.centerYAnchor.constraint(equalTo: controlsBar.centerYAnchor),
-            pipButton.widthAnchor.constraint(equalToConstant: 24),
-            pipButton.heightAnchor.constraint(equalToConstant: 24),
-
-            // Fullscreen button
-            fullscreenButton.trailingAnchor.constraint(equalTo: controlsBar.trailingAnchor, constant: -12),
+            // Fullscreen button (far right)
+            fullscreenButton.trailingAnchor.constraint(equalTo: controlsBar.trailingAnchor, constant: -16),
             fullscreenButton.centerYAnchor.constraint(equalTo: controlsBar.centerYAnchor),
-            fullscreenButton.widthAnchor.constraint(equalToConstant: 24),
-            fullscreenButton.heightAnchor.constraint(equalToConstant: 24),
+            fullscreenButton.widthAnchor.constraint(equalToConstant: 28),
+            fullscreenButton.heightAnchor.constraint(equalToConstant: 28),
 
             // Error container
             errorContainerView.topAnchor.constraint(equalTo: view.topAnchor),
