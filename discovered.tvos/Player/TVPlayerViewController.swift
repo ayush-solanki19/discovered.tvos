@@ -77,7 +77,7 @@ class TVPlayerViewController: UIViewController {
     func play(url: URL) {
         currentHLSURL = url
         engine.load(url: url)
-        playPauseButton.isSelected = true
+        playButton.isSelected = true
     }
 
     // MARK: - Setup UI
