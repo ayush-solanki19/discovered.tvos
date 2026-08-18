@@ -81,13 +81,33 @@ class ShowCell: UICollectionViewCell {
 }
 
 extension UIImageView {
-    func setImage(from urlString: String?, placeholder: String = "hero_back") {
+    func setImage(from urlString: String?, placeholder: String = "hero_back", isHeroBanner: Bool = false) {
         self.image = UIImage(named: placeholder)
         
-        guard let urlString = urlString, let url = URL(string: urlString) else { return }
+        guard let urlString = urlString, !urlString.isEmpty else { return }
+        
+        // Hero banner ke liye _thumb hata kar high-res original image URL banana
+        var finalUrlString = urlString
+        if isHeroBanner {
+            finalUrlString = urlString
+                .replacingOccurrences(of: "_thumbnail_thumb", with: "_original_thumbnail")
+                .replacingOccurrences(of: "_thumb", with: "")
+        }
+        
+        guard let url = URL(string: finalUrlString) else { return }
 
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
-            guard let data = data, error == nil, let image = UIImage(data: data) else { return }
+        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            guard let data = data, error == nil, let image = UIImage(data: data) else {
+                // Agar original image fail ho toh fallback to original url
+                if isHeroBanner, let fallbackUrl = URL(string: urlString) {
+                    URLSession.shared.dataTask(with: fallbackUrl) { fallbackData, _, _ in
+                        if let fData = fallbackData, let fbImg = UIImage(data: fData) {
+                            DispatchQueue.main.async { self?.image = fbImg }
+                        }
+                    }.resume()
+                }
+                return
+            }
             
             DispatchQueue.main.async {
                 self?.image = image

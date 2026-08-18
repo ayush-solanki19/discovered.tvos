@@ -60,9 +60,6 @@ class ViewController: UIViewController {
 
     // MARK: - ViewModel Binding
     private func bindViewModel() {
-        heroHeaderView.configure(with: viewModel.heroData)
-
-        // Side menu select hone par
         viewModel.onSideMenuSelectionChanged = { [weak self] selectedIndex in
             guard let self = self else { return }
             let selectedCategory = self.viewModel.sideMenuItems[selectedIndex].title
@@ -70,15 +67,26 @@ class ViewController: UIViewController {
             self.closeSideMenu()
         }
 
-        // API Response aane par Collection View reload
         viewModel.onDataUpdated = { [weak self] in
             guard let self = self else { return }
-            self.collectionView.reloadData()
             
-            // Pehle item ka banner upar show karein
-            if self.viewModel.numberOfShows() > 0 {
-                let firstItem = self.viewModel.showItem(at: 0)
-                self.heroHeaderView.updateHeroData(title: firstItem.title, imageName: firstItem.imageName)
+            // 1. Grid reload karein
+            self.collectionView.reloadData()
+
+            // 2. CollectionView ko Index 0 par scroll karein aur focus shift karein
+            DispatchQueue.main.async {
+                if self.viewModel.numberOfShows() > 0 {
+                    let firstIndexPath = IndexPath(item: 0, section: 0)
+                    self.collectionView.scrollToItem(at: firstIndexPath, at: .left, animated: false)
+                    
+                    // Top Hero Card par 0th index ka initial data set karein
+                    let firstItem = self.viewModel.showItem(at: 0)
+                    self.heroHeaderView.updateHeroData(title: firstItem.title, imageName: firstItem.imageName)
+                }
+                
+                // tvOS Focus Engine ko force update karein
+                self.setNeedsFocusUpdate()
+                self.updateFocusIfNeeded()
             }
         }
 
@@ -292,13 +300,17 @@ class ViewController: UIViewController {
     // MARK: - Preferred Focus
     override var preferredFocusEnvironments: [UIFocusEnvironment] {
         if viewModel.isSideMenuOpen {
-            // Menu khulte hi jo selected index hai usi button par focus jayega
-            if let targetButton = sideMenuStack.arrangedSubviews.first(where: { ($0 as? UIButton)?.tag == viewModel.selectedSideMenuIndex }) {
-                return [targetButton]
+            if let selectedBtn = sideMenuStack.arrangedSubviews.first(where: { ($0 as? UIButton)?.tag == viewModel.selectedSideMenuIndex }) {
+                return [selectedBtn]
             }
             return sideMenuStack.arrangedSubviews
         }
-        return [collectionView]
+        
+        // Side menu close hone par priority CollectionView ko milegi
+        if let collection = collectionView {
+            return [collection]
+        }
+        return []
     }
 }
 

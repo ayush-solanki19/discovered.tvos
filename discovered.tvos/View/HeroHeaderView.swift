@@ -95,6 +95,13 @@ class HeroHeaderView: UIView {
             let color: UIColor = badge.colorName == "red" ? .red : .darkGray
             badgeStack.addArrangedSubview(makeBadge(badge.text, color))
         }
+        
+        if hero.backgroundImageName.hasPrefix("http") {
+                // isHeroBanner: true lagane se HD original image load hogi
+                heroImageView.setImage(from: hero.backgroundImageName, isHeroBanner: true)
+            } else {
+                heroImageView.image = UIImage(named: hero.backgroundImageName) ?? UIImage(named: "")
+            }
     }
 
     private func makeBadge(_ text: String, _ color: UIColor) -> UIView {
