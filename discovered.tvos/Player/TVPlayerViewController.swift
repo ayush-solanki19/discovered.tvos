@@ -227,84 +227,84 @@ class TVPlayerViewController: UIViewController {
             loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
 
-            // Modern controls overlay at bottom
+            // Modern controls overlay at bottom - increased height
             controlsOverlay.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             controlsOverlay.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             controlsOverlay.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            controlsOverlay.heightAnchor.constraint(equalToConstant: 100),
+            controlsOverlay.heightAnchor.constraint(equalToConstant: 120),
 
-            // Title (top of overlay)
-            titleLabel.leadingAnchor.constraint(equalTo: controlsOverlay.leadingAnchor, constant: 20),
-            titleLabel.topAnchor.constraint(equalTo: controlsOverlay.topAnchor, constant: 8),
-            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: controlsOverlay.trailingAnchor, constant: -20),
+            // Title (top of overlay) - better spacing
+            titleLabel.leadingAnchor.constraint(equalTo: controlsOverlay.leadingAnchor, constant: 32),
+            titleLabel.topAnchor.constraint(equalTo: controlsOverlay.topAnchor, constant: 12),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: controlsOverlay.trailingAnchor, constant: -32),
 
-            // Scrubber container
-            scrubberContainer.leadingAnchor.constraint(equalTo: controlsOverlay.leadingAnchor, constant: 20),
-            scrubberContainer.trailingAnchor.constraint(equalTo: controlsOverlay.trailingAnchor, constant: -20),
-            scrubberContainer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 6),
-            scrubberContainer.heightAnchor.constraint(equalToConstant: 20),
+            // Scrubber container - better margins
+            scrubberContainer.leadingAnchor.constraint(equalTo: controlsOverlay.leadingAnchor, constant: 32),
+            scrubberContainer.trailingAnchor.constraint(equalTo: controlsOverlay.trailingAnchor, constant: -32),
+            scrubberContainer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
+            scrubberContainer.heightAnchor.constraint(equalToConstant: 24),
 
-            // Scrubber track
-            scrubberTrack.leadingAnchor.constraint(equalTo: scrubberContainer.leadingAnchor, constant: 30),
-            scrubberTrack.trailingAnchor.constraint(equalTo: scrubberContainer.trailingAnchor, constant: -30),
-            scrubberTrack.centerYAnchor.constraint(equalTo: scrubberContainer.centerYAnchor, constant: -2),
-            scrubberTrack.heightAnchor.constraint(equalToConstant: 3),
+            // Scrubber track - better positioning
+            scrubberTrack.leadingAnchor.constraint(equalTo: scrubberContainer.leadingAnchor, constant: 36),
+            scrubberTrack.trailingAnchor.constraint(equalTo: scrubberContainer.trailingAnchor, constant: -36),
+            scrubberTrack.centerYAnchor.constraint(equalTo: scrubberContainer.centerYAnchor, constant: -3),
+            scrubberTrack.heightAnchor.constraint(equalToConstant: 4),
 
             // Scrubber fill
             scrubberFill.leadingAnchor.constraint(equalTo: scrubberTrack.leadingAnchor),
             scrubberFill.topAnchor.constraint(equalTo: scrubberTrack.topAnchor),
             scrubberFill.bottomAnchor.constraint(equalTo: scrubberTrack.bottomAnchor),
 
-            // Scrubber thumb
-            scrubberThumb.widthAnchor.constraint(equalToConstant: 10),
-            scrubberThumb.heightAnchor.constraint(equalToConstant: 10),
+            // Scrubber thumb - larger for better visibility
+            scrubberThumb.widthAnchor.constraint(equalToConstant: 12),
+            scrubberThumb.heightAnchor.constraint(equalToConstant: 12),
             scrubberThumb.centerYAnchor.constraint(equalTo: scrubberTrack.centerYAnchor),
 
-            // Time labels
+            // Time labels - better alignment
             timeLabel.leadingAnchor.constraint(equalTo: scrubberContainer.leadingAnchor),
             timeLabel.centerYAnchor.constraint(equalTo: scrubberTrack.centerYAnchor),
-            timeLabel.widthAnchor.constraint(equalToConstant: 28),
+            timeLabel.widthAnchor.constraint(equalToConstant: 36),
 
             durationLabel.trailingAnchor.constraint(equalTo: scrubberContainer.trailingAnchor),
             durationLabel.centerYAnchor.constraint(equalTo: scrubberTrack.centerYAnchor),
-            durationLabel.widthAnchor.constraint(equalToConstant: 28),
+            durationLabel.widthAnchor.constraint(equalToConstant: 36),
 
-            // Playback buttons (centered)
-            backwardButton.centerXAnchor.constraint(equalTo: controlsOverlay.centerXAnchor, constant: -60),
-            backwardButton.topAnchor.constraint(equalTo: scrubberContainer.bottomAnchor, constant: 12),
-            backwardButton.widthAnchor.constraint(equalToConstant: 40),
-            backwardButton.heightAnchor.constraint(equalToConstant: 40),
+            // Playback buttons (centered) - better spacing and alignment
+            backwardButton.centerXAnchor.constraint(equalTo: controlsOverlay.centerXAnchor, constant: -80),
+            backwardButton.topAnchor.constraint(equalTo: scrubberContainer.bottomAnchor, constant: 18),
+            backwardButton.widthAnchor.constraint(equalToConstant: 44),
+            backwardButton.heightAnchor.constraint(equalToConstant: 44),
 
             playButton.centerXAnchor.constraint(equalTo: controlsOverlay.centerXAnchor),
-            playButton.topAnchor.constraint(equalTo: scrubberContainer.bottomAnchor, constant: 8),
-            playButton.widthAnchor.constraint(equalToConstant: 48),
-            playButton.heightAnchor.constraint(equalToConstant: 48),
+            playButton.topAnchor.constraint(equalTo: scrubberContainer.bottomAnchor, constant: 14),
+            playButton.widthAnchor.constraint(equalToConstant: 52),
+            playButton.heightAnchor.constraint(equalToConstant: 52),
 
-            forwardButton.centerXAnchor.constraint(equalTo: controlsOverlay.centerXAnchor, constant: 60),
-            forwardButton.topAnchor.constraint(equalTo: scrubberContainer.bottomAnchor, constant: 12),
-            forwardButton.widthAnchor.constraint(equalToConstant: 40),
-            forwardButton.heightAnchor.constraint(equalToConstant: 40),
+            forwardButton.centerXAnchor.constraint(equalTo: controlsOverlay.centerXAnchor, constant: 80),
+            forwardButton.topAnchor.constraint(equalTo: scrubberContainer.bottomAnchor, constant: 18),
+            forwardButton.widthAnchor.constraint(equalToConstant: 44),
+            forwardButton.heightAnchor.constraint(equalToConstant: 44),
 
-            // Right side controls
-            volumeButton.trailingAnchor.constraint(equalTo: controlsOverlay.trailingAnchor, constant: -16),
+            // Right side controls - better spacing
+            volumeButton.trailingAnchor.constraint(equalTo: controlsOverlay.trailingAnchor, constant: -24),
             volumeButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor),
-            volumeButton.widthAnchor.constraint(equalToConstant: 36),
-            volumeButton.heightAnchor.constraint(equalToConstant: 36),
+            volumeButton.widthAnchor.constraint(equalToConstant: 40),
+            volumeButton.heightAnchor.constraint(equalToConstant: 40),
 
-            captionsButton.trailingAnchor.constraint(equalTo: volumeButton.leadingAnchor, constant: -8),
+            captionsButton.trailingAnchor.constraint(equalTo: volumeButton.leadingAnchor, constant: -16),
             captionsButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor),
-            captionsButton.widthAnchor.constraint(equalToConstant: 36),
-            captionsButton.heightAnchor.constraint(equalToConstant: 36),
+            captionsButton.widthAnchor.constraint(equalToConstant: 40),
+            captionsButton.heightAnchor.constraint(equalToConstant: 40),
 
-            settingsButton.trailingAnchor.constraint(equalTo: captionsButton.leadingAnchor, constant: -8),
+            settingsButton.trailingAnchor.constraint(equalTo: captionsButton.leadingAnchor, constant: -16),
             settingsButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor),
-            settingsButton.widthAnchor.constraint(equalToConstant: 36),
-            settingsButton.heightAnchor.constraint(equalToConstant: 36),
+            settingsButton.widthAnchor.constraint(equalToConstant: 40),
+            settingsButton.heightAnchor.constraint(equalToConstant: 40),
 
-            fullscreenButton.trailingAnchor.constraint(equalTo: settingsButton.leadingAnchor, constant: -8),
+            fullscreenButton.trailingAnchor.constraint(equalTo: settingsButton.leadingAnchor, constant: -16),
             fullscreenButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor),
-            fullscreenButton.widthAnchor.constraint(equalToConstant: 36),
-            fullscreenButton.heightAnchor.constraint(equalToConstant: 36),
+            fullscreenButton.widthAnchor.constraint(equalToConstant: 40),
+            fullscreenButton.heightAnchor.constraint(equalToConstant: 40),
 
             // Error container
             errorContainerView.topAnchor.constraint(equalTo: view.topAnchor),
