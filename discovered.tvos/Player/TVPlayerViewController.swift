@@ -20,13 +20,16 @@ class TVPlayerViewController: UIViewController {
     private let playerLayer = AVPlayerLayer()
 
     private let controlsContainer = UIView()
-    private let controlsFadeView = UIView()
+    private let topControlsView = UIView()
+    private let controlsButtonsView = UIView()
+    private let timelineView = UIView()
+    private let suggestionsView = UIView()
 
+    private let backButton = UIButton()
     private let playPauseButton = UIButton()
     private let rewindButton = UIButton()
     private let fastForwardButton = UIButton()
 
-    private let timelineContainer = UIView()
     private let progressBar = UIView()
     private let currentTimeLabel = UILabel()
     private let durationLabel = UILabel()
@@ -37,6 +40,9 @@ class TVPlayerViewController: UIViewController {
     private let errorContainerView = UIView()
     private let errorLabel = UILabel()
     private let errorRetryButton = UIButton()
+
+    private var relatedVideosCollectionView: UICollectionView!
+    private var relatedVideos: [RelatedVideo] = []
 
     private var currentHLSURL: URL?
     private var controlsHideTimer: Timer?
@@ -72,6 +78,42 @@ class TVPlayerViewController: UIViewController {
         currentHLSURL = url
         engine.load(url: url)
         playPauseButton.isSelected = true
+        fetchRelatedVideos()
+    }
+
+    private func fetchRelatedVideos() {
+        let boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW"
+        var body = ""
+        body += "--\(boundary)\r\n"
+        body += "Content-Disposition: form-data; name=\"uid\"\r\n\r\n"
+        body += "215\r\n"
+        body += "--\(boundary)\r\n"
+        body += "Content-Disposition: form-data; name=\"start\"\r\n\r\n"
+        body += "0\r\n"
+        body += "--\(boundary)\r\n"
+        body += "Content-Disposition: form-data; name=\"limit\"\r\n\r\n"
+        body += "20\r\n"
+        body += "--\(boundary)--\r\n"
+
+        var request = URLRequest(url: URL(string: "https://discovered.tv/api/v3/appdashboard/get_related_video")!)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue("TIZEN", forHTTPHeaderField: "device")
+        request.httpBody = body.data(using: .utf8)
+
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            guard let data = data, error == nil else { return }
+
+            do {
+                let response = try JSONDecoder().decode(RelatedVideoResponse.self, from: data)
+                self?.relatedVideos = response.related_video.slider
+                DispatchQueue.main.async {
+                    self?.relatedVideosCollectionView.reloadData()
+                }
+            } catch {
+                print("Error decoding related videos: \(error)")
+            }
+        }.resume()
     }
 
     // MARK: - Setup UI
@@ -84,8 +126,8 @@ class TVPlayerViewController: UIViewController {
     }
 
     private func setupControls() {
-        // Background for controls
-        controlsContainer.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        // Main Controls Container
+        controlsContainer.backgroundColor = .clear
         controlsContainer.alpha = 1
         view.addSubview(controlsContainer)
 
@@ -94,7 +136,22 @@ class TVPlayerViewController: UIViewController {
         loadingIndicator.hidesWhenStopped = true
         view.addSubview(loadingIndicator)
 
-        // Play/Pause Button
+        // Top Controls View (Back Button)
+        topControlsView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        controlsContainer.addSubview(topControlsView)
+
+        var topConfig = UIButton.Configuration.filled()
+        topConfig.baseBackgroundColor = UIColor.white.withAlphaComponent(0.3)
+        topConfig.baseForegroundColor = .white
+        backButton.configuration = topConfig
+        backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
+        backButton.addTarget(self, action: #selector(dismissDidTap), for: .primaryActionTriggered)
+        topControlsView.addSubview(backButton)
+
+        // Control Buttons View
+        controlsButtonsView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        controlsContainer.addSubview(controlsButtonsView)
+
         var config = UIButton.Configuration.filled()
         config.baseBackgroundColor = UIColor.white.withAlphaComponent(0.3)
         config.baseForegroundColor = .white
@@ -103,42 +160,62 @@ class TVPlayerViewController: UIViewController {
         playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
         playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .selected)
         playPauseButton.addTarget(self, action: #selector(playPauseDidTap), for: .primaryActionTriggered)
-        controlsContainer.addSubview(playPauseButton)
+        controlsButtonsView.addSubview(playPauseButton)
 
-        // Rewind Button
         rewindButton.configuration = config
         rewindButton.setImage(UIImage(systemName: "gobackward.10"), for: .normal)
         rewindButton.addTarget(self, action: #selector(rewindDidTap), for: .primaryActionTriggered)
-        controlsContainer.addSubview(rewindButton)
+        controlsButtonsView.addSubview(rewindButton)
 
-        // Fast Forward Button
         fastForwardButton.configuration = config
         fastForwardButton.setImage(UIImage(systemName: "goforward.10"), for: .normal)
         fastForwardButton.addTarget(self, action: #selector(fastForwardDidTap), for: .primaryActionTriggered)
-        controlsContainer.addSubview(fastForwardButton)
+        controlsButtonsView.addSubview(fastForwardButton)
 
-        // Timeline Container
+        // Timeline View
+        timelineView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        controlsContainer.addSubview(timelineView)
+
         timelineBackground.backgroundColor = UIColor.white.withAlphaComponent(0.2)
         timelineBackground.layer.cornerRadius = 2
         timelineBackground.clipsToBounds = true
-        controlsContainer.addSubview(timelineBackground)
+        timelineView.addSubview(timelineBackground)
 
-        // Progress Bar
         progressBar.backgroundColor = UIColor.red.withAlphaComponent(0.8)
         progressBar.layer.cornerRadius = 2
         timelineBackground.addSubview(progressBar)
 
-        // Time Labels
         currentTimeLabel.text = "00:00"
         currentTimeLabel.textColor = .white
         currentTimeLabel.font = .systemFont(ofSize: 12, weight: .regular)
-        controlsContainer.addSubview(currentTimeLabel)
+        timelineView.addSubview(currentTimeLabel)
 
         durationLabel.text = "00:00"
         durationLabel.textColor = .white
         durationLabel.font = .systemFont(ofSize: 12, weight: .regular)
         durationLabel.textAlignment = .right
-        controlsContainer.addSubview(durationLabel)
+        timelineView.addSubview(durationLabel)
+
+        // Suggestions View with Grid
+        suggestionsView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        controlsContainer.addSubview(suggestionsView)
+
+        let gridLayout = UICollectionViewFlowLayout()
+        gridLayout.scrollDirection = .vertical
+        gridLayout.itemSize = CGSize(width: 140, height: 250)
+        gridLayout.minimumLineSpacing = 12
+        gridLayout.minimumInteritemSpacing = 16
+        gridLayout.sectionInset = UIEdgeInsets(top: 16, left: 24, bottom: 16, right: 24)
+
+        relatedVideosCollectionView = UICollectionView(frame: .zero, collectionViewLayout: gridLayout)
+        relatedVideosCollectionView.backgroundColor = .clear
+        relatedVideosCollectionView.showsVerticalScrollIndicator = false
+        relatedVideosCollectionView.showsHorizontalScrollIndicator = false
+        relatedVideosCollectionView.dataSource = self
+        relatedVideosCollectionView.delegate = self
+        relatedVideosCollectionView.clipsToBounds = true
+        relatedVideosCollectionView.register(RelatedVideoGridCell.self, forCellWithReuseIdentifier: RelatedVideoGridCell.reuseIdentifier)
+        suggestionsView.addSubview(relatedVideosCollectionView)
 
         // Setup preferred focus
         setNeedsFocusUpdate()
@@ -173,9 +250,11 @@ class TVPlayerViewController: UIViewController {
     }
 
     private func setupConstraints() {
-        [playerView, controlsContainer, loadingIndicator, errorContainerView,
-         playPauseButton, rewindButton, fastForwardButton, timelineBackground,
-         progressBar, currentTimeLabel, durationLabel, errorLabel, errorRetryButton].forEach {
+        [playerView, controlsContainer, topControlsView, controlsButtonsView, timelineView, suggestionsView,
+         loadingIndicator, errorContainerView,
+         backButton, playPauseButton, rewindButton, fastForwardButton, timelineBackground,
+         progressBar, currentTimeLabel, durationLabel, relatedVideosCollectionView,
+         errorLabel, errorRetryButton].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
         }
 
@@ -188,40 +267,74 @@ class TVPlayerViewController: UIViewController {
             controlsContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             controlsContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             controlsContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            controlsContainer.heightAnchor.constraint(equalToConstant: 180),
+            controlsContainer.heightAnchor.constraint(equalToConstant: 600),
+
+            // Top Controls View
+            topControlsView.topAnchor.constraint(equalTo: controlsContainer.topAnchor),
+            topControlsView.leadingAnchor.constraint(equalTo: controlsContainer.leadingAnchor),
+            topControlsView.trailingAnchor.constraint(equalTo: controlsContainer.trailingAnchor),
+            topControlsView.heightAnchor.constraint(equalToConstant: 80),
+
+            backButton.leadingAnchor.constraint(equalTo: topControlsView.leadingAnchor, constant: 24),
+            backButton.centerYAnchor.constraint(equalTo: topControlsView.centerYAnchor),
+            backButton.widthAnchor.constraint(equalToConstant: 50),
+            backButton.heightAnchor.constraint(equalToConstant: 50),
 
             loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
 
-            rewindButton.leadingAnchor.constraint(equalTo: controlsContainer.leadingAnchor, constant: 48),
-            rewindButton.centerYAnchor.constraint(equalTo: controlsContainer.centerYAnchor, constant: -20),
+            // Control Buttons View
+            controlsButtonsView.topAnchor.constraint(equalTo: topControlsView.bottomAnchor),
+            controlsButtonsView.leadingAnchor.constraint(equalTo: controlsContainer.leadingAnchor),
+            controlsButtonsView.trailingAnchor.constraint(equalTo: controlsContainer.trailingAnchor),
+            controlsButtonsView.heightAnchor.constraint(equalToConstant: 140),
+
+            rewindButton.leadingAnchor.constraint(equalTo: controlsButtonsView.leadingAnchor, constant: 48),
+            rewindButton.centerYAnchor.constraint(equalTo: controlsButtonsView.centerYAnchor),
             rewindButton.widthAnchor.constraint(equalToConstant: 60),
             rewindButton.heightAnchor.constraint(equalToConstant: 60),
 
-            playPauseButton.centerXAnchor.constraint(equalTo: controlsContainer.centerXAnchor),
-            playPauseButton.centerYAnchor.constraint(equalTo: controlsContainer.centerYAnchor, constant: -20),
+            playPauseButton.centerXAnchor.constraint(equalTo: controlsButtonsView.centerXAnchor),
+            playPauseButton.centerYAnchor.constraint(equalTo: controlsButtonsView.centerYAnchor),
             playPauseButton.widthAnchor.constraint(equalToConstant: 80),
             playPauseButton.heightAnchor.constraint(equalToConstant: 80),
 
-            fastForwardButton.trailingAnchor.constraint(equalTo: controlsContainer.trailingAnchor, constant: -48),
-            fastForwardButton.centerYAnchor.constraint(equalTo: controlsContainer.centerYAnchor, constant: -20),
+            fastForwardButton.trailingAnchor.constraint(equalTo: controlsButtonsView.trailingAnchor, constant: -48),
+            fastForwardButton.centerYAnchor.constraint(equalTo: controlsButtonsView.centerYAnchor),
             fastForwardButton.widthAnchor.constraint(equalToConstant: 60),
             fastForwardButton.heightAnchor.constraint(equalToConstant: 60),
 
-            timelineBackground.leadingAnchor.constraint(equalTo: controlsContainer.leadingAnchor, constant: 48),
-            timelineBackground.trailingAnchor.constraint(equalTo: controlsContainer.trailingAnchor, constant: -48),
-            timelineBackground.bottomAnchor.constraint(equalTo: controlsContainer.bottomAnchor, constant: -24),
+            // Timeline View
+            timelineView.topAnchor.constraint(equalTo: controlsButtonsView.bottomAnchor),
+            timelineView.leadingAnchor.constraint(equalTo: controlsContainer.leadingAnchor),
+            timelineView.trailingAnchor.constraint(equalTo: controlsContainer.trailingAnchor),
+            timelineView.heightAnchor.constraint(equalToConstant: 60),
+
+            timelineBackground.leadingAnchor.constraint(equalTo: timelineView.leadingAnchor, constant: 48),
+            timelineBackground.trailingAnchor.constraint(equalTo: timelineView.trailingAnchor, constant: -48),
+            timelineBackground.centerYAnchor.constraint(equalTo: timelineView.centerYAnchor, constant: -8),
             timelineBackground.heightAnchor.constraint(equalToConstant: 4),
 
             progressBar.leadingAnchor.constraint(equalTo: timelineBackground.leadingAnchor),
             progressBar.topAnchor.constraint(equalTo: timelineBackground.topAnchor),
             progressBar.bottomAnchor.constraint(equalTo: timelineBackground.bottomAnchor),
 
-            currentTimeLabel.leadingAnchor.constraint(equalTo: controlsContainer.leadingAnchor, constant: 48),
+            currentTimeLabel.leadingAnchor.constraint(equalTo: timelineView.leadingAnchor, constant: 48),
             currentTimeLabel.topAnchor.constraint(equalTo: timelineBackground.bottomAnchor, constant: 8),
 
-            durationLabel.trailingAnchor.constraint(equalTo: controlsContainer.trailingAnchor, constant: -48),
+            durationLabel.trailingAnchor.constraint(equalTo: timelineView.trailingAnchor, constant: -48),
             durationLabel.topAnchor.constraint(equalTo: timelineBackground.bottomAnchor, constant: 8),
+
+            // Suggestions View
+            suggestionsView.topAnchor.constraint(equalTo: timelineView.bottomAnchor),
+            suggestionsView.leadingAnchor.constraint(equalTo: controlsContainer.leadingAnchor),
+            suggestionsView.trailingAnchor.constraint(equalTo: controlsContainer.trailingAnchor),
+            suggestionsView.bottomAnchor.constraint(equalTo: controlsContainer.bottomAnchor),
+
+            relatedVideosCollectionView.topAnchor.constraint(equalTo: suggestionsView.topAnchor),
+            relatedVideosCollectionView.leadingAnchor.constraint(equalTo: suggestionsView.leadingAnchor),
+            relatedVideosCollectionView.trailingAnchor.constraint(equalTo: suggestionsView.trailingAnchor),
+            relatedVideosCollectionView.bottomAnchor.constraint(equalTo: suggestionsView.bottomAnchor),
 
             errorContainerView.topAnchor.constraint(equalTo: view.topAnchor),
             errorContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -410,6 +523,31 @@ extension TVPlayerViewController: TVPlayerEngineDelegate {
         UIView.animate(withDuration: 0.1) {
             self.progressWidthConstraint?.constant = progressWidth
             self.view.layoutIfNeeded()
+        }
+    }
+}
+
+// MARK: - CollectionView DataSource & Delegate
+extension TVPlayerViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return relatedVideos.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RelatedVideoGridCell.reuseIdentifier, for: indexPath) as! RelatedVideoGridCell
+        let video = relatedVideos[indexPath.item]
+        cell.configure(with: video)
+        return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, canFocusItemAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let video = relatedVideos[indexPath.item]
+        if let url = URL(string: video.videoFile) {
+            play(url: url)
         }
     }
 }
