@@ -1,0 +1,79 @@
+{
+  "buildCommand" : {
+    "command" : "build",
+    "skipDependencies" : false,
+    "style" : "buildOnly"
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "1a2f520d3aaff31b42e343b8ff6d189142efbc0bb80df61094b6676bbd0d1585"
+    }
+  ],
+  "containerPath" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos.xcodeproj",
+  "continueBuildingAfterErrors" : false,
+  "dependencyScope" : "workspace",
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "install",
+    "activeArchitecture" : "undefined_arch",
+    "activeRunDestination" : {
+      "disableOnlyActiveArch" : true,
+      "platform" : "appletvsimulator",
+      "sdk" : "appletvsimulator26.2",
+      "sdkVariant" : "appletvsimulator",
+      "supportedArchitectures" : [
+        "i386",
+        "x86_64"
+      ],
+      "targetArchitecture" : "undefined_arch"
+    },
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex",
+      "buildProductsPath" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Products",
+      "derivedDataPath" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Index.noindex/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Index.noindex/PrecompiledHeaders",
+      "pchPath" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/PrecompiledHeaders"
+    },
+    "configurationName" : "Debug",
+    "overrides" : {
+      "commandLine" : {
+        "table" : {
+          "SDKROOT" : "appletvsimulator26.2"
+        }
+      },
+      "synthesized" : {
+        "table" : {
+          "ACTION" : "install",
+          "ASSET_PACK_FOLDER_PATH" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/discovered.tvos/InstallationBuildProductsLocation/OnDemandResources",
+          "ASSETCATALOG_COMPILER_FLATTENED_APP_ICON_PATH" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/discovered.tvos/BuildProductsPath/ProductIcon.png",
+          "DEPLOYMENT_LOCATION" : "YES",
+          "DEPLOYMENT_POSTPROCESSING" : "YES",
+          "DSTROOT" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/discovered.tvos/InstallationBuildProductsLocation",
+          "EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE" : "NO",
+          "ENABLE_PREVIEWS" : "NO",
+          "ENABLE_SIGNATURE_AGGREGATION" : "YES",
+          "ENABLE_XOJIT_PREVIEWS" : "YES",
+          "INDEX_ENABLE_DATA_STORE" : "NO",
+          "MESSAGES_APPLICATION_EXTENSION_SUPPORT_FOLDER_PATH" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/discovered.tvos/BuildProductsPath/MessagesApplicationExtensionSupport",
+          "MESSAGES_APPLICATION_SUPPORT_FOLDER_PATH" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/discovered.tvos/BuildProductsPath/MessagesApplicationSupport",
+          "OBJROOT" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/discovered.tvos/IntermediateBuildFilesPath",
+          "ONLY_ACTIVE_ARCH" : "YES",
+          "SHARED_PRECOMPS_DIR" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/discovered.tvos/PrecompiledHeaders",
+          "SIGNATURE_METADATA_FOLDER_PATH" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/discovered.tvos/BuildProductsPath/Signatures",
+          "SWIFT_STDLIB_TOOL_UNSIGNED_DESTINATION_DIR" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/discovered.tvos/BuildProductsPath/SwiftSupport",
+          "SYMROOT" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/discovered.tvos/BuildProductsPath",
+          "WATCHKIT_2_SUPPORT_FOLDER_PATH" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/DerivedData/Build/Intermediates.noindex/ArchiveIntermediates/discovered.tvos/BuildProductsPath/WatchKitSupport2"
+        }
+      }
+    }
+  },
+  "schemeCommand" : "archive",
+  "showNonLoggedProgress" : true,
+  "useDryRun" : false,
+  "useImplicitDependencies" : true,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : true
+}

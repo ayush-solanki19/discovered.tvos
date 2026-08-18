@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>12</integer>
+	<key>logs</key>
+	<dict>
+		<key>11C62234-E1C8-4FEE-B3DA-1949EEA0B0E8</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>11C62234-E1C8-4FEE-B3DA-1949EEA0B0E8.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>8</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>discovered.tvos project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>discovered.tvos</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Archiving project discovered.tvos with scheme discovered.tvos</string>
+			<key>timeStartedRecording</key>
+			<real>808665085.63906205</real>
+			<key>timeStoppedRecording</key>
+			<real>808665099.98639095</real>
+			<key>title</key>
+			<string>Archiving project discovered.tvos with scheme discovered.tvos</string>
+			<key>uniqueIdentifier</key>
+			<string>11C62234-E1C8-4FEE-B3DA-1949EEA0B0E8</string>
+		</dict>
+		<key>9A45862A-052F-490C-ABCF-18E0F7B421FE</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>9A45862A-052F-490C-ABCF-18E0F7B421FE.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>8</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>discovered.tvos project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>discovered.tvos</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Archiving project discovered.tvos with scheme discovered.tvos</string>
+			<key>timeStartedRecording</key>
+			<real>808665349.00922894</real>
+			<key>timeStoppedRecording</key>
+			<real>808665354.90864205</real>
+			<key>title</key>
+			<string>Archiving project discovered.tvos with scheme discovered.tvos</string>
+			<key>uniqueIdentifier</key>
+			<string>9A45862A-052F-490C-ABCF-18E0F7B421FE</string>
+		</dict>
+		<key>FBE69524-9C66-4C0D-87C9-7C2DE2A56DB1</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>FBE69524-9C66-4C0D-87C9-7C2DE2A56DB1.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>W</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>0</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>8</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>discovered.tvos project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>discovered.tvos</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project discovered.tvos with scheme discovered.tvos and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>808665326.93426096</real>
+			<key>timeStoppedRecording</key>
+			<real>808665337.94639897</real>
+			<key>title</key>
+			<string>Building project discovered.tvos with scheme discovered.tvos and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>FBE69524-9C66-4C0D-87C9-7C2DE2A56DB1</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

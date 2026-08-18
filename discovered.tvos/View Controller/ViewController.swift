@@ -23,6 +23,7 @@ class ViewController: UIViewController {
 
     private let menuButton = CustomHamburgerButton()
     private let heroHeaderView = HeroHeaderView()
+    private let playButton = UIButton()
     private let sectionTitleLabel = UILabel()
     private var collectionView: UICollectionView!
 
@@ -70,6 +71,14 @@ class ViewController: UIViewController {
         scrollView.addSubview(contentView)
 
         contentView.addSubview(heroHeaderView)
+
+        var playConfig = UIButton.Configuration.filled()
+        playConfig.baseBackgroundColor = .red
+        playConfig.baseForegroundColor = .white
+        playButton.configuration = playConfig
+        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        playButton.addTarget(self, action: #selector(playButtonDidTap), for: .primaryActionTriggered)
+        contentView.addSubview(playButton)
 
         sectionTitleLabel.text = "Critically Acclaimed TV Shows"
         sectionTitleLabel.font = .systemFont(ofSize: 20, weight: .bold)
@@ -121,7 +130,7 @@ class ViewController: UIViewController {
     // MARK: - Constraints
     private func setupConstraints() {
         [mainContainer, scrollView, contentView,
-         heroHeaderView, sectionTitleLabel, collectionView,
+         heroHeaderView, playButton, sectionTitleLabel, collectionView,
          menuButton, dimView, sideMenuView, sideMenuStack
         ].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
 
@@ -153,6 +162,11 @@ class ViewController: UIViewController {
             heroHeaderView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             heroHeaderView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             heroHeaderView.heightAnchor.constraint(equalToConstant: 540),
+
+            playButton.centerXAnchor.constraint(equalTo: heroHeaderView.centerXAnchor),
+            playButton.centerYAnchor.constraint(equalTo: heroHeaderView.centerYAnchor),
+            playButton.widthAnchor.constraint(equalToConstant: 80),
+            playButton.heightAnchor.constraint(equalToConstant: 80),
 
             sectionTitleLabel.topAnchor.constraint(equalTo: heroHeaderView.bottomAnchor, constant: 28),
             sectionTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -230,6 +244,23 @@ class ViewController: UIViewController {
         viewModel.selectSideMenu(at: sender.tag)
     }
 
+    @objc private func playButtonDidTap() {
+        presentVideoPlayer()
+    }
+
+    private func presentVideoPlayer() {
+        let playerVC = TVPlayerViewController()
+
+        playerVC.onDismiss = { [weak self] in
+            print("Player dismissed")
+        }
+
+        let testHLSURL = URL(string: "https://test-streams.mux.dev/x36xhzz/x3ysqsyx/media.m3u8")!
+        playerVC.play(url: testHLSURL)
+
+        self.present(playerVC, animated: true)
+    }
+
     // MARK: - Preferred Focus
     override var preferredFocusEnvironments: [UIFocusEnvironment] {
         if viewModel.isSideMenuOpen {
@@ -238,7 +269,8 @@ class ViewController: UIViewController {
             }
             return sideMenuStack.arrangedSubviews
         }
-        return [menuButton]
+        // Focus on play button for easy testing
+        return [playButton]
     }
 }
 
