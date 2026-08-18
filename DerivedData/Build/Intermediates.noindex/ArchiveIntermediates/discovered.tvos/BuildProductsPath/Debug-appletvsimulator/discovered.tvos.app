@@ -1,0 +1,1 @@
+../../InstallationBuildProductsLocation/Applications/discovered.tvos.app

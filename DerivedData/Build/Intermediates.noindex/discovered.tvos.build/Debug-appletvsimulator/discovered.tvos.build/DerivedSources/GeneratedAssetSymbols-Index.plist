@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>colors</key>
+	<array/>
+	<key>images</key>
+	<array>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameContainer</string>
+			<key>relativePath</key>
+			<string>./Container.imageset</string>
+			<key>swiftSymbol</key>
+			<string>container</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameProfileAvatar</string>
+			<key>relativePath</key>
+			<string>./Profile Avatar.imageset</string>
+			<key>swiftSymbol</key>
+			<string>profileAvatar</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameHeroBack</string>
+			<key>relativePath</key>
+			<string>./hero_back.imageset</string>
+			<key>swiftSymbol</key>
+			<string>heroBack</string>
+		</dict>
+	</array>
+	<key>symbols</key>
+	<array/>
+</dict>
+</plist>
