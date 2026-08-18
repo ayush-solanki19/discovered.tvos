@@ -335,21 +335,21 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didUpdateFocusIn context: UICollectionViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         if let nextIndexPath = context.nextFocusedIndexPath {
             let selectedShow = viewModel.showItem(at: nextIndexPath.item)
-            // Upar Hero Card ka title aur image change karein
-            self.heroHeaderView.updateHeroData(title: selectedShow.title, imageName: selectedShow.imageName)
+            self.heroHeaderView.updateHeroData(
+                title: selectedShow.title,
+                imageName: selectedShow.imageName,
+                videoUrl: selectedShow.videoUrl
+            )
         }
     }
 
-    // 2. CLICK / SELECT HONE PAR
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedShow = viewModel.showItem(at: indexPath.item)
         
-        // Upar card update karein
-        self.heroHeaderView.updateHeroData(title: selectedShow.title, imageName: selectedShow.imageName)
+        // Selected video + Saare shows Detail screen ko pass karein
+        let detailVC = DetailViewController(show: selectedShow, allShows: viewModel.shows)
         
-        // Detail screen par jana ho:
-        let detailVC = DetailViewController(show: selectedShow)
-        if let nav = navigationController {
+        if let nav = self.navigationController {
             nav.pushViewController(detailVC, animated: true)
         } else {
             detailVC.modalPresentationStyle = .fullScreen

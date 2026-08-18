@@ -1,17 +1,19 @@
+import Foundation
 import UIKit
+import AVFoundation
 
 class DetailViewController: UIViewController {
 
     // MARK: - Properties
     private let viewModel: DetailViewModel
-    private let homeViewModel = HomeViewModel()
+    private let homeViewModel = HomeViewModel.shared
 
     private let sideMenuWidth: CGFloat = 350
     private var sideMenuLeadingConstraint: NSLayoutConstraint!
 
     // Focus Guides
-    private let playToSimilarFocusGuide = UIFocusGuide()
-    private let backToPlayFocusGuide = UIFocusGuide()
+    private let actionToSimilarFocusGuide = UIFocusGuide()
+    private let backToActionFocusGuide = UIFocusGuide()
 
     // Side Drawer Views
     private let dimView = UIView()
@@ -23,7 +25,7 @@ class DetailViewController: UIViewController {
     private let scrollView = UIScrollView()
     private let contentView = UIView()
 
-    // Header Components
+    // Header & Banner
     private let menuButton = CustomHamburgerButton()
     private let bannerImageView = UIImageView()
     private let bannerGradient = CAGradientLayer()
@@ -51,8 +53,8 @@ class DetailViewController: UIViewController {
     private var similarCollectionView: UICollectionView!
 
     // MARK: - Init
-    init(show: ShowItem) {
-        self.viewModel = DetailViewModel(show: show)
+    init(show: ShowItem, allShows: [ShowItem] = []) {
+        self.viewModel = DetailViewModel(selectedVideo: show, allVideos: allShows)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -69,7 +71,6 @@ class DetailViewController: UIViewController {
         setupConstraints()
         setupFocusGuides()
         populateData()
-        bindSideMenu()
 
         sideMenuLeadingConstraint.constant = -sideMenuWidth
         dimView.alpha = 0
@@ -90,20 +91,13 @@ class DetailViewController: UIViewController {
         bannerGradient.frame = bannerImageView.bounds
     }
 
-    // MARK: - Side Menu Binding
-    private func bindSideMenu() {
-        homeViewModel.onSideMenuSelectionChanged = { [weak self] _ in
-            self?.closeSideMenu()
-        }
-    }
-
     // MARK: - Setup UI
     private func setupUI() {
         scrollView.showsVerticalScrollIndicator = false
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
 
-        // Banner Image & Gradient
+        // Banner Image
         bannerImageView.contentMode = .scaleAspectFill
         bannerImageView.clipsToBounds = true
         contentView.addSubview(bannerImageView)
@@ -113,16 +107,16 @@ class DetailViewController: UIViewController {
             UIColor.black.withAlphaComponent(0.6).cgColor,
             UIColor.black.cgColor
         ]
-        bannerGradient.locations = [0.0, 0.6, 1.0]
+        bannerGradient.locations = [0.0, 0.55, 1.0]
         bannerImageView.layer.addSublayer(bannerGradient)
 
         // Title
         titleLabel.numberOfLines = 2
-        titleLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 48) ?? .systemFont(ofSize: 48, weight: .bold)
+        titleLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 46) ?? .systemFont(ofSize: 46, weight: .bold)
         titleLabel.textColor = .white
         contentView.addSubview(titleLabel)
 
-        // Metadata Stack
+        // Metadata Stack (Stars, Rating, Year, Duration, Genre)
         metaStackView.axis = .horizontal
         metaStackView.spacing = 14
         metaStackView.alignment = .center
@@ -151,13 +145,12 @@ class DetailViewController: UIViewController {
 
         metaStackView.addArrangedSubview(makeSeparator())
 
-        // Sci-Fi Genre Box
         genreBadgeContainer.layer.borderWidth = 1
-        genreBadgeContainer.layer.borderColor = UIColor(white: 0.4, alpha: 1.0).cgColor
+        genreBadgeContainer.layer.borderColor = UIColor(white: 0.45, alpha: 1.0).cgColor
         genreBadgeContainer.layer.cornerRadius = 3
 
         genreLabel.font = .systemFont(ofSize: 11, weight: .bold)
-        genreLabel.textColor = UIColor(white: 0.8, alpha: 1.0)
+        genreLabel.textColor = UIColor(white: 0.85, alpha: 1.0)
         genreLabel.translatesAutoresizingMaskIntoConstraints = false
         genreBadgeContainer.addSubview(genreLabel)
 
@@ -169,12 +162,13 @@ class DetailViewController: UIViewController {
         ])
         metaStackView.addArrangedSubview(genreBadgeContainer)
 
-        // Description & Starring
-        descriptionLabel.numberOfLines = 0
+        // Description
+        descriptionLabel.numberOfLines = 4
         descriptionLabel.font = .systemFont(ofSize: 14, weight: .regular)
         descriptionLabel.textColor = UIColor(white: 0.85, alpha: 1.0)
         contentView.addSubview(descriptionLabel)
 
+        // Starring / Creator
         starringLabel.numberOfLines = 2
         contentView.addSubview(starringLabel)
 
@@ -212,7 +206,7 @@ class DetailViewController: UIViewController {
         similarCollectionView.register(SimilarShowCell.self, forCellWithReuseIdentifier: SimilarShowCell.reuseIdentifier)
         contentView.addSubview(similarCollectionView)
 
-        // Hamburger Menu Button
+        // Top Menu Button
         menuButton.addTarget(self, action: #selector(toggleSideMenu), for: .primaryActionTriggered)
         view.addSubview(menuButton)
 
@@ -242,12 +236,10 @@ class DetailViewController: UIViewController {
             btn.addTarget(self, action: #selector(sideItemTapped(_:)), for: .primaryActionTriggered)
             btn.translatesAutoresizingMaskIntoConstraints = false
             btn.heightAnchor.constraint(equalToConstant: 48).isActive = true
-            
-            // Login button (id == 5) se theek pehle Gaming ke baad 35pt ka extra space
-            if item.id == 5, let previousButton = sideMenuStack.arrangedSubviews.last {
-                sideMenuStack.setCustomSpacing(35, after: previousButton)
+
+            if item.id == 5, let prev = sideMenuStack.arrangedSubviews.last {
+                sideMenuStack.setCustomSpacing(35, after: prev)
             }
-            
             sideMenuStack.addArrangedSubview(btn)
         }
     }
@@ -262,24 +254,31 @@ class DetailViewController: UIViewController {
 
     // MARK: - Populate Data
     private func populateData() {
-        let movie = viewModel.movieDetail
+        let movie = viewModel.videoDetail
         titleLabel.text = movie.title
         ratingLabel.text = movie.rating
         yearLabel.text = movie.year
         durationLabel.text = movie.duration
         genreLabel.text = movie.genre
         descriptionLabel.text = movie.description
-        bannerImageView.image = UIImage(named: movie.bannerImageName) ?? UIImage(named: "hero_back")
+
+        if movie.bannerImageUrl.hasPrefix("http") {
+            bannerImageView.setImage(from: movie.bannerImageUrl, placeholder: "hero_back", isHeroBanner: true)
+        } else {
+            bannerImageView.image = UIImage(named: movie.bannerImageUrl) ?? UIImage(named: "hero_back")
+        }
 
         let starringAttributedString = NSMutableAttributedString(
-            string: "Starring: ",
-            attributes: [.font: UIFont.systemFont(ofSize: 13, weight: .bold), .foregroundColor: UIColor.white]
+            string: "Creator: ",
+            attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .bold), .foregroundColor: UIColor.white]
         )
         starringAttributedString.append(NSAttributedString(
             string: movie.starring,
-            attributes: [.font: UIFont.systemFont(ofSize: 13, weight: .regular), .foregroundColor: UIColor(white: 0.8, alpha: 1.0)]
+            attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .regular), .foregroundColor: UIColor(white: 0.8, alpha: 1.0)]
         ))
         starringLabel.attributedText = starringAttributedString
+
+        similarCollectionView.reloadData()
     }
 
     // MARK: - Constraints
@@ -294,7 +293,6 @@ class DetailViewController: UIViewController {
         sideMenuLeadingConstraint = sideMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -sideMenuWidth)
 
         NSLayoutConstraint.activate([
-            // Scroll & Content
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -306,19 +304,16 @@ class DetailViewController: UIViewController {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
 
-            // Top Menu Button
             menuButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             menuButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             menuButton.widthAnchor.constraint(equalToConstant: 48),
             menuButton.heightAnchor.constraint(equalToConstant: 48),
 
-            // Hero Banner
             bannerImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             bannerImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             bannerImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             bannerImageView.heightAnchor.constraint(equalToConstant: 680),
 
-            // Labels
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -40),
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 220),
@@ -328,13 +323,12 @@ class DetailViewController: UIViewController {
 
             descriptionLabel.topAnchor.constraint(equalTo: metaStackView.bottomAnchor, constant: 16),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
-            descriptionLabel.widthAnchor.constraint(equalToConstant: 520),
+            descriptionLabel.widthAnchor.constraint(equalToConstant: 580),
 
             starringLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 18),
             starringLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
             starringLabel.trailingAnchor.constraint(equalTo: descriptionLabel.trailingAnchor),
 
-            // Action Buttons Stack (Play + Visit Profile)
             actionButtonStack.topAnchor.constraint(equalTo: starringLabel.bottomAnchor, constant: 22),
             actionButtonStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
             actionButtonStack.heightAnchor.constraint(equalToConstant: 46),
@@ -342,7 +336,6 @@ class DetailViewController: UIViewController {
             playButton.widthAnchor.constraint(equalToConstant: 130),
             visitProfileButton.widthAnchor.constraint(equalToConstant: 160),
 
-            // Similar Content
             similarTitleLabel.topAnchor.constraint(equalTo: bannerImageView.bottomAnchor, constant: 20),
             similarTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
 
@@ -352,13 +345,11 @@ class DetailViewController: UIViewController {
             similarCollectionView.heightAnchor.constraint(equalToConstant: 280),
             similarCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
 
-            // Dim Overlay
             dimView.topAnchor.constraint(equalTo: view.topAnchor),
             dimView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             dimView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             dimView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            // Side Drawer
             sideMenuLeadingConstraint,
             sideMenuView.topAnchor.constraint(equalTo: view.topAnchor),
             sideMenuView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -377,23 +368,23 @@ class DetailViewController: UIViewController {
 
     // MARK: - Focus Guides
     private func setupFocusGuides() {
-        view.addLayoutGuide(playToSimilarFocusGuide)
-        view.addLayoutGuide(backToPlayFocusGuide)
+        view.addLayoutGuide(actionToSimilarFocusGuide)
+        view.addLayoutGuide(backToActionFocusGuide)
 
         NSLayoutConstraint.activate([
-            playToSimilarFocusGuide.topAnchor.constraint(equalTo: actionButtonStack.bottomAnchor),
-            playToSimilarFocusGuide.bottomAnchor.constraint(equalTo: similarCollectionView.topAnchor),
-            playToSimilarFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            playToSimilarFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            actionToSimilarFocusGuide.topAnchor.constraint(equalTo: actionButtonStack.bottomAnchor),
+            actionToSimilarFocusGuide.bottomAnchor.constraint(equalTo: similarCollectionView.topAnchor),
+            actionToSimilarFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            actionToSimilarFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
-            backToPlayFocusGuide.topAnchor.constraint(equalTo: menuButton.bottomAnchor),
-            backToPlayFocusGuide.bottomAnchor.constraint(equalTo: actionButtonStack.topAnchor),
-            backToPlayFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backToPlayFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            backToActionFocusGuide.topAnchor.constraint(equalTo: menuButton.bottomAnchor),
+            backToActionFocusGuide.bottomAnchor.constraint(equalTo: actionButtonStack.topAnchor),
+            backToActionFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backToActionFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
 
-        playToSimilarFocusGuide.preferredFocusEnvironments = [similarCollectionView]
-        backToPlayFocusGuide.preferredFocusEnvironments = [menuButton]
+        actionToSimilarFocusGuide.preferredFocusEnvironments = [similarCollectionView]
+        backToActionFocusGuide.preferredFocusEnvironments = [playButton]
     }
 
     // MARK: - Actions
@@ -433,12 +424,10 @@ class DetailViewController: UIViewController {
     @objc private func sideItemTapped(_ sender: UIButton) {
         let selectedIndex = sender.tag
         HomeViewModel.shared.selectSideMenu(at: selectedIndex)
-
         closeSideMenu()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
             guard let self = self else { return }
-
             if let nav = self.navigationController {
                 nav.popToRootViewController(animated: true)
             } else {
@@ -448,18 +437,17 @@ class DetailViewController: UIViewController {
     }
 
     @objc private func didTapPlay() {
-        print("Play Movie Triggered")
+
     }
 
     @objc private func didTapVisitProfile() {
-        if let navigationController = navigationController {
-            navigationController.popViewController(animated: true)
+        if let nav = navigationController {
+            nav.popViewController(animated: true)
         } else {
             dismiss(animated: true, completion: nil)
         }
     }
 
-    // MARK: - Preferred Focus
     override var preferredFocusEnvironments: [UIFocusEnvironment] {
         if homeViewModel.isSideMenuOpen {
             if let selectedBtn = sideMenuStack.arrangedSubviews.first(where: { ($0 as? UIButton)?.tag == homeViewModel.selectedSideMenuIndex }) {
@@ -471,17 +459,23 @@ class DetailViewController: UIViewController {
     }
 }
 
-// MARK: - CollectionView DataSource & Delegate
+// MARK: - CollectionView Delegate & DataSource
 extension DetailViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfSimilarShows()
+        return viewModel.numberOfSimilarVideos()
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SimilarShowCell.reuseIdentifier, for: indexPath) as! SimilarShowCell
-        let item = viewModel.similarShow(at: indexPath.item)
+        let item = viewModel.similarVideo(at: indexPath.item)
         cell.configure(with: item)
         return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedItem = viewModel.similarVideo(at: indexPath.item)
+        let nextDetailVC = DetailViewController(show: selectedItem, allShows: viewModel.videoDetail.similarVideos)
+        navigationController?.pushViewController(nextDetailVC, animated: true)
     }
 
     func collectionView(_ collectionView: UICollectionView, canFocusItemAt indexPath: IndexPath) -> Bool {
