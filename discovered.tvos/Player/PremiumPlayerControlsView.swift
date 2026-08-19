@@ -205,16 +205,8 @@ struct ControlButton: View {
                 .background(
                     RoundedRectangle(cornerRadius: 12)
                         .fill(Color(red: 1, green: 1, blue: 1, opacity: 0.06))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(
-                                    isFocused ? Color.white : Color(red: 1, green: 1, blue: 1, opacity: 0.1),
-                                    lineWidth: isFocused ? 2.5 : 0.8
-                                )
-                        )
                 )
-                .scaleEffect(isFocused ? 1.12 : 1.0)
-                .shadow(color: Color.white.opacity(isFocused ? 0.5 : 0), radius: isFocused ? 12 : 0)
+                .scaleEffect(isFocused ? 1.1 : 1.0)
                 .animation(.easeInOut(duration: 0.15), value: isFocused)
 
             if isFocused {
@@ -249,9 +241,7 @@ struct PrimaryPlayButton: View {
                     )
                 )
                 .cornerRadius(12)
-                .shadow(color: Color(red: 1, green: 0.42, blue: 0.21, opacity: 0.4), radius: 10)
-                .scaleEffect(isFocused ? 1.18 : 1.0)
-                .shadow(color: Color(red: 1, green: 0.42, blue: 0.21, opacity: isFocused ? 0.7 : 0), radius: isFocused ? 20 : 0)
+                .scaleEffect(isFocused ? 1.15 : 1.0)
                 .animation(.easeInOut(duration: 0.15), value: isFocused)
 
             if isFocused {

@@ -145,10 +145,17 @@ struct PremiumPlayerView: View {
 
                 // Right sidebar - Recommendations (Vertical scroll)
                 if showSidebar && !suggestions.isEmpty && !isLoadingSuggestions {
-                    RecommendationsSidebar(suggestions: suggestions)
-                        .frame(width: 320)
-                        .transition(.move(edge: .trailing).combined(with: .opacity))
-                        .focused($focusedElement, equals: .sidebar)
+                    RecommendationsSidebar(
+                        suggestions: suggestions,
+                        onHidePressed: {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                showSidebar = false
+                            }
+                        }
+                    )
+                    .frame(width: 320)
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                    .focused($focusedElement, equals: .sidebar)
                 }
             }
 
@@ -204,6 +211,10 @@ struct PremiumPlayerView: View {
             if !isPlaying && playerState == .ready {
                 togglePlayPause()
             }
+            resetControlsHideTimer()
+        }
+        .onMoveCommand { direction in
+            resetControlsHideTimer()
         }
         .onAppear {
             setupPlayer()
@@ -403,6 +414,7 @@ struct VideoPlayerRepresentable: UIViewControllerRepresentable {
 // MARK: - Recommendations Sidebar
 struct RecommendationsSidebar: View {
     let suggestions: [VideoRecommendation]
+    var onHidePressed: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -433,7 +445,8 @@ struct RecommendationsSidebar: View {
                     ForEach(Array(suggestions.enumerated()), id: \.element.id) { index, video in
                         RecommendationSidebarCard(
                             video: video,
-                            isFirstCard: index == 0
+                            isFirstCard: index == 0,
+                            onHidePressed: onHidePressed
                         )
                     }
                 }
@@ -465,6 +478,7 @@ struct RecommendationSidebarCard: View {
 
     let video: VideoRecommendation
     let isFirstCard: Bool
+    var onHidePressed: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -551,6 +565,11 @@ struct RecommendationSidebarCard: View {
         .animation(.easeInOut(duration: 0.15), value: isFocused)
         .focusable(true) { focused in
             isFocused = focused
+        }
+        .onMoveCommand { direction in
+            if direction == .left && isFocused {
+                onHidePressed?()
+            }
         }
         .onAppear {
             loadThumbnail()
