@@ -84,15 +84,14 @@ struct PremiumPlayerControlsView: View {
                 Spacer()
 
                 // Center: Playback controls - perfectly centered
-                HStack(spacing: 40) {
+                HStack(spacing: 50) {
                     // Rewind button
                     Button(action: onBackward) {
                         Image(systemName: "gobackward.10")
-                            .font(.system(size: 20, weight: .semibold))
+                            .font(.system(size: 22, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 54, height: 54)
-                            .contentShape(Circle())
-                            .scaleEffect(focusedControl == .backward ? 1.1 : 1.0)
+                            .frame(width: 50, height: 50)
+                            .scaleEffect(focusedControl == .backward ? 1.12 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .backward)
                     }
                     .focused($focusedControl, equals: .backward)
@@ -102,14 +101,14 @@ struct PremiumPlayerControlsView: View {
                         onPlayPause?()
                     }) {
                         Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                            .font(.system(size: 24, weight: .semibold))
+                            .font(.system(size: 28, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 76, height: 76)
+                            .frame(width: 70, height: 70)
                             .background(
-                                RoundedRectangle(cornerRadius: 14)
+                                RoundedRectangle(cornerRadius: 12)
                                     .fill(Color(red: 1, green: 0.1, blue: 0.1))
                             )
-                            .scaleEffect(focusedControl == .playButton ? 1.1 : 1.0)
+                            .scaleEffect(focusedControl == .playButton ? 1.12 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .playButton)
                     }
                     .focused($focusedControl, equals: .playButton)
@@ -117,11 +116,10 @@ struct PremiumPlayerControlsView: View {
                     // Forward button
                     Button(action: onForward) {
                         Image(systemName: "goforward.10")
-                            .font(.system(size: 20, weight: .semibold))
+                            .font(.system(size: 22, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 54, height: 54)
-                            .contentShape(Circle())
-                            .scaleEffect(focusedControl == .forward ? 1.1 : 1.0)
+                            .frame(width: 50, height: 50)
+                            .scaleEffect(focusedControl == .forward ? 1.12 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .forward)
                     }
                     .focused($focusedControl, equals: .forward)
@@ -130,38 +128,35 @@ struct PremiumPlayerControlsView: View {
                 Spacer()
 
                 // Right side: Quality and settings
-                HStack(spacing: 20) {
+                HStack(spacing: 24) {
                     QualityBadge(quality: "4K", audio: "5.1")
 
                     Button(action: {}) {
                         Image(systemName: "captions.bubble")
-                            .font(.system(size: 18, weight: .semibold))
+                            .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 44, height: 44)
-                            .contentShape(Circle())
-                            .scaleEffect(focusedControl == .cc ? 1.1 : 1.0)
+                            .frame(width: 48, height: 48)
+                            .scaleEffect(focusedControl == .cc ? 1.12 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .cc)
                     }
                     .focused($focusedControl, equals: .cc)
 
                     Button(action: {}) {
                         Image(systemName: "speaker.wave.2")
-                            .font(.system(size: 18, weight: .semibold))
+                            .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 44, height: 44)
-                            .contentShape(Circle())
-                            .scaleEffect(focusedControl == .audio ? 1.1 : 1.0)
+                            .frame(width: 48, height: 48)
+                            .scaleEffect(focusedControl == .audio ? 1.12 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .audio)
                     }
                     .focused($focusedControl, equals: .audio)
 
                     Button(action: {}) {
                         Image(systemName: "gearshape")
-                            .font(.system(size: 18, weight: .semibold))
+                            .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 44, height: 44)
-                            .contentShape(Circle())
-                            .scaleEffect(focusedControl == .settings ? 1.1 : 1.0)
+                            .frame(width: 48, height: 48)
+                            .scaleEffect(focusedControl == .settings ? 1.12 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .settings)
                     }
                     .focused($focusedControl, equals: .settings)
