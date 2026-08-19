@@ -90,7 +90,6 @@ struct PremiumPlayerControlsView: View {
                         Image(systemName: "gobackward.10")
                             .font(.system(size: 22, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 50, height: 50)
                             .scaleEffect(focusedControl == .backward ? 1.12 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .backward)
                     }
@@ -103,11 +102,6 @@ struct PremiumPlayerControlsView: View {
                         Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                             .font(.system(size: 28, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 70, height: 70)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(red: 1, green: 0.1, blue: 0.1))
-                            )
                             .scaleEffect(focusedControl == .playButton ? 1.12 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .playButton)
                     }
@@ -118,7 +112,6 @@ struct PremiumPlayerControlsView: View {
                         Image(systemName: "goforward.10")
                             .font(.system(size: 22, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 50, height: 50)
                             .scaleEffect(focusedControl == .forward ? 1.12 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .forward)
                     }
