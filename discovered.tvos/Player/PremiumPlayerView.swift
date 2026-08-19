@@ -32,6 +32,7 @@ struct PremiumPlayerView: View {
         case moreButton
         case videoArea
         case controls
+        case sidebar
     }
 
     let title: String
@@ -147,6 +148,7 @@ struct PremiumPlayerView: View {
                     RecommendationsSidebar(suggestions: suggestions)
                         .frame(width: 320)
                         .transition(.move(edge: .trailing).combined(with: .opacity))
+                        .focused($focusedElement, equals: .sidebar)
                 }
             }
 
@@ -490,8 +492,8 @@ struct RecommendationSidebarCard: View {
 
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(
-                        Color(red: 1, green: 1, blue: 1, opacity: isFocused ? 0.3 : 0.08),
-                        lineWidth: isFocused ? 1.5 : 0.8
+                        isFocused ? Color.white : Color(red: 1, green: 1, blue: 1, opacity: 0.08),
+                        lineWidth: isFocused ? 2.5 : 0.8
                     )
 
                 VStack {

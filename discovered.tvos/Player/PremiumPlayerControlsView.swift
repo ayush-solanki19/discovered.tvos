@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PremiumPlayerControlsView: View {
-    @State private var focusedControl: FocusedControl = .playButton
+    @FocusState private var focusedControl: FocusedControl?
 
     var currentTime: String = "0:00"
     var remainingTime: String = "0:00"
@@ -19,7 +19,7 @@ struct PremiumPlayerControlsView: View {
     var onSeekForward: (() -> Void)?
     var onSeekBackward: (() -> Void)?
 
-    enum FocusedControl {
+    enum FocusedControl: Hashable {
         case backward
         case playButton
         case forward
@@ -65,11 +65,7 @@ struct PremiumPlayerControlsView: View {
                 }
                 .frame(maxWidth: 280)
                 .frame(height: focusedControl == .progressBar ? 8 : 5)
-                .focusable(true) { focused in
-                    if focused {
-                        focusedControl = .progressBar
-                    }
-                }
+                .focused($focusedControl, equals: .progressBar)
 
                 // Time display - Below progress bar for clarity
                 HStack(spacing: 16) {
@@ -108,9 +104,7 @@ struct PremiumPlayerControlsView: View {
                                 isLarge: false
                             )
                         }
-                        .focusable(true) { focused in
-                            if focused { focusedControl = .backward }
-                        }
+                        .focused($focusedControl, equals: .backward)
 
                         Button(action: {
                             onPlayPause?()
@@ -120,9 +114,7 @@ struct PremiumPlayerControlsView: View {
                                 isFocused: focusedControl == .playButton
                             )
                         }
-                        .focusable(true) { focused in
-                            if focused { focusedControl = .playButton }
-                        }
+                        .focused($focusedControl, equals: .playButton)
 
                         Button(action: onForward) {
                             ControlButton(
@@ -132,9 +124,7 @@ struct PremiumPlayerControlsView: View {
                                 isLarge: false
                             )
                         }
-                        .focusable(true) { focused in
-                            if focused { focusedControl = .forward }
-                        }
+                        .focused($focusedControl, equals: .forward)
                     }
 
                     Spacer()
@@ -143,35 +133,35 @@ struct PremiumPlayerControlsView: View {
                     HStack(spacing: 12) {
                         QualityBadge(quality: "4K", audio: "5.1")
 
-                        ControlButton(
-                            icon: "captions.bubble",
-                            label: "Subtitles",
-                            isFocused: focusedControl == .cc,
-                            isLarge: false
-                        )
-                        .focusable(true) { focused in
-                            if focused { focusedControl = .cc }
+                        Button(action: {}) {
+                            ControlButton(
+                                icon: "captions.bubble",
+                                label: "Subtitles",
+                                isFocused: focusedControl == .cc,
+                                isLarge: false
+                            )
                         }
+                        .focused($focusedControl, equals: .cc)
 
-                        ControlButton(
-                            icon: "speaker.wave.2",
-                            label: "Audio",
-                            isFocused: focusedControl == .audio,
-                            isLarge: false
-                        )
-                        .focusable(true) { focused in
-                            if focused { focusedControl = .audio }
+                        Button(action: {}) {
+                            ControlButton(
+                                icon: "speaker.wave.2",
+                                label: "Audio",
+                                isFocused: focusedControl == .audio,
+                                isLarge: false
+                            )
                         }
+                        .focused($focusedControl, equals: .audio)
 
-                        ControlButton(
-                            icon: "gearshape",
-                            label: "Settings",
-                            isFocused: focusedControl == .settings,
-                            isLarge: false
-                        )
-                        .focusable(true) { focused in
-                            if focused { focusedControl = .settings }
+                        Button(action: {}) {
+                            ControlButton(
+                                icon: "gearshape",
+                                label: "Settings",
+                                isFocused: focusedControl == .settings,
+                                isLarge: false
+                            )
                         }
+                        .focused($focusedControl, equals: .settings)
                     }
                 }
             }
@@ -214,27 +204,23 @@ struct ControlButton: View {
                 .frame(width: isLarge ? 64 : 56, height: isLarge ? 64 : 56)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(
-                            isFocused ?
-                            Color(red: 1, green: 0.42, blue: 0.21, opacity: 0.2) :
-                            Color(red: 1, green: 1, blue: 1, opacity: 0.06)
-                        )
+                        .fill(Color(red: 1, green: 1, blue: 1, opacity: 0.06))
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
                                 .stroke(
-                                    Color(red: 1, green: 0.42, blue: 0.21, opacity: isFocused ? 0.8 : 0.1),
-                                    lineWidth: isFocused ? 1.5 : 0.8
+                                    isFocused ? Color.white : Color(red: 1, green: 1, blue: 1, opacity: 0.1),
+                                    lineWidth: isFocused ? 2.5 : 0.8
                                 )
                         )
                 )
                 .scaleEffect(isFocused ? 1.12 : 1.0)
-                .shadow(color: Color(red: 1, green: 0.42, blue: 0.21, opacity: isFocused ? 0.5 : 0), radius: isFocused ? 10 : 0)
+                .shadow(color: Color.white.opacity(isFocused ? 0.5 : 0), radius: isFocused ? 12 : 0)
                 .animation(.easeInOut(duration: 0.15), value: isFocused)
 
             if isFocused {
                 Text(label)
                     .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(.gray2)
+                    .foregroundColor(.white)
                     .lineLimit(1)
                     .transition(.opacity)
             }
