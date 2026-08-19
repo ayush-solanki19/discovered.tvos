@@ -1,7 +1,15 @@
 import UIKit
+import SwiftUI
+
+protocol RelatedVideoGridCellDelegate: AnyObject {
+    func relatedVideoGridCell(_ cell: RelatedVideoGridCell, didTapPlayForVideo video: RelatedVideo)
+}
 
 class RelatedVideoGridCell: UICollectionViewCell {
     static let reuseIdentifier = "RelatedVideoGridCell"
+
+    weak var delegate: RelatedVideoGridCellDelegate?
+    private var video: RelatedVideo?
 
     private let posterImageView = UIImageView()
     private let overlayView = UIView()
@@ -33,12 +41,15 @@ class RelatedVideoGridCell: UICollectionViewCell {
         posterImageView.addSubview(overlayView)
 
         var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = UIColor.red
+        config.baseBackgroundColor = UIColor(red: 1, green: 0.42, blue: 0.21, alpha: 1.0)
         config.baseForegroundColor = .white
+        config.title = "Play Video"
+        config.titleAlignment = .center
         playButtonOverlay.configuration = config
-        playButtonOverlay.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        playButtonOverlay.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         playButtonOverlay.alpha = 0
         playButtonOverlay.translatesAutoresizingMaskIntoConstraints = false
+        playButtonOverlay.addTarget(self, action: #selector(playButtonTapped), for: .primaryActionTriggered)
         posterImageView.addSubview(playButtonOverlay)
 
         NSLayoutConstraint.activate([
@@ -54,13 +65,19 @@ class RelatedVideoGridCell: UICollectionViewCell {
 
             playButtonOverlay.centerXAnchor.constraint(equalTo: posterImageView.centerXAnchor),
             playButtonOverlay.centerYAnchor.constraint(equalTo: posterImageView.centerYAnchor),
-            playButtonOverlay.widthAnchor.constraint(equalToConstant: 50),
+            playButtonOverlay.widthAnchor.constraint(equalToConstant: 120),
             playButtonOverlay.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 
     func configure(with video: RelatedVideo) {
+        self.video = video
         posterImageView.setImage(from: video.ThumbImage)
+    }
+
+    @objc private func playButtonTapped() {
+        guard let video = video else { return }
+        delegate?.relatedVideoGridCell(self, didTapPlayForVideo: video)
     }
 
     override var canBecomeFocused: Bool { true }

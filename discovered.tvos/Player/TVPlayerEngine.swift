@@ -100,14 +100,16 @@ class TVPlayerEngine: NSObject {
         player.seek(to: cmTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
     }
 
-    func seekForward() {
-        let newTime = currentTime + seekInterval
+    func seekForward(seconds: TimeInterval? = nil) {
+        let interval = seconds ?? seekInterval
+        let newTime = currentTime + interval
         let maxTime = min(newTime, duration)
         seek(to: maxTime)
     }
 
-    func seekBackward() {
-        let newTime = max(currentTime - seekInterval, 0)
+    func seekBackward(seconds: TimeInterval? = nil) {
+        let interval = seconds ?? seekInterval
+        let newTime = max(currentTime - interval, 0)
         seek(to: newTime)
     }
 
