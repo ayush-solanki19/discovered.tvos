@@ -30,12 +30,12 @@ struct PremiumPlayerControlsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 12) {
-            // Progress bar at top
+        VStack(spacing: 8) {
+            // Progress bar at top - full width
             ZStack(alignment: .leading) {
                 Capsule()
-                    .fill(Color(red: 1, green: 1, blue: 1, opacity: 0.08))
-                    .frame(height: 3)
+                    .fill(Color(red: 1, green: 1, blue: 1, opacity: 0.1))
+                    .frame(height: 4)
 
                 Capsule()
                     .fill(
@@ -48,34 +48,50 @@ struct PremiumPlayerControlsView: View {
                             endPoint: .trailing
                         )
                     )
-                    .frame(width: max(0, progress * 280), height: 3)
+                    .frame(width: max(0, progress * (UIScreen.main.bounds.width - 80)), height: 4)
             }
-            .frame(maxWidth: 280)
+            .padding(.horizontal, 40)
             .focused($focusedControl, equals: .progressBar)
 
-            // Main controls bar
-            HStack(spacing: 24) {
-                // Time display on left
-                VStack(spacing: 2) {
-                    Text(currentTime)
-                        .font(.system(size: 13, weight: .medium, design: .monospaced))
-                        .foregroundColor(.white)
-                    Text("/ \(totalTime)")
-                        .font(.system(size: 10, weight: .medium, design: .monospaced))
-                        .foregroundColor(Color(red: 1, green: 1, blue: 1, opacity: 0.6))
-                }
-                .frame(width: 60, alignment: .leading)
+            // Time display bar
+            HStack {
+                Text(currentTime)
+                    .font(.system(size: 11, weight: .medium, design: .monospaced))
+                    .foregroundColor(.white)
 
                 Spacer()
 
-                // Center: Playback controls
-                HStack(spacing: 30) {
+                Text(remainingTime)
+                    .font(.system(size: 11, weight: .medium, design: .monospaced))
+                    .foregroundColor(Color(red: 1, green: 1, blue: 1, opacity: 0.6))
+            }
+            .padding(.horizontal, 40)
+
+            // Main controls bar
+            HStack(spacing: 0) {
+                // Left: Time info
+                VStack(spacing: 0) {
+                    Text(currentTime)
+                        .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                        .foregroundColor(.white)
+                    Text("/ \(totalTime)")
+                        .font(.system(size: 11, weight: .medium, design: .monospaced))
+                        .foregroundColor(Color(red: 1, green: 1, blue: 1, opacity: 0.6))
+                }
+                .frame(width: 70, alignment: .leading)
+                .padding(.leading, 40)
+
+                Spacer()
+
+                // Center: Playback controls - perfectly centered
+                HStack(spacing: 40) {
                     // Rewind button
                     Button(action: onBackward) {
                         Image(systemName: "gobackward.10")
-                            .font(.system(size: 18, weight: .semibold))
+                            .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 50, height: 50)
+                            .frame(width: 54, height: 54)
+                            .contentShape(Circle())
                             .scaleEffect(focusedControl == .backward ? 1.1 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .backward)
                     }
@@ -86,14 +102,14 @@ struct PremiumPlayerControlsView: View {
                         onPlayPause?()
                     }) {
                         Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                            .font(.system(size: 22, weight: .semibold))
+                            .font(.system(size: 24, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 70, height: 70)
+                            .frame(width: 76, height: 76)
                             .background(
-                                RoundedRectangle(cornerRadius: 12)
+                                RoundedRectangle(cornerRadius: 14)
                                     .fill(Color(red: 1, green: 0.1, blue: 0.1))
                             )
-                            .scaleEffect(focusedControl == .playButton ? 1.12 : 1.0)
+                            .scaleEffect(focusedControl == .playButton ? 1.1 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .playButton)
                     }
                     .focused($focusedControl, equals: .playButton)
@@ -101,9 +117,10 @@ struct PremiumPlayerControlsView: View {
                     // Forward button
                     Button(action: onForward) {
                         Image(systemName: "goforward.10")
-                            .font(.system(size: 18, weight: .semibold))
+                            .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 50, height: 50)
+                            .frame(width: 54, height: 54)
+                            .contentShape(Circle())
                             .scaleEffect(focusedControl == .forward ? 1.1 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .forward)
                     }
@@ -113,14 +130,15 @@ struct PremiumPlayerControlsView: View {
                 Spacer()
 
                 // Right side: Quality and settings
-                HStack(spacing: 16) {
+                HStack(spacing: 20) {
                     QualityBadge(quality: "4K", audio: "5.1")
 
                     Button(action: {}) {
                         Image(systemName: "captions.bubble")
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 40, height: 40)
+                            .frame(width: 44, height: 44)
+                            .contentShape(Circle())
                             .scaleEffect(focusedControl == .cc ? 1.1 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .cc)
                     }
@@ -128,9 +146,10 @@ struct PremiumPlayerControlsView: View {
 
                     Button(action: {}) {
                         Image(systemName: "speaker.wave.2")
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 40, height: 40)
+                            .frame(width: 44, height: 44)
+                            .contentShape(Circle())
                             .scaleEffect(focusedControl == .audio ? 1.1 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .audio)
                     }
@@ -138,28 +157,31 @@ struct PremiumPlayerControlsView: View {
 
                     Button(action: {}) {
                         Image(systemName: "gearshape")
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 40, height: 40)
+                            .frame(width: 44, height: 44)
+                            .contentShape(Circle())
                             .scaleEffect(focusedControl == .settings ? 1.1 : 1.0)
                             .animation(.easeInOut(duration: 0.15), value: focusedControl == .settings)
                     }
                     .focused($focusedControl, equals: .settings)
                 }
+                .padding(.trailing, 40)
             }
-            .padding(.horizontal, 40)
-            .padding(.vertical, 16)
+            .padding(.vertical, 12)
         }
         .background(
             LinearGradient(
                 gradient: Gradient(colors: [
-                    Color.black.opacity(0.7),
-                    Color.black.opacity(0.3)
+                    Color.black.opacity(0.8),
+                    Color.black.opacity(0.4)
                 ]),
                 startPoint: .bottom,
                 endPoint: .top
             )
         )
+        .padding(.horizontal, -40)
+        .padding(.vertical, -12)
     }
 
     private func onForward() {
