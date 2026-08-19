@@ -202,10 +202,6 @@ struct ControlButton: View {
                 .font(.system(size: isLarge ? 26 : 22, weight: .semibold))
                 .foregroundColor(.white)
                 .frame(width: isLarge ? 64 : 56, height: isLarge ? 64 : 56)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(red: 1, green: 1, blue: 1, opacity: 0.06))
-                )
                 .scaleEffect(isFocused ? 1.1 : 1.0)
                 .animation(.easeInOut(duration: 0.15), value: isFocused)
 
