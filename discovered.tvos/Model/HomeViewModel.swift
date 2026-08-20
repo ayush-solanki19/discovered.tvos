@@ -21,7 +21,6 @@ class HomeViewModel {
 
     init() {
         setupSideMenu()
-        // Default launch par Spotlight (mode: 8) call hoga
         fetchVideos(forMode: 8)
     }
 
@@ -38,18 +37,17 @@ class HomeViewModel {
         ]
     }
 
-    // Dynamic Mode Mapping
     private func handleCategorySelection(index: Int) {
         switch index {
-        case 0: // Spotlight
+        case 0:
             fetchVideos(forMode: 8)
-        case 1: // Music
+        case 1:
             fetchVideos(forMode: 1)
-        case 2: // Movies
+        case 2:
             fetchVideos(forMode: 2)
-        case 3: // Television
+        case 3:
             fetchVideos(forMode: 3)
-        case 4: // Gaming
+        case 4:
             fetchVideos(forMode: 7)
         default:
             break
@@ -62,18 +60,19 @@ class HomeViewModel {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    // 1. Cover Video se Hero Banner update karein
+                    // 1. Cover Video (Hero Banner)
                     if let cover = response.coverVideo?.first {
                         self?.heroData = HeroContent(
                             title: cover.title ?? "Featured Video",
                             metadata: "\(cover.genreName ?? "")  •  \(cover.userName ?? "")",
                             description: cover.description ?? "",
                             backgroundImageName: cover.preview ?? cover.url ?? "",
+                            videoUrl: cover.url ?? cover.preview,
                             badges: [("FEATURED", "red")]
                         )
                     }
 
-                    // 2. Videos list parse karein
+                    // 2. Collection View Shows List
                     var allVideos: [ShowItem] = []
                     if let homeSections = response.homeVideos {
                         for section in homeSections {
@@ -81,7 +80,8 @@ class HomeViewModel {
                                 for video in slider {
                                     let item = ShowItem(
                                         title: video.title ?? "Untitled",
-                                        imageName: video.thumbImage ?? ""
+                                        imageName: video.thumbImage ?? "",
+                                        videoUrl: video.videoFile ?? video.previewFile
                                     )
                                     allVideos.append(item)
                                 }
