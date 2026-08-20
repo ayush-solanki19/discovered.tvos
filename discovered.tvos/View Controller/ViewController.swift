@@ -29,6 +29,7 @@ class ViewController: UIViewController {
     private var collectionView: UICollectionView!
     private var collectionViewHeightConstraint: NSLayoutConstraint!
     private var isCollectionViewExpanded = false
+    private var collectionViewLayout: UICollectionViewFlowLayout!
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -122,13 +123,13 @@ class ViewController: UIViewController {
         sectionTitleLabel.textColor = .white
         contentView.addSubview(sectionTitleLabel)
         
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 245, height: 435)
-        layout.minimumLineSpacing = 16
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        collectionViewLayout = UICollectionViewFlowLayout()
+        collectionViewLayout.scrollDirection = .horizontal
+        collectionViewLayout.itemSize = CGSize(width: 245, height: 435)
+        collectionViewLayout.minimumLineSpacing = 16
+        collectionViewLayout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.dataSource = self
@@ -252,7 +253,7 @@ class ViewController: UIViewController {
             sideMenuStack.trailingAnchor.constraint(equalTo: sideMenuView.trailingAnchor, constant: -16)
         ])
 
-        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: 217)
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: 43.5)
         collectionViewHeightConstraint.isActive = true
     }
 
@@ -286,6 +287,8 @@ class ViewController: UIViewController {
         sideMenuLeadingConstraint.constant = 0
         refreshSideMenuAppearance()
 
+        reduceThumbnailSize()
+
         view.bringSubviewToFront(dimView)
         view.bringSubviewToFront(sideMenuView)
 
@@ -301,6 +304,8 @@ class ViewController: UIViewController {
     @objc private func closeSideMenu() {
         viewModel.isSideMenuOpen = false
         sideMenuLeadingConstraint.constant = -sideMenuWidth
+
+        restoreThumbnailSize()
 
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
             self.dimView.alpha = 0
@@ -368,6 +373,18 @@ class ViewController: UIViewController {
                 self.updateFocusIfNeeded()
             }
         }
+    }
+
+    private func reduceThumbnailSize() {
+        let smallSize = CGSize(width: 61.25, height: 108.75)
+        collectionViewLayout.itemSize = smallSize
+        collectionView.reloadData()
+    }
+
+    private func restoreThumbnailSize() {
+        let normalSize = CGSize(width: 245, height: 435)
+        collectionViewLayout.itemSize = normalSize
+        collectionView.reloadData()
     }
 }
 
