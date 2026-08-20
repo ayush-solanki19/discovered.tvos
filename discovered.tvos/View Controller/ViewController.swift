@@ -27,6 +27,8 @@ class ViewController: UIViewController {
     private let playButton = UIButton()
     private let sectionTitleLabel = UILabel()
     private var collectionView: UICollectionView!
+    private var collectionViewHeightConstraint: NSLayoutConstraint!
+    private var isCollectionViewExpanded = false
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -37,6 +39,7 @@ class ViewController: UIViewController {
         setupConstraints()
         setupFocusGuides()
         bindViewModel()
+        setupScrollGestures()
 
         sideMenuLeadingConstraint.constant = -sideMenuWidth
         dimView.alpha = 0
@@ -121,7 +124,7 @@ class ViewController: UIViewController {
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 350, height: 250)
+        layout.itemSize = CGSize(width: 245, height: 435)
         layout.minimumLineSpacing = 16
         layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
 
@@ -223,7 +226,6 @@ class ViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: sectionTitleLabel.bottomAnchor, constant: 14),
             collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            collectionView.heightAnchor.constraint(equalToConstant: 270),
             collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
 
             // Dim Overlay
@@ -249,6 +251,9 @@ class ViewController: UIViewController {
             sideMenuStack.leadingAnchor.constraint(equalTo: sideMenuView.leadingAnchor, constant: 16),
             sideMenuStack.trailingAnchor.constraint(equalTo: sideMenuView.trailingAnchor, constant: -16)
         ])
+
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: 217)
+        collectionViewHeightConstraint.isActive = true
     }
 
     // MARK: - Focus Guides
@@ -336,11 +341,33 @@ class ViewController: UIViewController {
             return sideMenuStack.arrangedSubviews
         }
 
-        // Side menu close hone par priority CollectionView ko milegi
-        if let collection = collectionView {
-            return [collection]
+        return [playButton]
+    }
+
+    private func setupScrollGestures() {
+        // No longer needed - using pressesBegan instead
+    }
+
+    override func shouldUpdateFocus(in context: UIFocusUpdateContext) -> Bool {
+        if !isCollectionViewExpanded && playButton.isFocused && context.nextFocusedView != playButton {
+            scrollToCollectionView()
+            return false
         }
-        return []
+        return true
+    }
+
+    private func scrollToCollectionView() {
+        if !isCollectionViewExpanded {
+            isCollectionViewExpanded = true
+            collectionViewHeightConstraint.constant = 435
+
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
+                self.view.layoutIfNeeded()
+            }) { _ in
+                self.setNeedsFocusUpdate()
+                self.updateFocusIfNeeded()
+            }
+        }
     }
 }
 

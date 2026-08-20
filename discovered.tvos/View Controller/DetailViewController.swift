@@ -97,7 +97,6 @@ class DetailViewController: UIViewController {
         bannerGradient.frame = bannerImageView.bounds
     }
 
-<<<<<<< HEAD
     // MARK: - Side Menu Binding
     private func bindSideMenu() {
         homeViewModel.onSideMenuSelectionChanged = { [weak self] _ in
@@ -106,13 +105,9 @@ class DetailViewController: UIViewController {
     }
 
     private func bindViewModel() {
-        viewModel.onRelatedVideosUpdated = { [weak self] in
-            self?.relatedVideosCollectionView.reloadData()
-        }
-
-        let movie = viewModel.movieDetail
-        viewModel.fetchRelatedVideos(userId: "215")
+        // Similar videos are loaded directly from videoDetail.similarVideos
     }
+
     // MARK: - Setup UI
     private func setupUI() {
         scrollView.showsVerticalScrollIndicator = false
@@ -228,7 +223,6 @@ class DetailViewController: UIViewController {
         similarCollectionView.register(SimilarShowCell.self, forCellWithReuseIdentifier: SimilarShowCell.reuseIdentifier)
         contentView.addSubview(similarCollectionView)
 
-<<<<<<< HEAD
         // Related Videos Section
         relatedTitleLabel.text = "More From This Creator"
         relatedTitleLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 22) ?? .systemFont(ofSize: 22, weight: .bold)
@@ -251,9 +245,6 @@ class DetailViewController: UIViewController {
         contentView.addSubview(relatedVideosCollectionView)
 
         // Hamburger Menu Button
-=======
-        // Top Menu Button
->>>>>>> main
         menuButton.addTarget(self, action: #selector(toggleSideMenu), for: .primaryActionTriggered)
         view.addSubview(menuButton)
 
@@ -494,7 +485,6 @@ class DetailViewController: UIViewController {
     }
 
     @objc private func didTapPlay() {
-<<<<<<< HEAD
         presentVideoPlayer()
     }
 
@@ -509,9 +499,6 @@ class DetailViewController: UIViewController {
         playerVC.play(url: hlsURL)
 
         self.present(playerVC, animated: true)
-=======
-
->>>>>>> main
     }
 
     @objc private func didTapVisitProfile() {
@@ -536,11 +523,10 @@ class DetailViewController: UIViewController {
 // MARK: - CollectionView Delegate & DataSource
 extension DetailViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-<<<<<<< HEAD
         if collectionView == similarCollectionView {
-            return viewModel.numberOfSimilarShows()
+            return viewModel.numberOfSimilarVideos()
         } else if collectionView == relatedVideosCollectionView {
-            return viewModel.numberOfRelatedVideos()
+            return viewModel.numberOfSimilarVideos()
         }
         return 0
     }
@@ -548,7 +534,7 @@ extension DetailViewController: UICollectionViewDataSource, UICollectionViewDele
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == similarCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SimilarShowCell.reuseIdentifier, for: indexPath) as! SimilarShowCell
-            let item = viewModel.similarShow(at: indexPath.item)
+            let item = viewModel.similarVideo(at: indexPath.item)
             cell.configure(with: item)
             cell.onPlayButtonTapped = { [weak self] in
                 self?.presentVideoPlayer()
@@ -556,25 +542,14 @@ extension DetailViewController: UICollectionViewDataSource, UICollectionViewDele
             return cell
         } else if collectionView == relatedVideosCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RelatedVideoCell.reuseIdentifier, for: indexPath) as! RelatedVideoCell
-            if let video = viewModel.relatedVideo(at: indexPath.item) {
-                cell.configure(with: video)
-                cell.onPlayButtonTapped = { [weak self] in
-                    self?.presentRelatedVideoPlayer(video: video)
-                }
+            let video = viewModel.similarVideo(at: indexPath.item)
+            cell.configure(with: video)
+            cell.onPlayButtonTapped = { [weak self] in
+                self?.presentVideoPlayer()
             }
             return cell
         }
         return UICollectionViewCell()
-=======
-        return viewModel.numberOfSimilarVideos()
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SimilarShowCell.reuseIdentifier, for: indexPath) as! SimilarShowCell
-        let item = viewModel.similarVideo(at: indexPath.item)
-        cell.configure(with: item)
-        return cell
->>>>>>> main
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -585,18 +560,5 @@ extension DetailViewController: UICollectionViewDataSource, UICollectionViewDele
 
     func collectionView(_ collectionView: UICollectionView, canFocusItemAt indexPath: IndexPath) -> Bool {
         return true
-    }
-
-    private func presentRelatedVideoPlayer(video: RelatedVideo) {
-        let playerVC = TVPlayerViewController()
-
-        playerVC.onDismiss = { [weak self] in
-            print("Player dismissed")
-        }
-
-        if let url = URL(string: video.videoFile) {
-            playerVC.play(url: url)
-            self.present(playerVC, animated: true)
-        }
     }
 }

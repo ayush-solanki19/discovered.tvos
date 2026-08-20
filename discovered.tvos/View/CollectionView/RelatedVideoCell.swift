@@ -79,6 +79,11 @@ class RelatedVideoCell: UICollectionViewCell {
         posterImageView.setImage(from: video.ThumbImage)
     }
 
+    func configure(with show: ShowItem) {
+        titleLabel.text = show.title
+        posterImageView.setImage(from: show.imageName)
+    }
+
     override var canBecomeFocused: Bool { true }
 
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
