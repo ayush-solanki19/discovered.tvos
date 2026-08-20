@@ -86,7 +86,7 @@ class ShowCell: UICollectionViewCell {
         if item.imageName.hasPrefix("http") {
             imageView.setImage(from: item.imageName)
         } else {
-            imageView.image = UIImage(named: item.imageName) ?? UIImage(named: "hero_back")
+            imageView.image = UIImage(named: item.imageName) ?? UIImage(named: "")
         }
     }
 
@@ -118,12 +118,11 @@ class ShowCell: UICollectionViewCell {
 }
 
 extension UIImageView {
-    func setImage(from urlString: String?, placeholder: String = "hero_back", isHeroBanner: Bool = false) {
+    func setImage(from urlString: String?, placeholder: String = "", isHeroBanner: Bool = false) {
         self.image = UIImage(named: placeholder)
         
         guard let urlString = urlString, !urlString.isEmpty else { return }
         
-        // Hero banner ke liye _thumb hata kar high-res original image URL banana
         var finalUrlString = urlString
         if isHeroBanner {
             finalUrlString = urlString
