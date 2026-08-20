@@ -42,7 +42,7 @@ class SimilarShowCell: UICollectionViewCell {
     }
 
     func configure(with item: ShowItem) {
-        posterImageView.image = UIImage(named: item.imageName) ?? UIImage(named: "hero_back")
+        posterImageView.image = UIImage(named: item.imageName) ?? UIImage(named: "")
     }
 
     override var canBecomeFocused: Bool { true }
