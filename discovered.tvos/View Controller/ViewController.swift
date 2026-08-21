@@ -1,444 +1,246 @@
 import UIKit
 
-class ViewController: UIViewController {
-
-    // MARK: - ViewModel
+final class ViewController: UIViewController {
     private let viewModel = HomeViewModel()
-
-    // MARK: - Properties
-    private let sideMenuWidth: CGFloat = 350
-    private var sideMenuLeadingConstraint: NSLayoutConstraint!
-
-    // Focus Guide
-    private let upToMenuFocusGuide = UIFocusGuide()
-
-    // Views
-    private let dimView = UIView()
-    private let sideMenuView = UIView()
-    private let logoImageView = UIImageView()
-    private let sideMenuStack = UIStackView()
-
-    private let mainContainer = UIView()
-    private let scrollView = UIScrollView()
-    private let contentView = UIView()
-
-    private let menuButton = CustomHamburgerButton()
+    private let dashboardCard = UIView()
+    private let header = UIView()
     private let heroHeaderView = HeroHeaderView()
-    private let playButton = UIButton()
+    private let brandMark = UIImageView()
+    private let brandLabel = UILabel()
+    private let navigationStack = UIStackView()
+    private let playButton = UIButton(type: .system)
+    private let moreInfoButton = UIButton(type: .system)
     private let sectionTitleLabel = UILabel()
+    private let viewAllButton = UIButton(type: .system)
     private var collectionView: UICollectionView!
-    private var collectionViewHeightConstraint: NSLayoutConstraint!
-    private var isCollectionViewExpanded = false
-    private var collectionViewLayout: UICollectionViewFlowLayout!
+    private var featuredIndex = 0
+    private var heroHeightConstraint: NSLayoutConstraint!
+    private var isHeroCollapsed = false
+    private var requestedFocusTarget: UIFocusEnvironment?
+    private weak var lastTopMenuButton: UIButton?
+    private let menuToPlayFocusGuide = UIFocusGuide()
+    private let playToRailFocusGuide = UIFocusGuide()
+    private let railToPlayFocusGuide = UIFocusGuide()
 
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
-
         setupUI()
-        setupConstraints()
-        setupFocusGuides()
         bindViewModel()
-        setupScrollGestures()
-
-        sideMenuLeadingConstraint.constant = -sideMenuWidth
-        dimView.alpha = 0
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        view.bringSubviewToFront(dimView)
-        view.bringSubviewToFront(sideMenuView)
-        view.bringSubviewToFront(menuButton)
-
-        // Initial load par 0th index ka data Hero Card me set karein
-        if viewModel.numberOfShows() > 0 {
-            let firstShow = viewModel.showItem(at: 0)
-            self.heroHeaderView.updateHeroData(title: firstShow.title, imageName: firstShow.imageName)
-        }
-
-        // Focus trigger karein
-        setNeedsFocusUpdate()
-        updateFocusIfNeeded()
-    }
-
-    // MARK: - ViewModel Binding
-    private func bindViewModel() {
-        viewModel.onSideMenuSelectionChanged = { [weak self] selectedIndex in
-            guard let self = self else { return }
-            let selectedCategory = self.viewModel.sideMenuItems[selectedIndex].title
-            self.sectionTitleLabel.text = "\(selectedCategory) Videos"
-            self.closeSideMenu()
-        }
-
-        viewModel.onDataUpdated = { [weak self] in
-            guard let self = self else { return }
-            
-            // 1. Grid reload karein
-            self.collectionView.reloadData()
-
-            // 2. CollectionView ko Index 0 par scroll karein aur focus shift karein
-            DispatchQueue.main.async {
-                if self.viewModel.numberOfShows() > 0 {
-                    let firstIndexPath = IndexPath(item: 0, section: 0)
-                    self.collectionView.scrollToItem(at: firstIndexPath, at: .left, animated: false)
-                    
-                    // Top Hero Card par 0th index ka initial data set karein
-                    let firstItem = self.viewModel.showItem(at: 0)
-                    self.heroHeaderView.updateHeroData(title: firstItem.title, imageName: firstItem.imageName)
-                }
-                
-                // tvOS Focus Engine ko force update karein
-                self.setNeedsFocusUpdate()
-                self.updateFocusIfNeeded()
-            }
-        }
-
-        viewModel.onError = { errorMessage in
-            print("API Error: \(errorMessage)")
-        }
-    }
-
-    // MARK: - Setup UI
     private func setupUI() {
-        mainContainer.backgroundColor = .black
-        view.addSubview(mainContainer)
+        dashboardCard.backgroundColor = UIColor(red: 0.045, green: 0.055, blue: 0.075, alpha: 1)
+        dashboardCard.layer.cornerRadius = 34
+        dashboardCard.layer.borderWidth = 3
+        dashboardCard.layer.borderColor = UIColor.white.withAlphaComponent(0.78).cgColor
+        dashboardCard.clipsToBounds = true
+        dashboardCard.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(dashboardCard)
 
-        scrollView.showsVerticalScrollIndicator = false
-        mainContainer.addSubview(scrollView)
-        scrollView.addSubview(contentView)
+        header.translatesAutoresizingMaskIntoConstraints = false
+        dashboardCard.addSubview(header)
+        brandMark.image = UIImage(systemName: "play.fill")
+        brandMark.tintColor = .white
+        brandMark.backgroundColor = UIColor(red: 0.36, green: 0.34, blue: 0.96, alpha: 1)
+        brandMark.contentMode = .center
+        brandMark.layer.cornerRadius = 12
+        brandMark.clipsToBounds = true
+        brandMark.translatesAutoresizingMaskIntoConstraints = false
+        header.addSubview(brandMark)
+        brandLabel.text = "DiscoveredTV"
+        brandLabel.font = .systemFont(ofSize: 28, weight: .bold)
+        brandLabel.textColor = UIColor(white: 0.91, alpha: 1)
+        brandLabel.translatesAutoresizingMaskIntoConstraints = false
+        header.addSubview(brandLabel)
 
-        contentView.addSubview(heroHeaderView)
+        navigationStack.axis = .horizontal
+        navigationStack.spacing = 2
+        navigationStack.alignment = .center
+        navigationStack.translatesAutoresizingMaskIntoConstraints = false
+        header.addSubview(navigationStack)
+        ["SPOTLIGHT", "MUSIC", "MOVIES", "TELEVISION"].enumerated().forEach { index, title in
+            let button = UIButton(type: .system)
+            var config = UIButton.Configuration.plain()
+            config.title = title
+            config.image = index == 0 ? UIImage(systemName: "house.fill") : nil
+            config.imagePadding = 70
+            config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: index == 0 ? 18 : 7, bottom: 8, trailing: index == 0 ? 18 : 7)
+            button.configuration = config
+            button.titleLabel?.font = .systemFont(ofSize: 10, weight: .medium)
+             
+            button.tintColor = UIColor(white: 0.8, alpha: 1)
+            button.tag = index
+            button.addTarget(self, action: #selector(navigationItemSelected(_:)), for: .primaryActionTriggered)
+            if index == 0 { button.configuration?.baseBackgroundColor = UIColor(red: 0.36, green: 0.34, blue: 0.96, alpha: 1); button.configuration?.baseForegroundColor = .white; button.layer.cornerRadius = 18 }
+            navigationStack.addArrangedSubview(button)
+        }
 
-        var playConfig = UIButton.Configuration.filled()
-        playConfig.baseBackgroundColor = .red
-        playConfig.baseForegroundColor = .white
-        playButton.configuration = playConfig
-        playButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        let searchButton = makeHeaderButton(title: "SEARCH", image: "magnifyingglass")
+        let profileButton = makeHeaderButton(title: nil, image: "person.crop.circle")
+        header.addSubview(searchButton); header.addSubview(profileButton)
+
+        heroHeaderView.translatesAutoresizingMaskIntoConstraints = false
+        heroHeaderView.layer.borderWidth = 2
+        heroHeaderView.layer.borderColor = UIColor.white.cgColor
+        dashboardCard.addSubview(heroHeaderView)
+        configureActionButton(playButton, title: "Play", image: "play.fill", background: UIColor(red: 0.74, green: 0.73, blue: 1, alpha: 1), foreground: UIColor(red: 0.05, green: 0.05, blue: 0.24, alpha: 1))
         playButton.addTarget(self, action: #selector(playButtonDidTap), for: .primaryActionTriggered)
-        contentView.addSubview(playButton)
-        sectionTitleLabel.text = "Critically Acclaimed TV Shows"
-        sectionTitleLabel.font = .systemFont(ofSize: 20, weight: .bold)
-        sectionTitleLabel.textColor = .white
-        contentView.addSubview(sectionTitleLabel)
-        
-        collectionViewLayout = UICollectionViewFlowLayout()
-        collectionViewLayout.scrollDirection = .horizontal
-        collectionViewLayout.itemSize = CGSize(width: 245, height: 435)
-        collectionViewLayout.minimumLineSpacing = 16
-        collectionViewLayout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        dashboardCard.addSubview(playButton)
+        configureActionButton(moreInfoButton, title: "Details", image: "info.circle.fill", background: UIColor(red: 0.20, green: 0.21, blue: 0.25, alpha: 1), foreground: .white)
+        moreInfoButton.addTarget(self, action: #selector(detailsButtonDidTap), for: .primaryActionTriggered)
+        dashboardCard.addSubview(moreInfoButton)
 
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+        sectionTitleLabel.text = "Continue Watching"
+        sectionTitleLabel.font = .systemFont(ofSize: 28, weight: .bold)
+        sectionTitleLabel.textColor = UIColor(white: 0.9, alpha: 1)
+        sectionTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        dashboardCard.addSubview(sectionTitleLabel)
+        viewAllButton.setTitle("View All  ›", for: .normal)
+        viewAllButton.setTitleColor(UIColor(white: 0.82, alpha: 1), for: .normal)
+        viewAllButton.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
+        viewAllButton.translatesAutoresizingMaskIntoConstraints = false
+        dashboardCard.addSubview(viewAllButton)
+
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        // Portrait artwork is easier to scan on television and keeps the
+        // content rail at the standard 9:16 streaming-poster ratio.
+        layout.itemSize = CGSize(width: 180, height: 249)
+        layout.minimumLineSpacing = 18
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.clipsToBounds = false
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 64)
+        collectionView.dataSource = self; collectionView.delegate = self
         collectionView.register(ShowCell.self, forCellWithReuseIdentifier: ShowCell.reuseIdentifier)
-        contentView.addSubview(collectionView)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        dashboardCard.addSubview(collectionView)
 
-        menuButton.addTarget(self, action: #selector(toggleSideMenu), for: .primaryActionTriggered)
-        view.addSubview(menuButton)
-
-        dimView.backgroundColor = UIColor.black.withAlphaComponent(0.65)
-        dimView.alpha = 0
-        let tap = UITapGestureRecognizer(target: self, action: #selector(closeSideMenu))
-        dimView.addGestureRecognizer(tap)
-        view.addSubview(dimView)
-
-        // Side Menu setup
-        sideMenuView.backgroundColor = UIColor(white: 0.06, alpha: 1.0)
-        view.addSubview(sideMenuView)
-
-        logoImageView.image = UIImage(named: "Logo Dark")
-        logoImageView.contentMode = .scaleAspectFit
-        sideMenuView.addSubview(logoImageView)
-
-        sideMenuStack.axis = .vertical
-        sideMenuStack.spacing = 8
-        sideMenuStack.alignment = .fill
-        sideMenuView.addSubview(sideMenuStack)
-
-        for item in viewModel.sideMenuItems {
-            let btn = SideMenuCapsuleButton()
-            btn.configure(with: item)
-            btn.addTarget(self, action: #selector(sideItemTapped(_:)), for: .primaryActionTriggered)
-            btn.translatesAutoresizingMaskIntoConstraints = false
-            btn.heightAnchor.constraint(equalToConstant: 48).isActive = true
-            
-            // Login button (id == 5) se theek pehle extra 35pt space
-            if item.id == 5 {
-                sideMenuStack.setCustomSpacing(35, after: sideMenuStack.arrangedSubviews.last!)
-            }
-            
-            sideMenuStack.addArrangedSubview(btn)
-        }
-    }
-
-    // MARK: - Constraints
-    private func setupConstraints() {
-        [mainContainer, scrollView, contentView,
-         heroHeaderView, playButton, sectionTitleLabel, collectionView,
-         menuButton, dimView, sideMenuView, logoImageView, sideMenuStack
-        ].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
-
-        sideMenuLeadingConstraint = sideMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -sideMenuWidth)
-        
+        heroHeightConstraint = heroHeaderView.heightAnchor.constraint(equalToConstant: 832)
         NSLayoutConstraint.activate([
-            // Main & Scroll
-            mainContainer.topAnchor.constraint(equalTo: view.topAnchor),
-            mainContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mainContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mainContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-
-            scrollView.topAnchor.constraint(equalTo: mainContainer.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: mainContainer.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: mainContainer.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: mainContainer.bottomAnchor),
-
-            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-
-            // Top Menu Button
-            menuButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            menuButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            menuButton.widthAnchor.constraint(equalToConstant: 48),
-            menuButton.heightAnchor.constraint(equalToConstant: 48),
-
-            // Hero Header
-            heroHeaderView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            heroHeaderView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            heroHeaderView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            heroHeaderView.heightAnchor.constraint(equalToConstant: 680),
-
-            playButton.centerXAnchor.constraint(equalTo: heroHeaderView.centerXAnchor),
-            playButton.centerYAnchor.constraint(equalTo: heroHeaderView.centerYAnchor),
-            playButton.widthAnchor.constraint(equalToConstant: 80),
-            playButton.heightAnchor.constraint(equalToConstant: 80),
-
-            // Section Label & Collection View
-            sectionTitleLabel.topAnchor.constraint(equalTo: heroHeaderView.bottomAnchor, constant: 28),
-            sectionTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-
-            collectionView.topAnchor.constraint(equalTo: sectionTitleLabel.bottomAnchor, constant: 14),
-            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
-
-            // Dim Overlay
-            dimView.topAnchor.constraint(equalTo: view.topAnchor),
-            dimView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            dimView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            dimView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-
-            // Side Drawer
-            sideMenuLeadingConstraint,
-            sideMenuView.topAnchor.constraint(equalTo: view.topAnchor),
-            sideMenuView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            sideMenuView.widthAnchor.constraint(equalToConstant: sideMenuWidth),
-
-            // Logo Constraints (Top safe area se 30pt niche)
-            logoImageView.topAnchor.constraint(equalTo: sideMenuView.safeAreaLayoutGuide.topAnchor, constant: 35),
-            logoImageView.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor), // Centre me lane ke liye
-            logoImageView.widthAnchor.constraint(equalToConstant: 200),
-            logoImageView.heightAnchor.constraint(equalToConstant: 60),
-            
-            // Side Menu Stack (Logo ke theek 50pt niche)
-            sideMenuStack.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 50),
-            sideMenuStack.leadingAnchor.constraint(equalTo: sideMenuView.leadingAnchor, constant: 16),
-            sideMenuStack.trailingAnchor.constraint(equalTo: sideMenuView.trailingAnchor, constant: -16)
+            dashboardCard.topAnchor.constraint(equalTo: view.topAnchor, constant: 2), dashboardCard.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 2), dashboardCard.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -2), dashboardCard.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2),
+            header.topAnchor.constraint(equalTo: dashboardCard.topAnchor, constant: 18), header.leadingAnchor.constraint(equalTo: dashboardCard.leadingAnchor, constant: 64), header.trailingAnchor.constraint(equalTo: dashboardCard.trailingAnchor, constant: -64), header.heightAnchor.constraint(equalToConstant: 48),
+            brandMark.leadingAnchor.constraint(equalTo: header.leadingAnchor), brandMark.centerYAnchor.constraint(equalTo: header.centerYAnchor), brandMark.widthAnchor.constraint(equalToConstant: 36), brandMark.heightAnchor.constraint(equalToConstant: 36),
+            brandLabel.leadingAnchor.constraint(equalTo: brandMark.trailingAnchor, constant: 10), brandLabel.centerYAnchor.constraint(equalTo: header.centerYAnchor),
+            navigationStack.centerXAnchor.constraint(equalTo: header.centerXAnchor, constant: 45), navigationStack.centerYAnchor.constraint(equalTo: header.centerYAnchor),
+            profileButton.trailingAnchor.constraint(equalTo: header.trailingAnchor), profileButton.centerYAnchor.constraint(equalTo: header.centerYAnchor), profileButton.widthAnchor.constraint(equalToConstant: 38),
+            searchButton.trailingAnchor.constraint(equalTo: profileButton.leadingAnchor, constant: -30), searchButton.centerYAnchor.constraint(equalTo: header.centerYAnchor),
+            // One shared page grid keeps every dashboard element aligned.
+            heroHeaderView.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 20), heroHeaderView.leadingAnchor.constraint(equalTo: dashboardCard.leadingAnchor, constant: 64), heroHeaderView.trailingAnchor.constraint(equalTo: dashboardCard.trailingAnchor, constant: -64), heroHeightConstraint,
+            playButton.leadingAnchor.constraint(equalTo: heroHeaderView.leadingAnchor, constant: 48), playButton.bottomAnchor.constraint(equalTo: heroHeaderView.bottomAnchor, constant: -36), playButton.heightAnchor.constraint(equalToConstant: 48),
+            moreInfoButton.leadingAnchor.constraint(equalTo: playButton.trailingAnchor, constant: 12), moreInfoButton.centerYAnchor.constraint(equalTo: playButton.centerYAnchor), moreInfoButton.heightAnchor.constraint(equalToConstant: 48),
+            sectionTitleLabel.topAnchor.constraint(equalTo: heroHeaderView.bottomAnchor, constant: 16), sectionTitleLabel.leadingAnchor.constraint(equalTo: heroHeaderView.leadingAnchor),
+            viewAllButton.trailingAnchor.constraint(equalTo: heroHeaderView.trailingAnchor, constant: -4), viewAllButton.centerYAnchor.constraint(equalTo: sectionTitleLabel.centerYAnchor),
+            collectionView.topAnchor.constraint(equalTo: sectionTitleLabel.bottomAnchor, constant: 8), collectionView.leadingAnchor.constraint(equalTo: heroHeaderView.leadingAnchor), collectionView.trailingAnchor.constraint(equalTo: heroHeaderView.trailingAnchor), collectionView.bottomAnchor.constraint(equalTo: dashboardCard.bottomAnchor, constant: -8)
         ])
 
-        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: 43.5)
-        collectionViewHeightConstraint.isActive = true
-    }
-
-    // MARK: - Focus Guides
-    private func setupFocusGuides() {
-        view.addLayoutGuide(upToMenuFocusGuide)
-
+        // Explicit vertical focus routing for the Siri Remote.
+        dashboardCard.addLayoutGuide(menuToPlayFocusGuide)
+        dashboardCard.addLayoutGuide(playToRailFocusGuide)
+        dashboardCard.addLayoutGuide(railToPlayFocusGuide)
         NSLayoutConstraint.activate([
-            upToMenuFocusGuide.topAnchor.constraint(equalTo: menuButton.topAnchor),
-            upToMenuFocusGuide.bottomAnchor.constraint(equalTo: sectionTitleLabel.topAnchor),
-            upToMenuFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            upToMenuFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            menuToPlayFocusGuide.topAnchor.constraint(equalTo: header.bottomAnchor), menuToPlayFocusGuide.bottomAnchor.constraint(equalTo: playButton.topAnchor), menuToPlayFocusGuide.centerXAnchor.constraint(equalTo: playButton.centerXAnchor), menuToPlayFocusGuide.widthAnchor.constraint(equalTo: heroHeaderView.widthAnchor),
+            playToRailFocusGuide.topAnchor.constraint(equalTo: playButton.bottomAnchor), playToRailFocusGuide.bottomAnchor.constraint(equalTo: sectionTitleLabel.topAnchor), playToRailFocusGuide.leadingAnchor.constraint(equalTo: heroHeaderView.leadingAnchor), playToRailFocusGuide.trailingAnchor.constraint(equalTo: heroHeaderView.trailingAnchor),
+            railToPlayFocusGuide.topAnchor.constraint(equalTo: sectionTitleLabel.bottomAnchor), railToPlayFocusGuide.bottomAnchor.constraint(equalTo: collectionView.topAnchor), railToPlayFocusGuide.leadingAnchor.constraint(equalTo: heroHeaderView.leadingAnchor), railToPlayFocusGuide.trailingAnchor.constraint(equalTo: heroHeaderView.trailingAnchor)
         ])
-        upToMenuFocusGuide.preferredFocusEnvironments = [menuButton]
+        menuToPlayFocusGuide.preferredFocusEnvironments = [playButton]
+        playToRailFocusGuide.preferredFocusEnvironments = [collectionView]
+        railToPlayFocusGuide.preferredFocusEnvironments = [playButton]
     }
 
-    // MARK: - Actions
-    @objc private func toggleSideMenu() {
-        viewModel.isSideMenuOpen ? closeSideMenu() : openSideMenu()
+    private func makeHeaderButton(title: String?, image: String) -> UIButton {
+        let button = UIButton(type: .system); var config = UIButton.Configuration.plain(); config.title = title; config.image = UIImage(systemName: image); config.imagePadding = 8; button.configuration = config; button.tintColor = UIColor(white: 0.77, alpha: 1); button.translatesAutoresizingMaskIntoConstraints = false; return button
     }
-
-    private func refreshSideMenuAppearance() {
-        for case let btn as SideMenuCapsuleButton in sideMenuStack.arrangedSubviews {
-            btn.isItemSelected = (btn.tag == viewModel.selectedSideMenuIndex)
-        }
+    private func configureActionButton(_ button: UIButton, title: String, image: String, background: UIColor, foreground: UIColor) {
+        var config = UIButton.Configuration.filled(); config.title = title; config.image = UIImage(systemName: image); config.imagePadding = 8; config.baseBackgroundColor = background; config.baseForegroundColor = foreground; config.cornerStyle = .fixed; config.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16); button.configuration = config; button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold); button.layer.cornerRadius = 8; button.clipsToBounds = true; button.layer.borderWidth = 1; button.layer.borderColor = UIColor.white.withAlphaComponent(0.34).cgColor; button.translatesAutoresizingMaskIntoConstraints = false
     }
-
-    // openSideMenu() me isko call karein:
-    private func openSideMenu() {
-        viewModel.isSideMenuOpen = true
-        sideMenuLeadingConstraint.constant = 0
-        refreshSideMenuAppearance()
-
-        reduceThumbnailSize()
-
-        view.bringSubviewToFront(dimView)
-        view.bringSubviewToFront(sideMenuView)
-
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut) {
-            self.dimView.alpha = 1
-            self.view.layoutIfNeeded()
-        } completion: { _ in
-            self.setNeedsFocusUpdate()
-            self.updateFocusIfNeeded()
-        }
+    private func bindViewModel() {
+        viewModel.onDataUpdated = { [weak self] in guard let self else { return }; self.collectionView.reloadData(); if self.viewModel.numberOfShows() > 0 { let show = self.viewModel.showItem(at: 0); self.heroHeaderView.updateHeroData(title: show.title, imageName: show.imageName, videoUrl: show.videoUrl) } }
     }
-
-    @objc private func closeSideMenu() {
-        viewModel.isSideMenuOpen = false
-        sideMenuLeadingConstraint.constant = -sideMenuWidth
-
-        restoreThumbnailSize()
-
-        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
-            self.dimView.alpha = 0
-            self.view.layoutIfNeeded()
-        } completion: { _ in
-            self.setNeedsFocusUpdate()
-            self.updateFocusIfNeeded()
-        }
-    }
-
-    @objc private func sideItemTapped(_ sender: UIButton) {
+    @objc private func navigationItemSelected(_ sender: UIButton) {
+        // Keeps the top navigation directly actionable with the Siri Remote.
         viewModel.selectSideMenu(at: sender.tag)
+        sectionTitleLabel.text = ["Continue Watching", "Music", "Movies", "Television"][sender.tag]
     }
-
-    @objc private func playButtonDidTap() {
-        presentVideoPlayer()
+    @objc private func playButtonDidTap() { presentVideoPlayer() }
+    @objc private func detailsButtonDidTap() {
+        guard viewModel.numberOfShows() > featuredIndex else { return }
+        let item = viewModel.showItem(at: featuredIndex)
+        let detail = DetailViewController(show: item, allShows: viewModel.shows)
+        if let nav = navigationController { nav.pushViewController(detail, animated: true) }
+        else { present(detail, animated: true) }
     }
-
-    private func presentVideoPlayer() {
-        let playerVC = TVPlayerViewController()
-
-        playerVC.onDismiss = { [weak self] in
-            print("Player dismissed")
-        }
-
-        let hlsURL = URL(string: "https://serverguys-s3-trans-cdn.discovered.tv/aud_270/videos/6a34e55d55beb/6a34e55d55beb.m3u8")!
-        playerVC.play(url: hlsURL)
-
-        self.present(playerVC, animated: true)
-    }
-
-    // MARK: - Preferred Focus
+    private func presentVideoPlayer() { let player = TVPlayerViewController(); player.play(url: URL(string: "https://serverguys-s3-trans-cdn.discovered.tv/aud_270/videos/6a34e55d55beb/6a34e55d55beb.m3u8")!); present(player, animated: true) }
     override var preferredFocusEnvironments: [UIFocusEnvironment] {
-        if viewModel.isSideMenuOpen {
-            if let selectedBtn = sideMenuStack.arrangedSubviews.first(where: { ($0 as? UIButton)?.tag == viewModel.selectedSideMenuIndex }) {
-                return [selectedBtn]
-            }
-            return sideMenuStack.arrangedSubviews
-        }
-
+        if let requestedFocusTarget { return [requestedFocusTarget] }
+        if isHeroCollapsed { return [collectionView] }
         return [playButton]
     }
 
-    private func setupScrollGestures() {
-        // No longer needed - using pressesBegan instead
-    }
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        let isDown = presses.contains { $0.type == .downArrow }
+        let isUp = presses.contains { $0.type == .upArrow }
+        let isTopMenuFocused = navigationStack.arrangedSubviews.contains { $0.isFocused }
 
-    override func shouldUpdateFocus(in context: UIFocusUpdateContext) -> Bool {
-        if !isCollectionViewExpanded && playButton.isFocused && context.nextFocusedView != playButton {
-            scrollToCollectionView()
-            return false
+        if isDown && isTopMenuFocused {
+            lastTopMenuButton = navigationStack.arrangedSubviews.first(where: { $0.isFocused }) as? UIButton
+            requestFocus(playButton)
+            return
         }
-        return true
-    }
-
-    private func scrollToCollectionView() {
-        if !isCollectionViewExpanded {
-            isCollectionViewExpanded = true
-            collectionViewHeightConstraint.constant = 435
-
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: {
-                self.view.layoutIfNeeded()
-            }) { _ in
-                self.setNeedsFocusUpdate()
-                self.updateFocusIfNeeded()
+        if !isHeroCollapsed,
+           (playButton.isFocused || moreInfoButton.isFocused),
+           isDown {
+            setHeroCollapsed(true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.34) {
+                self.requestFocus(self.collectionView)
             }
+            return
         }
-    }
-
-    private func reduceThumbnailSize() {
-        let smallSize = CGSize(width: 61.25, height: 108.75)
-        collectionViewLayout.itemSize = smallSize
-        collectionView.reloadData()
-    }
-
-    private func restoreThumbnailSize() {
-        let normalSize = CGSize(width: 245, height: 435)
-        collectionViewLayout.itemSize = normalSize
-        collectionView.reloadData()
-    }
-}
-
-// MARK: - CollectionView DataSource & Delegate
-extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfShows()
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShowCell.reuseIdentifier, for: indexPath) as! ShowCell
-        let show = viewModel.showItem(at: indexPath.item)
-        cell.configure(with: show)
-        cell.onPlayButtonTapped = { [weak self] in
-            self?.presentVideoPlayer()
+        if isUp && (playButton.isFocused || moreInfoButton.isFocused) {
+            requestFocus(lastTopMenuButton ?? navigationStack.arrangedSubviews.first!)
+            return
         }
-        return cell
-    }
-
-    func collectionView(_ collectionView: UICollectionView, canFocusItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-
-    // 1. FOCUS CHANGE HONE PAR (Remote navigation par upar card change hoga)
-    func collectionView(_ collectionView: UICollectionView, didUpdateFocusIn context: UICollectionViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
-        if let nextIndexPath = context.nextFocusedIndexPath {
-            let selectedShow = viewModel.showItem(at: nextIndexPath.item)
-            self.heroHeaderView.updateHeroData(
-                title: selectedShow.title,
-                imageName: selectedShow.imageName,
-                videoUrl: selectedShow.videoUrl
-            )
+        if isUp && collectionView.visibleCells.contains(where: { $0.isFocused }) {
+            setHeroCollapsed(false)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.34) {
+                self.requestFocus(self.playButton)
+            }
+            return
         }
+        super.pressesBegan(presses, with: event)
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedShow = viewModel.showItem(at: indexPath.item)
-        
-        // Selected video + Saare shows Detail screen ko pass karein
-        let detailVC = DetailViewController(show: selectedShow, allShows: viewModel.shows)
-        
-        if let nav = self.navigationController {
-            nav.pushViewController(detailVC, animated: true)
+    private func requestFocus(_ target: UIFocusEnvironment) {
+        requestedFocusTarget = target
+        setNeedsFocusUpdate()
+        updateFocusIfNeeded()
+        DispatchQueue.main.async { self.requestedFocusTarget = nil }
+    }
+
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        super.didUpdateFocus(in: context, with: coordinator)
+        guard let next = context.nextFocusedView else { return }
+        if next.isDescendant(of: collectionView) {
+            setHeroCollapsed(true)
         } else {
-            detailVC.modalPresentationStyle = .fullScreen
-            present(detailVC, animated: true)
+            setHeroCollapsed(false)
+        }
+    }
+
+    private func setHeroCollapsed(_ collapsed: Bool) {
+        guard collapsed != isHeroCollapsed else { return }
+        isHeroCollapsed = collapsed
+        heroHeightConstraint.constant = collapsed ? 666 : 832
+        UIView.animate(withDuration: 0.32, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState]) {
+            self.view.layoutIfNeeded()
         }
     }
 }
 
-extension ViewController {
-    func indexPathForPreferredFocusedView(in collectionView: UICollectionView) -> IndexPath? {
-        // Hamesha pehle item (Index: 0) par focus rakhega
-        return IndexPath(item: 0, section: 0)
-    }
+extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int { viewModel.numberOfShows() }
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell { let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShowCell.reuseIdentifier, for: indexPath) as! ShowCell; cell.configure(with: viewModel.showItem(at: indexPath.item)); cell.onPlayButtonTapped = { [weak self] in self?.presentVideoPlayer() }; return cell }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) { let item = viewModel.showItem(at: indexPath.item); let detail = DetailViewController(show: item, allShows: viewModel.shows); if let nav = navigationController { nav.pushViewController(detail, animated: true) } else { present(detail, animated: true) } }
+    func collectionView(_ collectionView: UICollectionView, didUpdateFocusIn context: UICollectionViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) { if let indexPath = context.nextFocusedIndexPath { featuredIndex = indexPath.item; let item = viewModel.showItem(at: indexPath.item); heroHeaderView.updateHeroData(title: item.title, imageName: item.imageName, videoUrl: item.videoUrl) } }
 }
-						

@@ -87,6 +87,7 @@ class DetailViewController: UIViewController {
         view.bringSubviewToFront(dimView)
         view.bringSubviewToFront(sideMenuView)
         view.bringSubviewToFront(menuButton)
+        
 
         setNeedsFocusUpdate()
         updateFocusIfNeeded()

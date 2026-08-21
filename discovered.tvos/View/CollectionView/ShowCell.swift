@@ -28,7 +28,7 @@ class ShowCell: UICollectionViewCell {
     }
 
     private func setupLayout() {
-        contentView.layer.cornerRadius = 12
+        contentView.layer.cornerRadius = 10
         contentView.clipsToBounds = true
         contentView.backgroundColor = UIColor(white: 0.14, alpha: 1)
 
@@ -37,10 +37,11 @@ class ShowCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(imageView)
 
-        titleLabel.font = .systemFont(ofSize: 13, weight: .bold)
+        titleLabel.font = .systemFont(ofSize: 13, weight: .semibold)
         titleLabel.textColor = .white
         titleLabel.numberOfLines = 1
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.backgroundColor = UIColor.black.withAlphaComponent(0.46)
         contentView.addSubview(titleLabel)
 
         overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
@@ -62,11 +63,11 @@ class ShowCell: UICollectionViewCell {
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            imageView.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -10),
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
 
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 14),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -14),
-            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
             titleLabel.heightAnchor.constraint(equalToConstant: 18),
 
             overlayView.topAnchor.constraint(equalTo: imageView.topAnchor),
@@ -76,8 +77,8 @@ class ShowCell: UICollectionViewCell {
 
             playButtonOverlay.centerXAnchor.constraint(equalTo: imageView.centerXAnchor),
             playButtonOverlay.centerYAnchor.constraint(equalTo: imageView.centerYAnchor),
-            playButtonOverlay.widthAnchor.constraint(equalToConstant: 70),
-            playButtonOverlay.heightAnchor.constraint(equalToConstant: 70)
+            playButtonOverlay.widthAnchor.constraint(equalToConstant: 56),
+            playButtonOverlay.heightAnchor.constraint(equalToConstant: 56)
         ])
     }
 
@@ -97,7 +98,7 @@ class ShowCell: UICollectionViewCell {
 
         coordinator.addCoordinatedAnimations({
             if self.isFocused {
-                self.contentView.layer.borderWidth = 3.5
+                self.contentView.layer.borderWidth = 3
                 self.contentView.layer.borderColor = UIColor.white.cgColor
                 self.transform = CGAffineTransform(scaleX: 1.04, y: 1.04)
                 self.overlayView.alpha = 1

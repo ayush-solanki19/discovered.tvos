@@ -1,206 +1,105 @@
 import UIKit
 import AVFoundation
 
-class HeroHeaderView: UIView {
+final class HeroHeaderView: UIView {
     private let heroImageView = UIImageView()
-    private let heroGradient = CAGradientLayer()
+    private let gradient = CAGradientLayer()
+    private let featuredBadge = UILabel()
     private let titleLabel = UILabel()
     private let metaLabel = UILabel()
     private let descriptionLabel = UILabel()
-    private let badgeStack = UIStackView()
-
-    // MARK: - Video Layer Properties
     private var player: AVPlayer?
     private var playerLayer: AVPlayerLayer?
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupLayout()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupLayout()
-    }
+    override init(frame: CGRect) { super.init(frame: frame); setupLayout() }
+    required init?(coder: NSCoder) { super.init(coder: coder); setupLayout() }
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        gradient.frame = bounds
         playerLayer?.frame = bounds
-        heroGradient.frame = bounds
     }
 
     private func setupLayout() {
         clipsToBounds = true
-        backgroundColor = .black
+        layer.cornerRadius = 28
+        backgroundColor = UIColor(red: 0.07, green: 0.08, blue: 0.11, alpha: 1)
 
-        // 1. Poster Thumbnail Image
         heroImageView.contentMode = .scaleAspectFill
         heroImageView.clipsToBounds = true
         heroImageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(heroImageView)
 
-        // 2. Video Player Layer
         playerLayer = AVPlayerLayer()
         playerLayer?.videoGravity = .resizeAspectFill
-        if let pLayer = playerLayer {
-            layer.addSublayer(pLayer)
-        }
+        if let playerLayer { layer.insertSublayer(playerLayer, above: heroImageView.layer) }
 
-        // 3. Gradient Overlay
-        heroGradient.colors = [
-            UIColor.clear.cgColor,
-            UIColor.black.withAlphaComponent(0.3).cgColor,
-            UIColor.black.withAlphaComponent(0.8).cgColor,
-            UIColor.black.cgColor
-        ]
-        heroGradient.locations = [0.0, 0.4, 0.7, 1.0]
-        layer.addSublayer(heroGradient)
+        gradient.colors = [UIColor.black.withAlphaComponent(0.66).cgColor, UIColor.black.withAlphaComponent(0.20).cgColor, UIColor.black.withAlphaComponent(0.08).cgColor, UIColor.black.withAlphaComponent(0.82).cgColor]
+        gradient.locations = [0, 0.38, 0.63, 1]
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1, y: 0.55)
+        layer.addSublayer(gradient)
 
-        // 4. Content Labels
-        titleLabel.numberOfLines = 2
-        titleLabel.font = UIFont(name: "Georgia-Italic", size: 42) ?? .italicSystemFont(ofSize: 42)
+        featuredBadge.text = "fgh"
+        featuredBadge.textAlignment = .center
+        featuredBadge.font = .systemFont(ofSize: 12, weight: .bold)
+        featuredBadge.textColor = UIColor.white.withAlphaComponent(0.9)
+        featuredBadge.backgroundColor = UIColor.white.withAlphaComponent(0.13)
+        featuredBadge.layer.cornerRadius = 11
+        featuredBadge.clipsToBounds = true
+        featuredBadge.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(featuredBadge)
+
+        titleLabel.font = .systemFont(ofSize: 48, weight: .bold)
         titleLabel.textColor = .white
+        titleLabel.numberOfLines = 2
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(titleLabel)
-
-        metaLabel.font = .systemFont(ofSize: 13, weight: .medium)
-        metaLabel.textColor = UIColor.white.withAlphaComponent(0.85)
+        metaLabel.font = .systemFont(ofSize: 15, weight: .medium)
+        metaLabel.textColor = UIColor.white.withAlphaComponent(0.8)
         metaLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(metaLabel)
-
-        descriptionLabel.numberOfLines = 0
-        descriptionLabel.font = .systemFont(ofSize: 14)
-        descriptionLabel.textColor = UIColor.white.withAlphaComponent(0.9)
+        descriptionLabel.font = .systemFont(ofSize: 17, weight: .regular)
+        descriptionLabel.textColor = UIColor.white.withAlphaComponent(0.88)
+        descriptionLabel.numberOfLines = 2
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(descriptionLabel)
 
-        badgeStack.axis = .horizontal
-        badgeStack.spacing = 8
-        badgeStack.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(badgeStack)
-
         NSLayoutConstraint.activate([
-            heroImageView.topAnchor.constraint(equalTo: topAnchor),
-            heroImageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            heroImageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            heroImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24),
-            titleLabel.bottomAnchor.constraint(equalTo: metaLabel.topAnchor, constant: -10),
-
-            metaLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
-            metaLabel.bottomAnchor.constraint(equalTo: descriptionLabel.topAnchor, constant: -10),
-
-            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
-            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24),
-            descriptionLabel.bottomAnchor.constraint(equalTo: badgeStack.topAnchor, constant: -14),
-
-            badgeStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
-            badgeStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30)
+            heroImageView.topAnchor.constraint(equalTo: topAnchor), heroImageView.leadingAnchor.constraint(equalTo: leadingAnchor), heroImageView.trailingAnchor.constraint(equalTo: trailingAnchor), heroImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            featuredBadge.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 52), featuredBadge.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -22), featuredBadge.widthAnchor.constraint(equalToConstant: 92), featuredBadge.heightAnchor.constraint(equalToConstant: 30),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 48), titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -48), titleLabel.bottomAnchor.constraint(equalTo: metaLabel.topAnchor, constant: -16),
+            metaLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor), metaLabel.bottomAnchor.constraint(equalTo: descriptionLabel.topAnchor, constant: -20),
+            // Reserve the lower portion of the panel for the external action row.
+            descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor), descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -48), descriptionLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -142)
         ])
     }
 
-    // MARK: - Video Playback
-    func playVideo(urlString: String?) {
-        guard let urlString = urlString, let url = URL(string: urlString) else {
-            stopVideo()
-            return
-        }
-
-        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: player?.currentItem)
-
-        let playerItem = AVPlayerItem(url: url)
-        
-        if player == nil {
-            player = AVPlayer(playerItem: playerItem)
-            playerLayer?.player = player
-        } else {
-            player?.replaceCurrentItem(with: playerItem)
-        }
-
-        // Video ko Mute karein
-        player?.isMuted = true
-        player?.volume = 0.0
-        
-        player?.play()
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(playerItemDidReachEnd(notification:)),
-            name: .AVPlayerItemDidPlayToEndTime,
-            object: playerItem
-        )
-    }
-
-    @objc private func playerItemDidReachEnd(notification: Notification) {
-        player?.seek(to: .zero)
-        player?.play()
-    }
-
-    func stopVideo() {
-        player?.pause()
-    }
-
-    // MARK: - Update Hero Data
     func updateHeroData(title: String, imageName: String, videoUrl: String? = nil) {
-        UIView.transition(with: self.titleLabel, duration: 0.3, options: .transitionCrossDissolve, animations: {
-            self.titleLabel.text = title
-        }, completion: nil)
-
-        if imageName.hasPrefix("http") {
-            self.heroImageView.setImage(from: imageName, isHeroBanner: true)
-        } else {
-            self.heroImageView.image = UIImage(named: imageName) ?? UIImage(named: "")
-        }
-
+        titleLabel.text = title
+        metaLabel.text = "Drama  •  Romance  •  2026  •  8 Episodes   U/A 13+"
+        descriptionLabel.text = "A heartwarming tale of love, dreams and unexpected journeys that change everything."
+        setImage(imageName)
         playVideo(urlString: videoUrl)
     }
 
     func configure(with hero: HeroContent) {
-        titleLabel.text = hero.title
-        metaLabel.text = hero.metadata
-        descriptionLabel.text = hero.description
-
-        badgeStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        for badge in hero.badges {
-            let color: UIColor = badge.colorName == "red" ? .red : .darkGray
-            badgeStack.addArrangedSubview(makeBadge(badge.text, color))
-        }
-
-        if hero.backgroundImageName.hasPrefix("http") {
-            heroImageView.setImage(from: hero.backgroundImageName, isHeroBanner: true)
-        } else {
-            heroImageView.image = UIImage(named: hero.backgroundImageName) ?? UIImage(named: "")
-        }
-
-        playVideo(urlString: hero.videoUrl)
+        titleLabel.text = hero.title; metaLabel.text = hero.metadata; descriptionLabel.text = hero.description
+        featuredBadge.text = hero.badges.first?.text ?? "FEATURED"
+        setImage(hero.backgroundImageName); playVideo(urlString: hero.videoUrl)
     }
 
-    private func makeBadge(_ text: String, _ color: UIColor) -> UIView {
-        let container = UIView()
-        container.backgroundColor = color.withAlphaComponent(0.85)
-        container.layer.cornerRadius = 4
-
-        let label = UILabel()
-        label.text = text
-        label.font = .systemFont(ofSize: 11, weight: .bold)
-        label.textColor = .white
-        label.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(label)
-
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: container.topAnchor, constant: 4),
-            label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -4),
-            label.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 8),
-            label.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8)
-        ])
-        return container
+    private func setImage(_ name: String) {
+        if name.hasPrefix("http") { heroImageView.setImage(from: name, isHeroBanner: true) }
+        else { heroImageView.image = UIImage(named: name) }
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-        player?.pause()
-        player = nil
+    private func playVideo(urlString: String?) {
+        guard let urlString, let url = URL(string: urlString) else { player?.pause(); return }
+        let item = AVPlayerItem(url: url)
+        if player == nil { player = AVPlayer(playerItem: item); playerLayer?.player = player }
+        else { player?.replaceCurrentItem(with: item) }
+        player?.isMuted = true
     }
+    deinit { player?.pause() }
 }
