@@ -489,15 +489,28 @@ class DetailViewController: UIViewController {
         presentVideoPlayer()
     }
 
-    private func presentVideoPlayer() {
+    private func presentVideoPlayer(for show: ShowItem? = nil) {
+        let videoDetail = viewModel.videoDetail
+
+        guard let videoUrlString = show?.videoUrl ?? videoDetail.videoUrl,
+              let videoUrl = URL(string: videoUrlString) else {
+            return
+        }
+
         let playerVC = TVPlayerViewController()
 
         playerVC.onDismiss = { [weak self] in
             print("Player dismissed")
         }
 
-        let hlsURL = URL(string: "https://serverguys-s3-trans-cdn.discovered.tv/aud_270/videos/6a34e55d55beb/6a34e55d55beb.m3u8")!
-        playerVC.play(url: hlsURL)
+        let title = show?.title ?? videoDetail.title
+        let episodeInfo = show?.year ?? videoDetail.year
+
+        playerVC.play(
+            url: videoUrl,
+            title: title,
+            episodeInfo: episodeInfo
+        )
 
         self.present(playerVC, animated: true)
     }
@@ -538,7 +551,7 @@ extension DetailViewController: UICollectionViewDataSource, UICollectionViewDele
             let item = viewModel.similarVideo(at: indexPath.item)
             cell.configure(with: item)
             cell.onPlayButtonTapped = { [weak self] in
-                self?.presentVideoPlayer()
+                self?.presentVideoPlayer(for: item)
             }
             return cell
         } else if collectionView == relatedVideosCollectionView {
@@ -546,7 +559,7 @@ extension DetailViewController: UICollectionViewDataSource, UICollectionViewDele
             let video = viewModel.similarVideo(at: indexPath.item)
             cell.configure(with: video)
             cell.onPlayButtonTapped = { [weak self] in
-                self?.presentVideoPlayer()
+                self?.presentVideoPlayer(for: video)
             }
             return cell
         }

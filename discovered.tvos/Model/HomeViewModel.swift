@@ -1,5 +1,10 @@
 import Foundation
 
+struct VideoSlider {
+    let type: String?
+    let videos: [ShowItem]
+}
+
 class HomeViewModel {
     static let shared = HomeViewModel()
 
@@ -9,6 +14,7 @@ class HomeViewModel {
 
     private(set) var heroData: HeroContent!
     private(set) var sideMenuItems: [SideMenuItem] = []
+    private(set) var videoSliders: [VideoSlider] = []
     private(set) var shows: [ShowItem] = []
 
     var isSideMenuOpen: Bool = false
@@ -72,23 +78,38 @@ class HomeViewModel {
                         )
                     }
 
-                    // 2. Collection View Shows List
+                    // 2. All Sliders with Type as Heading
+                    var sliders: [VideoSlider] = []
                     var allVideos: [ShowItem] = []
+
                     if let homeSections = response.homeVideos {
                         for section in homeSections {
                             if let slider = section.slider {
+                                var videos: [ShowItem] = []
                                 for video in slider {
                                     let item = ShowItem(
                                         title: video.title ?? "Untitled",
                                         imageName: video.thumbImage ?? "",
-                                        videoUrl: video.videoFile ?? video.previewFile
+                                        videoUrl: video.videoFile ?? video.previewFile,
+                                        description: video.description,
+                                        duration: video.videoDuration,
+                                        genre: video.genreName,
+                                        userName: video.userName
                                     )
+                                    videos.append(item)
                                     allVideos.append(item)
                                 }
+
+                                let videoSlider = VideoSlider(
+                                    type: section.type ?? section.sliderType,
+                                    videos: videos
+                                )
+                                sliders.append(videoSlider)
                             }
                         }
                     }
 
+                    self?.videoSliders = sliders
                     self?.shows = allVideos
                     self?.onDataUpdated?()
 
@@ -101,5 +122,7 @@ class HomeViewModel {
 
     func numberOfShows() -> Int { shows.count }
     func showItem(at index: Int) -> ShowItem { shows[index] }
+    func numberOfSliders() -> Int { videoSliders.count }
+    func slider(at index: Int) -> VideoSlider? { index < videoSliders.count ? videoSliders[index] : nil }
     func selectSideMenu(at index: Int) { selectedSideMenuIndex = index }
 }

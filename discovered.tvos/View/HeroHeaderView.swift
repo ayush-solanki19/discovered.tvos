@@ -68,16 +68,16 @@ final class HeroHeaderView: UIView {
         NSLayoutConstraint.activate([
             heroImageView.topAnchor.constraint(equalTo: topAnchor), heroImageView.leadingAnchor.constraint(equalTo: leadingAnchor), heroImageView.trailingAnchor.constraint(equalTo: trailingAnchor), heroImageView.bottomAnchor.constraint(equalTo: bottomAnchor),
             featuredBadge.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 52), featuredBadge.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -22), featuredBadge.widthAnchor.constraint(equalToConstant: 92), featuredBadge.heightAnchor.constraint(equalToConstant: 30),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 48), titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -48), titleLabel.bottomAnchor.constraint(equalTo: metaLabel.topAnchor, constant: -16),
-            metaLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor), metaLabel.bottomAnchor.constraint(equalTo: descriptionLabel.topAnchor, constant: -20),
-            // Reserve the lower portion of the panel for the external action row.
-            descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor), descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -48), descriptionLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -142)
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 48), titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -48), titleLabel.bottomAnchor.constraint(equalTo: descriptionLabel.topAnchor, constant: -16),
+            descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor), descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -48), descriptionLabel.bottomAnchor.constraint(equalTo: metaLabel.topAnchor, constant: -20),
+            // Genre label aligned to bottom
+            metaLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor), metaLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -48)
         ])
     }
 
-    func updateHeroData(title: String, imageName: String, videoUrl: String? = nil) {
+    func updateHeroData(title: String, imageName: String, videoUrl: String? = nil, genre: String? = nil) {
         titleLabel.text = title
-        metaLabel.text = "Drama  •  Romance  •  2026  •  8 Episodes   U/A 13+"
+        metaLabel.text = genre ?? "Drama"
         descriptionLabel.text = "A heartwarming tale of love, dreams and unexpected journeys that change everything."
         setImage(imageName)
         playVideo(urlString: videoUrl)
