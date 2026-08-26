@@ -7,6 +7,7 @@ class DetailViewController: UIViewController {
     // MARK: - Properties
     private let viewModel: DetailViewModel
     private let homeViewModel = HomeViewModel.shared
+    private let suggestionAPIService = SuggestionAPIService.shared
 
     private let sideMenuWidth: CGFloat = 350
     private var sideMenuLeadingConstraint: NSLayoutConstraint!
@@ -26,9 +27,12 @@ class DetailViewController: UIViewController {
     private let contentView = UIView()
 
     // Header & Banner
-    private let menuButton = CustomHamburgerButton()
+    private let backButton = UIButton(type: .system)
     private let bannerImageView = UIImageView()
     private let bannerGradient = CAGradientLayer()
+
+    // Similar Content Data
+    private var similarVideos: [RelatedVideo] = []
 
     // Content Labels
     private let titleLabel = UILabel()
@@ -77,6 +81,7 @@ class DetailViewController: UIViewController {
         populateData()
         bindSideMenu()
         bindViewModel()
+        fetchSimilarContent()
 
         sideMenuLeadingConstraint.constant = -sideMenuWidth
         dimView.alpha = 0
@@ -86,8 +91,7 @@ class DetailViewController: UIViewController {
         super.viewDidAppear(animated)
         view.bringSubviewToFront(dimView)
         view.bringSubviewToFront(sideMenuView)
-        view.bringSubviewToFront(menuButton)
-        
+        view.bringSubviewToFront(backButton)
 
         setNeedsFocusUpdate()
         updateFocusIfNeeded()
@@ -106,7 +110,20 @@ class DetailViewController: UIViewController {
     }
 
     private func bindViewModel() {
-        // Similar videos are loaded directly from videoDetail.similarVideos
+    }
+
+    // MARK: - Fetch Similar Content
+    private func fetchSimilarContent() {
+        let userId = viewModel.videoDetail.starring
+
+        suggestionAPIService.fetchRelatedVideos(userId: userId, start: 0, limit: 20) { [weak self] videos in
+            DispatchQueue.main.async {
+                if let videos = videos {
+                    self?.similarVideos = videos
+                    self?.similarCollectionView.reloadData()
+                }
+            }
+        }
     }
 
     // MARK: - Setup UI
@@ -127,6 +144,14 @@ class DetailViewController: UIViewController {
         ]
         bannerGradient.locations = [0.0, 0.55, 1.0]
         bannerImageView.layer.addSublayer(bannerGradient)
+
+        // Back Button
+        var backConfig = UIButton.Configuration.plain()
+        backConfig.image = UIImage(systemName: "chevron.left")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 24, weight: .semibold))
+        backConfig.baseForegroundColor = .white
+        backButton.configuration = backConfig
+        backButton.addTarget(self, action: #selector(didTapBack), for: .primaryActionTriggered)
+        view.addSubview(backButton)
 
         // Title
         titleLabel.numberOfLines = 2
@@ -245,10 +270,6 @@ class DetailViewController: UIViewController {
         relatedVideosCollectionView.register(RelatedVideoCell.self, forCellWithReuseIdentifier: RelatedVideoCell.reuseIdentifier)
         contentView.addSubview(relatedVideosCollectionView)
 
-        // Hamburger Menu Button
-        menuButton.addTarget(self, action: #selector(toggleSideMenu), for: .primaryActionTriggered)
-        view.addSubview(menuButton)
-
         // Dim Overlay
         dimView.backgroundColor = UIColor.black.withAlphaComponent(0.65)
         dimView.alpha = 0
@@ -322,7 +343,7 @@ class DetailViewController: UIViewController {
 
     // MARK: - Constraints
     private func setupConstraints() {
-        [scrollView, contentView, bannerImageView, menuButton,
+        [scrollView, contentView, bannerImageView, backButton,
          titleLabel, metaStackView, descriptionLabel, starringLabel,
          actionButtonStack, playButton, visitProfileButton,
          similarTitleLabel, similarCollectionView,
@@ -344,10 +365,10 @@ class DetailViewController: UIViewController {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
 
-            menuButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            menuButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            menuButton.widthAnchor.constraint(equalToConstant: 48),
-            menuButton.heightAnchor.constraint(equalToConstant: 48),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            backButton.widthAnchor.constraint(equalToConstant: 48),
+            backButton.heightAnchor.constraint(equalToConstant: 48),
 
             bannerImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             bannerImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -426,7 +447,7 @@ class DetailViewController: UIViewController {
             actionToSimilarFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             actionToSimilarFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
-            backToActionFocusGuide.topAnchor.constraint(equalTo: menuButton.bottomAnchor),
+            backToActionFocusGuide.topAnchor.constraint(equalTo: backButton.bottomAnchor),
             backToActionFocusGuide.bottomAnchor.constraint(equalTo: actionButtonStack.topAnchor),
             backToActionFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             backToActionFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor)
@@ -437,8 +458,8 @@ class DetailViewController: UIViewController {
     }
 
     // MARK: - Actions
-    @objc private func toggleSideMenu() {
-        homeViewModel.isSideMenuOpen ? closeSideMenu() : openSideMenu()
+    @objc private func didTapBack() {
+        navigationController?.popViewController(animated: true)
     }
 
     private func openSideMenu() {
@@ -538,7 +559,7 @@ class DetailViewController: UIViewController {
 extension DetailViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == similarCollectionView {
-            return viewModel.numberOfSimilarVideos()
+            return similarVideos.count
         } else if collectionView == relatedVideosCollectionView {
             return viewModel.numberOfSimilarVideos()
         }
@@ -548,10 +569,10 @@ extension DetailViewController: UICollectionViewDataSource, UICollectionViewDele
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == similarCollectionView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SimilarShowCell.reuseIdentifier, for: indexPath) as! SimilarShowCell
-            let item = viewModel.similarVideo(at: indexPath.item)
-            cell.configure(with: item)
+            let video = similarVideos[indexPath.item]
+            cell.configure(with: video)
             cell.onPlayButtonTapped = { [weak self] in
-                self?.presentVideoPlayer(for: item)
+                self?.playSimilarVideo(video)
             }
             return cell
         } else if collectionView == relatedVideosCollectionView {
@@ -567,12 +588,49 @@ extension DetailViewController: UICollectionViewDataSource, UICollectionViewDele
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedItem = viewModel.similarVideo(at: indexPath.item)
-        let nextDetailVC = DetailViewController(show: selectedItem, allShows: viewModel.videoDetail.similarVideos)
-        navigationController?.pushViewController(nextDetailVC, animated: true)
+        if collectionView == similarCollectionView {
+            let selectedVideo = similarVideos[indexPath.item]
+            playVideo(from: selectedVideo)
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, canFocusItemAt indexPath: IndexPath) -> Bool {
         return true
+    }
+
+    private func playSimilarVideo(_ video: RelatedVideo) {
+        guard let videoUrl = URL(string: video.videoFile) else { return }
+
+        let playerVC = TVPlayerViewController()
+
+        playerVC.onDismiss = { [weak self] in
+            print("Player dismissed")
+        }
+
+        playerVC.play(
+            url: videoUrl,
+            title: video.title,
+            episodeInfo: video.user_name
+        )
+
+        self.present(playerVC, animated: true)
+    }
+
+    private func playVideo(from video: RelatedVideo) {
+        guard let videoUrl = URL(string: video.videoFile) else { return }
+
+        let playerVC = TVPlayerViewController()
+
+        playerVC.onDismiss = { [weak self] in
+            print("Player dismissed")
+        }
+
+        playerVC.play(
+            url: videoUrl,
+            title: video.title,
+            episodeInfo: video.user_name
+        )
+
+        self.present(playerVC, animated: true)
     }
 }

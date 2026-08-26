@@ -74,6 +74,10 @@ class SimilarShowCell: UICollectionViewCell {
         posterImageView.image = UIImage(named: item.imageName) ?? UIImage(named: "")
     }
 
+    func configure(with video: RelatedVideo) {
+        posterImageView.setImage(from: video.ThumbImage)
+    }
+
     override var canBecomeFocused: Bool { true }
 
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
