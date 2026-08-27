@@ -66,6 +66,8 @@ class HomeViewModel {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
+                    print("✅ API Response Success - status: \(response.status ?? 0)")
+
                     // 1. Cover Video (Hero Banner)
                     if let cover = response.coverVideo?.first {
                         self?.heroData = HeroContent(
@@ -83,8 +85,11 @@ class HomeViewModel {
                     var allVideos: [ShowItem] = []
 
                     if let homeSections = response.homeVideos {
-                        for section in homeSections {
+                        print("📺 Found \(homeSections.count) sections")
+                        for (idx, section) in homeSections.enumerated() {
+                            print("Section \(idx): type=\(section.type ?? "nil"), sliderType=\(section.sliderType ?? "nil")")
                             if let slider = section.slider {
+                                print("  - slider has \(slider.count) videos")
                                 var videos: [ShowItem] = []
                                 for video in slider {
                                     let item = ShowItem(
@@ -109,6 +114,7 @@ class HomeViewModel {
                         }
                     }
 
+                    print("📊 Total sliders: \(sliders.count), Total videos: \(allVideos.count)")
                     self?.videoSliders = sliders
                     self?.shows = allVideos
                     self?.onDataUpdated?()

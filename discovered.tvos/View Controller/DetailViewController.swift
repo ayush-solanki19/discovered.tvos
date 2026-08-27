@@ -15,6 +15,7 @@ class DetailViewController: UIViewController {
     // Focus Guides
     private let actionToSimilarFocusGuide = UIFocusGuide()
     private let backToActionFocusGuide = UIFocusGuide()
+    private let similarToPlayFocusGuide = UIFocusGuide()
 
     // Side Drawer Views
     private let dimView = UIView()
@@ -129,6 +130,7 @@ class DetailViewController: UIViewController {
     // MARK: - Setup UI
     private func setupUI() {
         scrollView.showsVerticalScrollIndicator = false
+        scrollView.delaysContentTouches = false
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
 
@@ -236,8 +238,8 @@ class DetailViewController: UIViewController {
 
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 350, height: 260)
-        layout.minimumLineSpacing = 30
+        layout.itemSize = CGSize(width: 280, height: 290)
+        layout.minimumLineSpacing = 20
         layout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
 
         similarCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -397,13 +399,13 @@ class DetailViewController: UIViewController {
             playButton.widthAnchor.constraint(equalToConstant: 130),
             visitProfileButton.widthAnchor.constraint(equalToConstant: 160),
 
-            similarTitleLabel.topAnchor.constraint(equalTo: bannerImageView.bottomAnchor, constant: 20),
+            similarTitleLabel.topAnchor.constraint(equalTo: actionButtonStack.bottomAnchor, constant: 28),
             similarTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
 
             similarCollectionView.topAnchor.constraint(equalTo: similarTitleLabel.bottomAnchor, constant: 14),
             similarCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             similarCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            similarCollectionView.heightAnchor.constraint(equalToConstant: 280),
+            similarCollectionView.heightAnchor.constraint(equalToConstant: 310),
 
             // Related Videos
             relatedTitleLabel.topAnchor.constraint(equalTo: similarCollectionView.bottomAnchor, constant: 40),
@@ -440,6 +442,7 @@ class DetailViewController: UIViewController {
     private func setupFocusGuides() {
         view.addLayoutGuide(actionToSimilarFocusGuide)
         view.addLayoutGuide(backToActionFocusGuide)
+        view.addLayoutGuide(similarToPlayFocusGuide)
 
         NSLayoutConstraint.activate([
             actionToSimilarFocusGuide.topAnchor.constraint(equalTo: actionButtonStack.bottomAnchor),
@@ -450,11 +453,21 @@ class DetailViewController: UIViewController {
             backToActionFocusGuide.topAnchor.constraint(equalTo: backButton.bottomAnchor),
             backToActionFocusGuide.bottomAnchor.constraint(equalTo: actionButtonStack.topAnchor),
             backToActionFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backToActionFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            backToActionFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+            similarToPlayFocusGuide.topAnchor.constraint(equalTo: view.topAnchor),
+            similarToPlayFocusGuide.bottomAnchor.constraint(equalTo: similarCollectionView.topAnchor),
+            similarToPlayFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            similarToPlayFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
 
         actionToSimilarFocusGuide.preferredFocusEnvironments = [similarCollectionView]
         backToActionFocusGuide.preferredFocusEnvironments = [playButton]
+        similarToPlayFocusGuide.preferredFocusEnvironments = [playButton]
+    }
+
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        super.didUpdateFocus(in: context, with: coordinator)
     }
 
     // MARK: - Actions
@@ -553,6 +566,16 @@ class DetailViewController: UIViewController {
         }
         return [playButton]
     }
+
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        for press in presses {
+            if press.type == .menu {
+                didTapBack()
+                return
+            }
+        }
+        super.pressesBegan(presses, with: event)
+    }
 }
 
 // MARK: - CollectionView Delegate & DataSource
@@ -598,6 +621,18 @@ extension DetailViewController: UICollectionViewDataSource, UICollectionViewDele
         return true
     }
 
+    func collectionView(_ collectionView: UICollectionView, shouldUpdateFocusIn context: UICollectionViewFocusUpdateContext) -> Bool {
+        return true
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didUpdateFocusIn context: UICollectionViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        if let indexPath = context.nextFocusedIndexPath {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+            }
+        }
+    }
+
     private func playSimilarVideo(_ video: RelatedVideo) {
         guard let videoUrl = URL(string: video.videoFile) else { return }
 
@@ -633,4 +668,5 @@ extension DetailViewController: UICollectionViewDataSource, UICollectionViewDele
 
         self.present(playerVC, animated: true)
     }
+
 }

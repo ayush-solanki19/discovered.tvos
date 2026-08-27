@@ -1,0 +1,35 @@
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/App\ Delegate/AppDelegate.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/APIConfig.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/APIConstants.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/HomeViewModel.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/NetworkManager.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/RelatedVideoModel.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/ShowModel.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/SideMenuItem.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/SpotlightResponseModel.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/VideoDetailDisplayModel.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/EndOfVideoCardView.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/PlayerTopBarView.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/PremiumPlayerColors.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/PremiumPlayerControlsView.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/PremiumPlayerPresenter.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/PremiumPlayerView.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/RecommendationCardView.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/RecommendationsGridView.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/RelatedVideoGridCell.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/SuggestionAPIService.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/TVPlayerEngine.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/TVPlayerState.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/TVPlayerViewController.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CollectionView/RelatedVideoCell.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CollectionView/ShowCell.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CollectionView/SimilarShowCell.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CustomHamburgerButton.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CustomPlayButton.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CustomProfileButton.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/View/HeroHeaderView.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/View/SideMenuCapsuleButton.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/View\ Controller/DetailViewController.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/View\ Controller/ViewController.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/discovered.tvos/View\ Model/DetailViewModel.swift
+/Users/vivektiwari/Desktop/ios\ workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/DerivedSources/GeneratedAssetSymbols.swift

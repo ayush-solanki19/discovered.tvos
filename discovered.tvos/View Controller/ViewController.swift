@@ -15,6 +15,7 @@ final class ViewController: UIViewController {
     private let playButton = UIButton(type: .system)
     private let moreInfoButton = UIButton(type: .system)
 
+    private let scrollView = UIScrollView()
     private let sliderContainerView = UIStackView()
     private var collectionViews: [UICollectionView] = []
 
@@ -26,6 +27,8 @@ final class ViewController: UIViewController {
 
     private var requestedFocusTarget: UIFocusEnvironment?
     private weak var lastTopMenuButton: UIButton?
+    private var activeSliderIndex: Int?
+    private var isRailFocusTransitionInProgress = false
 
     private let menuToPlayFocusGuide = UIFocusGuide()
     private let playToRailFocusGuide = UIFocusGuide()
@@ -278,6 +281,13 @@ final class ViewController: UIViewController {
         // dashboardCard.addSubview(moreInfoButton)
 
 
+        // MARK: - Scroll View
+
+        scrollView.backgroundColor = .clear
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        dashboardCard.addSubview(scrollView)
+
         // MARK: - Slider Container
 
         sliderContainerView.axis = .vertical
@@ -285,8 +295,7 @@ final class ViewController: UIViewController {
         sliderContainerView.distribution = .fill
         sliderContainerView.alignment = .fill
         sliderContainerView.translatesAutoresizingMaskIntoConstraints = false
-
-        dashboardCard.addSubview(sliderContainerView)
+        scrollView.addSubview(sliderContainerView)
 
 
         // MARK: - Hero Height
@@ -463,24 +472,48 @@ final class ViewController: UIViewController {
             // ),
 
 
-            // MARK: Slider Container
+            // MARK: Scroll View
 
-            sliderContainerView.topAnchor.constraint(
+            scrollView.topAnchor.constraint(
                 equalTo: heroHeaderView.bottomAnchor,
                 constant: 24
             ),
 
+            scrollView.leadingAnchor.constraint(
+                equalTo: dashboardCard.leadingAnchor,
+                constant: 64
+            ),
+
+            scrollView.trailingAnchor.constraint(
+                equalTo: dashboardCard.trailingAnchor,
+                constant: -64
+            ),
+
+            scrollView.bottomAnchor.constraint(
+                equalTo: dashboardCard.bottomAnchor,
+                constant: -8
+            ),
+
+            // MARK: Slider Container
+
+            sliderContainerView.topAnchor.constraint(
+                equalTo: scrollView.topAnchor
+            ),
+
             sliderContainerView.leadingAnchor.constraint(
-                equalTo: heroHeaderView.leadingAnchor
+                equalTo: scrollView.leadingAnchor
             ),
 
             sliderContainerView.trailingAnchor.constraint(
-                equalTo: heroHeaderView.trailingAnchor
+                equalTo: scrollView.trailingAnchor
             ),
 
             sliderContainerView.bottomAnchor.constraint(
-                equalTo: dashboardCard.bottomAnchor,
-                constant: -8
+                equalTo: scrollView.bottomAnchor
+            ),
+
+            sliderContainerView.widthAnchor.constraint(
+                equalTo: scrollView.widthAnchor
             )
         ])
 
@@ -509,7 +542,7 @@ final class ViewController: UIViewController {
                 equalTo: heroHeaderView.bottomAnchor
             ),
             playToRailFocusGuide.bottomAnchor.constraint(
-                equalTo: sliderContainerView.topAnchor
+                equalTo: scrollView.topAnchor
             ),
             playToRailFocusGuide.leadingAnchor.constraint(
                 equalTo: heroHeaderView.leadingAnchor
@@ -519,10 +552,10 @@ final class ViewController: UIViewController {
             ),
 
             railToPlayFocusGuide.topAnchor.constraint(
-                equalTo: sliderContainerView.topAnchor
+                equalTo: scrollView.topAnchor
             ),
             railToPlayFocusGuide.bottomAnchor.constraint(
-                equalTo: sliderContainerView.bottomAnchor
+                equalTo: scrollView.bottomAnchor
             ),
             railToPlayFocusGuide.leadingAnchor.constraint(
                 equalTo: heroHeaderView.leadingAnchor
@@ -666,11 +699,14 @@ final class ViewController: UIViewController {
     }
 
     private func setupSliders() {
+        print("setupSliders called - numberOfSliders: \(viewModel.numberOfSliders())")
         sliderContainerView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         collectionViews.removeAll()
+        activeSliderIndex = nil
 
         for sliderIndex in 0..<viewModel.numberOfSliders() {
             guard let slider = viewModel.slider(at: sliderIndex) else { continue }
+            print("Creating slider \(sliderIndex): type=\(slider.type ?? "nil"), videos=\(slider.videos.count)")
 
             let sliderStack = UIStackView()
             sliderStack.axis = .vertical
@@ -693,7 +729,9 @@ final class ViewController: UIViewController {
             sliderStack.addArrangedSubview(collectionView)
 
             NSLayoutConstraint.activate([
-                collectionView.heightAnchor.constraint(equalToConstant: 230)
+                // Leave room for the focused cell's scale animation so an entire
+                // video thumbnail remains visible above and below the rail bounds.
+                collectionView.heightAnchor.constraint(equalToConstant: 240)
             ])
 
             sliderContainerView.addArrangedSubview(sliderStack)
@@ -714,7 +752,8 @@ final class ViewController: UIViewController {
 
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 64)
+        collectionView.isScrollEnabled = true
+        collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 64)
         collectionView.tag = tag
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -817,44 +856,126 @@ final class ViewController: UIViewController {
         return [navigationStack.arrangedSubviews.first ?? header]
     }
 
+    override func shouldUpdateFocus(in context: UIFocusUpdateContext) -> Bool {
+        guard !isRailFocusTransitionInProgress,
+              let currentFocus = context.previouslyFocusedView,
+              let sourceCollectionView = collectionViews.first(where: {
+                  currentFocus.isDescendant(of: $0)
+              }) else {
+            return super.shouldUpdateFocus(in: context)
+        }
+
+        switch context.focusHeading {
+        case .down where sourceCollectionView.tag < collectionViews.count - 1:
+            let destinationCollectionView = collectionViews[sourceCollectionView.tag + 1]
+            DispatchQueue.main.async { [weak self] in
+                self?.moveFocus(from: sourceCollectionView, to: destinationCollectionView)
+            }
+            return false
+
+        case .up where sourceCollectionView.tag > 0:
+            let destinationCollectionView = collectionViews[sourceCollectionView.tag - 1]
+            DispatchQueue.main.async { [weak self] in
+                self?.moveFocus(from: sourceCollectionView, to: destinationCollectionView)
+            }
+            return false
+
+        case .up:
+            activeSliderIndex = nil
+            setHeroCollapsed(false)
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.requestFocus(
+                    self.lastTopMenuButton ?? self.navigationStack.arrangedSubviews.first ?? self.header
+                )
+            }
+            return false
+
+        default:
+            return super.shouldUpdateFocus(in: context)
+        }
+    }
+
 
     override func pressesBegan(
         _ presses: Set<UIPress>,
         with event: UIPressesEvent?
     ) {
         let isDown = presses.contains { $0.type == .downArrow }
-        let isUp = presses.contains { $0.type == .upArrow }
-
         let isTopMenuFocused = navigationStack.arrangedSubviews.contains { $0.isFocused }
 
         if isDown && isTopMenuFocused {
             lastTopMenuButton = navigationStack.arrangedSubviews.first(where: { $0.isFocused }) as? UIButton
             setHeroCollapsed(true)
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.34) {
-                if let firstCollectionView = self.collectionViews.first {
-                    self.requestFocus(firstCollectionView)
-                }
-            }
-            return
-        }
-
-        let isAnyCollectionViewFocused = collectionViews.contains {
-            $0.visibleCells.contains { $0.isFocused }
-        }
-
-        if isUp && isAnyCollectionViewFocused {
-            setHeroCollapsed(false)
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.34) {
-                self.requestFocus(
-                    self.lastTopMenuButton ?? self.navigationStack.arrangedSubviews.first!
-                )
+            if let firstCollectionView = collectionViews.first {
+                activeSliderIndex = 0
+                focusOnCell(at: IndexPath(item: 0, section: 0), in: firstCollectionView)
             }
             return
         }
 
         super.pressesBegan(presses, with: event)
+    }
+
+    private func moveFocus(from sourceCollectionView: UICollectionView, to destinationCollectionView: UICollectionView) {
+        // A D-pad press can generate repeated events. Ignore them until this
+        // focus update completes, preventing rail 1 -> rail 3 jumps.
+        guard !isRailFocusTransitionInProgress else { return }
+        isRailFocusTransitionInProgress = true
+        activeSliderIndex = destinationCollectionView.tag
+
+        let focusedCell = sourceCollectionView.visibleCells.first(where: { $0.isFocused })
+        let sourceIndexPath = focusedCell.flatMap { sourceCollectionView.indexPath(for: $0) }
+        let item = min(sourceIndexPath?.item ?? 0, max(0, destinationCollectionView.numberOfItems(inSection: 0) - 1))
+        let destinationIndexPath = IndexPath(item: item, section: 0)
+
+        scrollToCollectionView(destinationCollectionView, animated: true)
+        focusOnCell(at: destinationIndexPath, in: destinationCollectionView)
+
+        // Keep the transition locked for the duration of the scroll animation.
+        // That makes every directional press advance exactly one slider index.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
+            self?.isRailFocusTransitionInProgress = false
+        }
+    }
+
+    private func focusOnCell(at indexPath: IndexPath, in collectionView: UICollectionView) {
+        collectionView.layoutIfNeeded()
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+        collectionView.layoutIfNeeded()
+
+        guard let cell = collectionView.cellForItem(at: indexPath) else {
+            isRailFocusTransitionInProgress = false
+            return
+        }
+        requestFocus(cell)
+    }
+
+    private func scrollToCollectionView(_ collectionView: UICollectionView, animated: Bool) {
+        guard let parentStackView = collectionView.superview as? UIStackView else { return }
+        guard let containerStackView = parentStackView.superview as? UIStackView else { return }
+
+        containerStackView.layoutIfNeeded()
+
+        let collectionViewFrameInContainer = collectionView.convert(
+            collectionView.bounds,
+            to: scrollView
+        )
+
+        let scrollViewHeight = scrollView.bounds.height
+        let contentOffset = scrollView.contentOffset
+
+        // Include the focused-cell scale and collection view insets in the
+        // visibility target, avoiding clipped video thumbnails.
+        let targetY = collectionViewFrameInContainer.origin.y - 16
+        let maximumY = max(0, scrollView.contentSize.height - scrollView.bounds.height)
+
+        if targetY < contentOffset.y {
+            scrollView.setContentOffset(CGPoint(x: 0, y: min(maximumY, max(0, targetY))), animated: animated)
+        } else if targetY + collectionViewFrameInContainer.height > contentOffset.y + scrollViewHeight {
+            let newY = targetY + collectionViewFrameInContainer.height + 32 - scrollViewHeight
+            scrollView.setContentOffset(CGPoint(x: 0, y: min(maximumY, max(0, newY))), animated: animated)
+        }
     }
 
 
@@ -889,6 +1010,7 @@ final class ViewController: UIViewController {
         } else {
             setHeroCollapsed(false)
         }
+
     }
 
 
@@ -987,6 +1109,9 @@ extension ViewController:
         if let indexPath = context.nextFocusedIndexPath {
             guard let slider = viewModel.slider(at: collectionView.tag) else { return }
 
+            // Keep navigation based on the rail's data index, not the visual
+            // position while the parent scroll view is still animating.
+            activeSliderIndex = collectionView.tag
             featuredIndex = indexPath.item
             let item = slider.videos[indexPath.item]
             selectedShow = item

@@ -13,6 +13,7 @@ struct PremiumPlayerView: View {
     @State private var showControls = true
     @State private var showSidebar = false
     @State private var controlsHideTimer: Timer?
+    @State private var countdownTimer: Timer?
     @State private var currentTime: String = "0:00"
     @State private var totalTime: String = "0:00"
     @State private var remainingTime: String = "0:00"
@@ -20,6 +21,9 @@ struct PremiumPlayerView: View {
     @State private var showEndOfVideo = false
     @State private var endOfVideoCountdown: Int = 12
     @State private var playerEngine = TVPlayerEngine()
+    // TVPlayerEngine deliberately holds its delegate weakly. Keep this bridge alive
+    // for the lifetime of the SwiftUI player so progress callbacks are delivered.
+    @State private var playerDelegate: PlayerEngineDelegate?
     @State private var playerState: TVPlayerState = .idle
     @State private var suggestions: [VideoRecommendation] = []
     @State private var isLoadingSuggestions = false
@@ -33,6 +37,7 @@ struct PremiumPlayerView: View {
         case videoArea
         case controls
         case sidebar
+        case endOfVideoDialog
     }
 
     let title: String
@@ -187,6 +192,7 @@ struct PremiumPlayerView: View {
                                         showEndOfVideo = false
                                     }
                                 )
+                                .focused($focusedElement, equals: .endOfVideoDialog)
                             }
 
                             Spacer()
@@ -198,6 +204,13 @@ struct PremiumPlayerView: View {
                         insertion: .opacity.combined(with: .move(edge: .bottom)),
                         removal: .opacity
                     ))
+                }
+                .onChange(of: showEndOfVideo) { oldValue, newValue in
+                    if newValue {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            focusedElement = .endOfVideoDialog
+                        }
+                    }
                 }
             }
         }
@@ -223,6 +236,7 @@ struct PremiumPlayerView: View {
         }
         .onDisappear {
             controlsHideTimer?.invalidate()
+            countdownTimer?.invalidate()
             playerEngine.release()
         }
     }
@@ -255,7 +269,7 @@ struct PremiumPlayerView: View {
     }
 
     private func setupPlayer() {
-        playerEngine.delegate = PlayerEngineDelegate(onStateChange: { state in
+        let delegate = PlayerEngineDelegate(onStateChange: { state in
             playerState = state
 
             // Handle video end
@@ -263,23 +277,33 @@ struct PremiumPlayerView: View {
                 handleVideoEnded()
             }
         }, onTimeChange: { time in
-            currentTime = formatTime(time)
-            let duration = playerEngine.duration
-            totalTime = formatTime(duration)
-            let remaining = duration - time
-            remainingTime = "-\(formatTime(remaining))"
-            progress = duration > 0 ? time / duration : 0
+            DispatchQueue.main.async {
+                currentTime = formatTime(time)
+                let duration = playerEngine.duration
+                totalTime = formatTime(duration)
+                let remaining = duration - time
+                remainingTime = "-\(formatTime(remaining))"
+                progress = duration > 0 ? time / duration : 0
 
-            // Check if video is almost ended (within 3 seconds)
-            if duration > 0 && (duration - time) < 3 && (duration - time) > 0 && isPlaying {
-                if !showEndOfVideo && nextVideoInQueue == nil {
-                    setNextVideoInQueue()
-                }
-                if nextVideoInQueue != nil && !showEndOfVideo {
-                    showEndOfVideo = true
+                // Check if video is almost ended (within 3 seconds)
+                if duration > 0 && (duration - time) < 3 && (duration - time) > 0 && isPlaying {
+                    if !showEndOfVideo && nextVideoInQueue == nil {
+                        setNextVideoInQueue()
+                    }
+                    if nextVideoInQueue != nil && !showEndOfVideo {
+                        showEndOfVideo = true
+                    }
                 }
             }
+        }, onDurationChange: { duration in
+            DispatchQueue.main.async {
+                totalTime = formatTime(duration)
+                remainingTime = "-\(formatTime(max(duration - playerEngine.currentTime, 0)))"
+                progress = duration > 0 ? min(max(playerEngine.currentTime / duration, 0), 1) : 0
+            }
         })
+        playerDelegate = delegate
+        playerEngine.delegate = delegate
 
         if let url = videoURL {
             playerEngine.load(url: url)
@@ -320,6 +344,17 @@ struct PremiumPlayerView: View {
     }
 
     private func playNextVideo(_ video: VideoRecommendation) {
+        countdownTimer?.invalidate()
+        countdownTimer = nil
+
+        guard let videoURLString = video.videoURL, let url = URL(string: videoURLString) else {
+            return
+        }
+
+        playerEngine.load(url: url)
+        playerEngine.play()
+        isPlaying = true
+
         onPlayNext?(video)
     }
 
@@ -328,6 +363,29 @@ struct PremiumPlayerView: View {
         setNextVideoInQueue()
         if let nextVideo = nextVideoInQueue {
             showEndOfVideo = true
+            startCountdownTimer()
+        }
+    }
+
+    private func startCountdownTimer() {
+        countdownTimer?.invalidate()
+        endOfVideoCountdown = 12
+
+        countdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            DispatchQueue.main.async {
+                if self.endOfVideoCountdown > 0 {
+                    self.endOfVideoCountdown -= 1
+                } else {
+                    self.countdownTimer?.invalidate()
+                    self.countdownTimer = nil
+                    if let nextVideo = self.nextVideoInQueue {
+                        self.playNextVideo(nextVideo)
+                        withAnimation {
+                            self.showEndOfVideo = false
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -361,10 +419,16 @@ private func formatDuration(_ duration: AnyCodable) -> String {
 class PlayerEngineDelegate: TVPlayerEngineDelegate {
     let onStateChange: (TVPlayerState) -> Void
     let onTimeChange: (TimeInterval) -> Void
+    let onDurationChange: (TimeInterval) -> Void
 
-    init(onStateChange: @escaping (TVPlayerState) -> Void, onTimeChange: @escaping (TimeInterval) -> Void) {
+    init(
+        onStateChange: @escaping (TVPlayerState) -> Void,
+        onTimeChange: @escaping (TimeInterval) -> Void,
+        onDurationChange: @escaping (TimeInterval) -> Void
+    ) {
         self.onStateChange = onStateChange
         self.onTimeChange = onTimeChange
+        self.onDurationChange = onDurationChange
     }
 
     func playerEngine(_ engine: TVPlayerEngine, stateDidChange newState: TVPlayerState) {
@@ -375,7 +439,9 @@ class PlayerEngineDelegate: TVPlayerEngineDelegate {
         onTimeChange(time)
     }
 
-    func playerEngine(_ engine: TVPlayerEngine, durationDidChange duration: TimeInterval) {}
+    func playerEngine(_ engine: TVPlayerEngine, durationDidChange duration: TimeInterval) {
+        onDurationChange(duration)
+    }
 
     func playerEngine(_ engine: TVPlayerEngine, bufferingRangeDidChange range: CMTimeRange) {}
 }

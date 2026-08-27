@@ -32,7 +32,7 @@ class ShowCell: UICollectionViewCell {
         contentView.clipsToBounds = true
         contentView.backgroundColor = UIColor(white: 0.14, alpha: 1)
 
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(imageView)

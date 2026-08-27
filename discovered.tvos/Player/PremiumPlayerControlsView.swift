@@ -23,7 +23,6 @@ struct PremiumPlayerControlsView: View {
         case backward
         case playButton
         case forward
-        case progressBar
         case cc
         case audio
         case settings
@@ -51,7 +50,6 @@ struct PremiumPlayerControlsView: View {
                     .frame(width: max(0, progress * (UIScreen.main.bounds.width - 80)), height: 4)
             }
             .padding(.horizontal, 40)
-            .focused($focusedControl, equals: .progressBar)
 
             // Time display bar
             HStack {

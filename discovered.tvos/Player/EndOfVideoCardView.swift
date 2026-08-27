@@ -10,6 +10,12 @@ import SwiftUI
 struct EndOfVideoCardView: View {
     @State private var playNextFocused = false
     @State private var dismissFocused = false
+    @FocusState private var focusedButton: FocusedButton?
+
+    enum FocusedButton: Hashable {
+        case playNext
+        case dismiss
+    }
 
     let nextEpisodeTitle: String
     let episodeInfo: String
@@ -134,15 +140,13 @@ struct EndOfVideoCardView: View {
                         )
                         .cornerRadius(10)
                         .shadow(
-                            color: Color(red: 1, green: 0.42, blue: 0.21, opacity: playNextFocused ? 0.4 : 0.2),
-                            radius: playNextFocused ? 12 : 6
+                            color: Color(red: 1, green: 0.42, blue: 0.21, opacity: focusedButton == .playNext ? 0.4 : 0.2),
+                            radius: focusedButton == .playNext ? 12 : 6
                         )
                 }
-                .focusable(true) { focused in
-                    playNextFocused = focused
-                }
-                .scaleEffect(playNextFocused ? 1.05 : 1.0)
-                .animation(.easeInOut(duration: 0.2), value: playNextFocused)
+                .focused($focusedButton, equals: .playNext)
+                .scaleEffect(focusedButton == .playNext ? 1.05 : 1.0)
+                .animation(.easeInOut(duration: 0.2), value: focusedButton == .playNext)
 
                 Button(action: {
                     onDismiss?()
@@ -156,17 +160,18 @@ struct EndOfVideoCardView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(
-                                    Color(red: 1, green: 1, blue: 1, opacity: dismissFocused ? 0.3 : 0.12),
+                                    Color(red: 1, green: 1, blue: 1, opacity: focusedButton == .dismiss ? 0.3 : 0.12),
                                     lineWidth: 1
                                 )
                         )
                         .cornerRadius(10)
                 }
-                .focusable(true) { focused in
-                    dismissFocused = focused
-                }
-                .scaleEffect(dismissFocused ? 1.05 : 1.0)
-                .animation(.easeInOut(duration: 0.2), value: dismissFocused)
+                .focused($focusedButton, equals: .dismiss)
+                .scaleEffect(focusedButton == .dismiss ? 1.05 : 1.0)
+                .animation(.easeInOut(duration: 0.2), value: focusedButton == .dismiss)
+            }
+            .onAppear {
+                focusedButton = .playNext
             }
         }
         .frame(width: 400)

@@ -1,0 +1,359 @@
+{
+  "" : {
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/discovered.tvos-primary.dia",
+    "emit-module-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/discovered.tvos-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/discovered.tvos-primary-emit-module.dia",
+    "pch" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/discovered.tvos-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/discovered.tvos-primary.swiftdeps"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/App Delegate/AppDelegate.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/AppDelegate.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/AppDelegate.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/AppDelegate.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/AppDelegate.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/AppDelegate.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/AppDelegate.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/AppDelegate.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/AppDelegate~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/APIConfig.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConfig.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConfig.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConfig.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConfig.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConfig.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConfig.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConfig.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConfig~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/APIConstants.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConstants.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConstants.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConstants.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConstants.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConstants.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConstants.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConstants.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/APIConstants~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/HomeViewModel.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HomeViewModel.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HomeViewModel.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HomeViewModel.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HomeViewModel.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HomeViewModel.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HomeViewModel.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HomeViewModel.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HomeViewModel~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/NetworkManager.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/NetworkManager.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/NetworkManager.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/NetworkManager.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/NetworkManager.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/NetworkManager.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/NetworkManager.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/NetworkManager.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/NetworkManager~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/RelatedVideoModel.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoModel.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoModel.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoModel.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoModel.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoModel.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoModel.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoModel.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoModel~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/ShowModel.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowModel.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowModel.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowModel.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowModel.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowModel.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowModel.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowModel.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowModel~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/SideMenuItem.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuItem.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuItem.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuItem.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuItem.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuItem.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuItem.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuItem.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuItem~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/SpotlightResponseModel.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SpotlightResponseModel.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SpotlightResponseModel.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SpotlightResponseModel.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SpotlightResponseModel.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SpotlightResponseModel.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SpotlightResponseModel.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SpotlightResponseModel.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SpotlightResponseModel~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Model/VideoDetailDisplayModel.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/VideoDetailDisplayModel.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/VideoDetailDisplayModel.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/VideoDetailDisplayModel.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/VideoDetailDisplayModel.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/VideoDetailDisplayModel.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/VideoDetailDisplayModel.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/VideoDetailDisplayModel.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/VideoDetailDisplayModel~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/EndOfVideoCardView.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/EndOfVideoCardView.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/EndOfVideoCardView.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/EndOfVideoCardView.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/EndOfVideoCardView.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/EndOfVideoCardView.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/EndOfVideoCardView.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/EndOfVideoCardView.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/EndOfVideoCardView~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/PlayerTopBarView.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PlayerTopBarView.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PlayerTopBarView.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PlayerTopBarView.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PlayerTopBarView.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PlayerTopBarView.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PlayerTopBarView.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PlayerTopBarView.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PlayerTopBarView~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/PremiumPlayerColors.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerColors.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerColors.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerColors.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerColors.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerColors.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerColors.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerColors.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerColors~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/PremiumPlayerControlsView.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerControlsView.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerControlsView.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerControlsView.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerControlsView.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerControlsView.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerControlsView.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerControlsView.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerControlsView~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/PremiumPlayerPresenter.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerPresenter.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerPresenter.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerPresenter.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerPresenter.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerPresenter.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerPresenter.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerPresenter.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerPresenter~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/PremiumPlayerView.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerView.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerView.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerView.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerView.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerView.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerView.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerView.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/PremiumPlayerView~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/RecommendationCardView.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationCardView.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationCardView.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationCardView.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationCardView.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationCardView.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationCardView.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationCardView.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationCardView~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/RecommendationsGridView.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationsGridView.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationsGridView.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationsGridView.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationsGridView.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationsGridView.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationsGridView.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationsGridView.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RecommendationsGridView~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/RelatedVideoGridCell.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoGridCell.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoGridCell.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoGridCell.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoGridCell.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoGridCell.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoGridCell.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoGridCell.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoGridCell~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/SuggestionAPIService.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SuggestionAPIService.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SuggestionAPIService.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SuggestionAPIService.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SuggestionAPIService.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SuggestionAPIService.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SuggestionAPIService.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SuggestionAPIService.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SuggestionAPIService~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/TVPlayerEngine.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerEngine.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerEngine.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerEngine.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerEngine.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerEngine.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerEngine.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerEngine.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerEngine~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/TVPlayerState.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerState.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerState.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerState.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerState.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerState.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerState.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerState.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerState~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/Player/TVPlayerViewController.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerViewController.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerViewController.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerViewController.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerViewController.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerViewController.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerViewController.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerViewController.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/TVPlayerViewController~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/View Controller/DetailViewController.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewController.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewController.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewController.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewController.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewController.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewController.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewController.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewController~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/View Controller/ViewController.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ViewController.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ViewController.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ViewController.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ViewController.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ViewController.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ViewController.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ViewController.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ViewController~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/View Model/DetailViewModel.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewModel.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewModel.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewModel.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewModel.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewModel.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewModel.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewModel.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/DetailViewModel~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CollectionView/RelatedVideoCell.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoCell.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoCell.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoCell.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoCell.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoCell.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoCell.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoCell.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/RelatedVideoCell~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CollectionView/ShowCell.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowCell.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowCell.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowCell.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowCell.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowCell.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowCell.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowCell.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/ShowCell~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CollectionView/SimilarShowCell.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SimilarShowCell.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SimilarShowCell.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SimilarShowCell.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SimilarShowCell.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SimilarShowCell.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SimilarShowCell.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SimilarShowCell.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SimilarShowCell~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CustomHamburgerButton.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomHamburgerButton.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomHamburgerButton.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomHamburgerButton.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomHamburgerButton.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomHamburgerButton.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomHamburgerButton.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomHamburgerButton.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomHamburgerButton~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CustomPlayButton.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomPlayButton.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomPlayButton.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomPlayButton.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomPlayButton.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomPlayButton.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomPlayButton.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomPlayButton.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomPlayButton~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/View/CustomProfileButton.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomProfileButton.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomProfileButton.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomProfileButton.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomProfileButton.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomProfileButton.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomProfileButton.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomProfileButton.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/CustomProfileButton~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/View/HeroHeaderView.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HeroHeaderView.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HeroHeaderView.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HeroHeaderView.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HeroHeaderView.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HeroHeaderView.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HeroHeaderView.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HeroHeaderView.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/HeroHeaderView~partial.swiftmodule"
+  },
+  "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/discovered.tvos/View/SideMenuCapsuleButton.swift" : {
+    "const-values" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuCapsuleButton.swiftconstvalues",
+    "dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuCapsuleButton.d",
+    "diagnostics" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuCapsuleButton.dia",
+    "index-unit-output-path" : "/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuCapsuleButton.o",
+    "llvm-bc" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuCapsuleButton.bc",
+    "object" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuCapsuleButton.o",
+    "swift-dependencies" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuCapsuleButton.swiftdeps",
+    "swiftmodule" : "/Users/vivektiwari/Desktop/ios workspace/discoveredATV/discovered.tvos/.build/Build/Intermediates.noindex/discovered.tvos.build/Debug-appletvos/discovered.tvos.build/Objects-normal/arm64/SideMenuCapsuleButton~partial.swiftmodule"
+  }
+}

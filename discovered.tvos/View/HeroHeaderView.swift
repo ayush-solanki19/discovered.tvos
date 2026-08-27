@@ -100,6 +100,7 @@ final class HeroHeaderView: UIView {
         if player == nil { player = AVPlayer(playerItem: item); playerLayer?.player = player }
         else { player?.replaceCurrentItem(with: item) }
         player?.isMuted = true
+        player?.play()
     }
     deinit { player?.pause() }
 }

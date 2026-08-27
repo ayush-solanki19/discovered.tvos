@@ -32,6 +32,7 @@ class TVPlayerEngine: NSObject {
 
     private var timeObserver: Any?
     private var statusObservation: NSKeyValueObservation?
+    private var durationObservation: NSKeyValueObservation?
     private var bufferingObservation: NSKeyValueObservation?
     private var rateObservation: NSKeyValueObservation?
 
@@ -47,7 +48,7 @@ class TVPlayerEngine: NSObject {
     // MARK: - Setup
     private func setupPlayerObservers() {
         timeObserver = player.addPeriodicTimeObserver(
-            forInterval: CMTime(seconds: 0.5, preferredTimescale: 1000),
+            forInterval: CMTime(seconds: 0.1, preferredTimescale: 1000),
             queue: .main
         ) { [weak self] time in
             self?.currentTime = time.seconds
@@ -125,6 +126,7 @@ class TVPlayerEngine: NSObject {
         }
 
         statusObservation?.invalidate()
+        durationObservation?.invalidate()
         bufferingObservation?.invalidate()
         rateObservation?.invalidate()
     }
@@ -139,8 +141,7 @@ class TVPlayerEngine: NSObject {
 
             switch playerItem.status {
             case .readyToPlay:
-                self.duration = playerItem.duration.seconds
-                self.delegate?.playerEngine(self, durationDidChange: self.duration)
+                self.updateDuration(from: playerItem)
                 self.state = .ready
 
             case .failed:
@@ -154,6 +155,10 @@ class TVPlayerEngine: NSObject {
             }
         }
 
+        durationObservation = item.observe(\.duration, options: [.initial, .new]) { [weak self] playerItem, _ in
+            self?.updateDuration(from: playerItem)
+        }
+
         bufferingObservation = item.observe(\.loadedTimeRanges, options: [.new]) { [weak self] playerItem, change in
             guard let self = self else { return }
 
@@ -161,6 +166,14 @@ class TVPlayerEngine: NSObject {
                 self.delegate?.playerEngine(self, bufferingRangeDidChange: timeRange)
             }
         }
+    }
+
+    private func updateDuration(from item: AVPlayerItem) {
+        let value = item.duration.seconds
+        guard value.isFinite, value >= 0, value != duration else { return }
+
+        duration = value
+        delegate?.playerEngine(self, durationDidChange: value)
     }
 
     deinit {
