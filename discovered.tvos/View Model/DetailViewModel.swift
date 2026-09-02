@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MovieDetailModel {
+struct VideoDetailDisplayModel {
     let title: String
     let rating: String
     let year: String
@@ -15,40 +15,54 @@ struct MovieDetailModel {
     let genre: String
     let description: String
     let starring: String
-    let bannerImageName: String
-    let similarShows: [ShowItem]
+    let bannerImageUrl: String
+    let videoUrl: String?
+    let userCategory: String
+    let similarVideos: [ShowItem]
 }
 
 class DetailViewModel {
-    let movieDetail: MovieDetailModel
+    let videoDetail: VideoDetailDisplayModel
 
-    init(show: ShowItem) {
-        // Mocking detailed data based on clicked item
-        self.movieDetail = MovieDetailModel(
-            title: "NEBULA\nASCENDANT",
-            rating: "4.5/5",
-            year: "2024",
-            duration: "2h 45m",
-            genre: "Sci-Fi",
-            description: "When an anomaly tears through the outer rim colonies, a disgraced pilot must assemble a fractured crew to navigate the cosmic void. What they discover in the deep silence is not just a threat to humanity, but the unraveling of time itself.",
-            starring: "Elena Rostova, Kaelen Vance, Dr. Aris Thorne",
-            bannerImageName: show.imageName,
-            similarShows: [
-                ShowItem(title: "NEON VEIL", imageName: "poster1"),
-                ShowItem(title: "THE VOID BEYOND", imageName: "poster2"),
-                ShowItem(title: "ECHOES OF THE DRIFT", imageName: "poster3"),
-                ShowItem(title: "CRYSTAL ABYSS", imageName: "poster4"),
-                ShowItem(title: "THE AWAKENING", imageName: "poster5"),
-                ShowItem(title: "SOLARIS 2.0", imageName: "poster1")
-            ]
+    init(selectedVideo: ShowItem, allVideos: [ShowItem] = []) {
+        // Duration ko seconds se Minutes format me convert karna (e.g. 195s -> 3m)
+        var formattedDuration = "HD Video"
+        if let durSec = Int(selectedVideo.duration ?? "0"), durSec > 0 {
+            let minutes = durSec / 60
+            let seconds = durSec % 60
+            formattedDuration = minutes > 0 ? "\(minutes)m \(seconds)s" : "\(seconds)s"
+        }
+
+        // Description fallback agar API se "NA" ya blank aaye
+        let rawDesc = selectedVideo.description ?? ""
+        let finalDescription = (rawDesc == "NA" || rawDesc.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            ? "Watch full episode and exclusive streaming available on Discovered TV."
+            : rawDesc
+
+        // Similar Videos: Selected video ko chhodkar baaki videos
+        let related = allVideos.filter { $0.title != selectedVideo.title }
+
+        self.videoDetail = VideoDetailDisplayModel(
+            title: selectedVideo.title,
+            rating: selectedVideo.rating ?? "4.5/5",
+            year: selectedVideo.year ?? "2026",
+            duration: formattedDuration,
+            genre: selectedVideo.genre ?? "General",
+            description: finalDescription,
+            starring: selectedVideo.userName ?? "Creator",
+            bannerImageUrl: selectedVideo.imageName,
+            videoUrl: selectedVideo.videoUrl,
+            userCategory: "Brand",
+            similarVideos: related.isEmpty ? HomeViewModel.shared.shows : related
         )
     }
 
-    func numberOfSimilarShows() -> Int {
-        return movieDetail.similarShows.count
+    func numberOfSimilarVideos() -> Int {
+        return videoDetail.similarVideos.count
     }
 
-    func similarShow(at index: Int) -> ShowItem {
-        return movieDetail.similarShows[index]
+    func similarVideo(at index: Int) -> ShowItem {
+        return videoDetail.similarVideos[index]
     }
+
 }

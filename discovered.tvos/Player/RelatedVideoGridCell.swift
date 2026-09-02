@@ -1,22 +1,19 @@
-//
-//  SimilarShowCell.swift
-//  discovered.tvos
-//
-//  Created by mac mini on 17/08/26.
-//
-
-import Foundation
 import UIKit
+import SwiftUI
 
-class SimilarShowCell: UICollectionViewCell {
-    static let reuseIdentifier = "SimilarShowCell"
+protocol RelatedVideoGridCellDelegate: AnyObject {
+    func relatedVideoGridCell(_ cell: RelatedVideoGridCell, didTapPlayForVideo video: RelatedVideo)
+}
+
+class RelatedVideoGridCell: UICollectionViewCell {
+    static let reuseIdentifier = "RelatedVideoGridCell"
+
+    weak var delegate: RelatedVideoGridCellDelegate?
+    private var video: RelatedVideo?
 
     private let posterImageView = UIImageView()
-    private let playButtonOverlay = UIButton()
     private let overlayView = UIView()
-    private let titleLabel = UILabel()
-
-    var onPlayButtonTapped: (() -> Void)?
+    private let playButtonOverlay = UIButton()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -29,46 +26,37 @@ class SimilarShowCell: UICollectionViewCell {
     }
 
     private func setupLayout() {
-        contentView.layer.cornerRadius = 8
+        contentView.layer.cornerRadius = 6
         contentView.clipsToBounds = true
-        contentView.backgroundColor = UIColor(white: 0.12, alpha: 1.0)
+        contentView.backgroundColor = UIColor(white: 0.15, alpha: 1.0)
 
         posterImageView.contentMode = .scaleAspectFill
         posterImageView.clipsToBounds = true
         posterImageView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(posterImageView)
 
-        titleLabel.numberOfLines = 2
-        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
-        titleLabel.textColor = .white
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(titleLabel)
-
-        overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        overlayView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
         overlayView.alpha = 0
         overlayView.translatesAutoresizingMaskIntoConstraints = false
         posterImageView.addSubview(overlayView)
 
         var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = UIColor.red
+        config.baseBackgroundColor = UIColor(red: 1, green: 0.42, blue: 0.21, alpha: 1.0)
         config.baseForegroundColor = .white
+        config.title = "Play Video"
+        config.titleAlignment = .center
         playButtonOverlay.configuration = config
-        playButtonOverlay.setImage(UIImage(systemName: "play.fill"), for: .normal)
-        playButtonOverlay.addTarget(self, action: #selector(playButtonTapped), for: .primaryActionTriggered)
+        playButtonOverlay.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
         playButtonOverlay.alpha = 0
         playButtonOverlay.translatesAutoresizingMaskIntoConstraints = false
+        playButtonOverlay.addTarget(self, action: #selector(playButtonTapped), for: .primaryActionTriggered)
         posterImageView.addSubview(playButtonOverlay)
 
         NSLayoutConstraint.activate([
             posterImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             posterImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             posterImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            posterImageView.heightAnchor.constraint(equalToConstant: 210),
-
-            titleLabel.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: 8),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            posterImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
 
             overlayView.topAnchor.constraint(equalTo: posterImageView.topAnchor),
             overlayView.leadingAnchor.constraint(equalTo: posterImageView.leadingAnchor),
@@ -77,19 +65,19 @@ class SimilarShowCell: UICollectionViewCell {
 
             playButtonOverlay.centerXAnchor.constraint(equalTo: posterImageView.centerXAnchor),
             playButtonOverlay.centerYAnchor.constraint(equalTo: posterImageView.centerYAnchor),
-            playButtonOverlay.widthAnchor.constraint(equalToConstant: 60),
-            playButtonOverlay.heightAnchor.constraint(equalToConstant: 60)
+            playButtonOverlay.widthAnchor.constraint(equalToConstant: 120),
+            playButtonOverlay.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 
-    func configure(with item: ShowItem) {
-        posterImageView.image = UIImage(named: item.imageName) ?? UIImage(named: "")
-        titleLabel.text = item.title
+    func configure(with video: RelatedVideo) {
+        self.video = video
+        posterImageView.setImage(from: video.ThumbImage)
     }
 
-    func configure(with video: RelatedVideo) {
-        posterImageView.setImage(from: video.ThumbImage)
-        titleLabel.text = video.title
+    @objc private func playButtonTapped() {
+        guard let video = video else { return }
+        delegate?.relatedVideoGridCell(self, didTapPlayForVideo: video)
     }
 
     override var canBecomeFocused: Bool { true }
@@ -98,9 +86,9 @@ class SimilarShowCell: UICollectionViewCell {
         super.didUpdateFocus(in: context, with: coordinator)
         coordinator.addCoordinatedAnimations({
             if self.isFocused {
-                self.contentView.layer.borderWidth = 3.5
+                self.contentView.layer.borderWidth = 2.5
                 self.contentView.layer.borderColor = UIColor.white.cgColor
-                self.transform = CGAffineTransform(scaleX: 1.06, y: 1.06)
+                self.transform = CGAffineTransform(scaleX: 1.08, y: 1.08)
                 self.overlayView.alpha = 1
                 self.playButtonOverlay.alpha = 1
             } else {
@@ -111,9 +99,5 @@ class SimilarShowCell: UICollectionViewCell {
                 self.playButtonOverlay.alpha = 0
             }
         }, completion: nil)
-    }
-
-    @objc private func playButtonTapped() {
-        onPlayButtonTapped?()
     }
 }

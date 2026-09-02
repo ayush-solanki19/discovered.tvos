@@ -19,7 +19,10 @@ class NetworkManager {
         timeZoneOffset: String = "+250",
         completion: @escaping (Result<SpotlightMainResponse, Error>) -> Void
     ) {
-        guard let url = URL(string: "https://discovered.tv/api/v3/appdashboard/homeVideoSpotlight") else {
+        // Base URL + Endpoint dynamically banaya gaya hai
+        let urlString = APIConstants.getFullURL(for: APIConstants.Endpoints.homeVideoSpotlight)
+        
+        guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "Invalid URL", code: -1)))
             return
         }

@@ -1,17 +1,21 @@
+import Foundation
 import UIKit
+import AVFoundation
 
 class DetailViewController: UIViewController {
 
     // MARK: - Properties
     private let viewModel: DetailViewModel
-    private let homeViewModel = HomeViewModel()
+    private let homeViewModel = HomeViewModel.shared
+    private let suggestionAPIService = SuggestionAPIService.shared
 
     private let sideMenuWidth: CGFloat = 350
     private var sideMenuLeadingConstraint: NSLayoutConstraint!
 
     // Focus Guides
-    private let playToSimilarFocusGuide = UIFocusGuide()
-    private let backToPlayFocusGuide = UIFocusGuide()
+    private let actionToSimilarFocusGuide = UIFocusGuide()
+    private let backToActionFocusGuide = UIFocusGuide()
+    private let similarToPlayFocusGuide = UIFocusGuide()
 
     // Side Drawer Views
     private let dimView = UIView()
@@ -23,10 +27,13 @@ class DetailViewController: UIViewController {
     private let scrollView = UIScrollView()
     private let contentView = UIView()
 
-    // Header Components
-    private let menuButton = CustomHamburgerButton()
+    // Header & Banner
+    private let backButton = UIButton(type: .system)
     private let bannerImageView = UIImageView()
     private let bannerGradient = CAGradientLayer()
+
+    // Similar Content Data
+    private var similarVideos: [RelatedVideo] = []
 
     // Content Labels
     private let titleLabel = UILabel()
@@ -50,9 +57,13 @@ class DetailViewController: UIViewController {
     private let similarTitleLabel = UILabel()
     private var similarCollectionView: UICollectionView!
 
+    // Related Videos Section
+    private let relatedTitleLabel = UILabel()
+    private var relatedVideosCollectionView: UICollectionView!
+
     // MARK: - Init
-    init(show: ShowItem) {
-        self.viewModel = DetailViewModel(show: show)
+    init(show: ShowItem, allShows: [ShowItem] = []) {
+        self.viewModel = DetailViewModel(selectedVideo: show, allVideos: allShows)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -70,6 +81,8 @@ class DetailViewController: UIViewController {
         setupFocusGuides()
         populateData()
         bindSideMenu()
+        bindViewModel()
+        fetchSimilarContent()
 
         sideMenuLeadingConstraint.constant = -sideMenuWidth
         dimView.alpha = 0
@@ -79,7 +92,7 @@ class DetailViewController: UIViewController {
         super.viewDidAppear(animated)
         view.bringSubviewToFront(dimView)
         view.bringSubviewToFront(sideMenuView)
-        view.bringSubviewToFront(menuButton)
+        view.bringSubviewToFront(backButton)
 
         setNeedsFocusUpdate()
         updateFocusIfNeeded()
@@ -97,13 +110,31 @@ class DetailViewController: UIViewController {
         }
     }
 
+    private func bindViewModel() {
+    }
+
+    // MARK: - Fetch Similar Content
+    private func fetchSimilarContent() {
+        let userId = viewModel.videoDetail.starring
+
+        suggestionAPIService.fetchRelatedVideos(userId: userId, start: 0, limit: 20) { [weak self] videos in
+            DispatchQueue.main.async {
+                if let videos = videos {
+                    self?.similarVideos = videos
+                    self?.similarCollectionView.reloadData()
+                }
+            }
+        }
+    }
+
     // MARK: - Setup UI
     private func setupUI() {
         scrollView.showsVerticalScrollIndicator = false
+        scrollView.delaysContentTouches = false
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
 
-        // Banner Image & Gradient
+        // Banner Image
         bannerImageView.contentMode = .scaleAspectFill
         bannerImageView.clipsToBounds = true
         contentView.addSubview(bannerImageView)
@@ -113,16 +144,24 @@ class DetailViewController: UIViewController {
             UIColor.black.withAlphaComponent(0.6).cgColor,
             UIColor.black.cgColor
         ]
-        bannerGradient.locations = [0.0, 0.6, 1.0]
+        bannerGradient.locations = [0.0, 0.55, 1.0]
         bannerImageView.layer.addSublayer(bannerGradient)
+
+        // Back Button
+        var backConfig = UIButton.Configuration.plain()
+        backConfig.image = UIImage(systemName: "chevron.left")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 24, weight: .semibold))
+        backConfig.baseForegroundColor = .white
+        backButton.configuration = backConfig
+        backButton.addTarget(self, action: #selector(didTapBack), for: .primaryActionTriggered)
+        view.addSubview(backButton)
 
         // Title
         titleLabel.numberOfLines = 2
-        titleLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 48) ?? .systemFont(ofSize: 48, weight: .bold)
+        titleLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 46) ?? .systemFont(ofSize: 46, weight: .bold)
         titleLabel.textColor = .white
         contentView.addSubview(titleLabel)
 
-        // Metadata Stack
+        // Metadata Stack (Stars, Rating, Year, Duration, Genre)
         metaStackView.axis = .horizontal
         metaStackView.spacing = 14
         metaStackView.alignment = .center
@@ -151,13 +190,12 @@ class DetailViewController: UIViewController {
 
         metaStackView.addArrangedSubview(makeSeparator())
 
-        // Sci-Fi Genre Box
         genreBadgeContainer.layer.borderWidth = 1
-        genreBadgeContainer.layer.borderColor = UIColor(white: 0.4, alpha: 1.0).cgColor
+        genreBadgeContainer.layer.borderColor = UIColor(white: 0.45, alpha: 1.0).cgColor
         genreBadgeContainer.layer.cornerRadius = 3
 
         genreLabel.font = .systemFont(ofSize: 11, weight: .bold)
-        genreLabel.textColor = UIColor(white: 0.8, alpha: 1.0)
+        genreLabel.textColor = UIColor(white: 0.85, alpha: 1.0)
         genreLabel.translatesAutoresizingMaskIntoConstraints = false
         genreBadgeContainer.addSubview(genreLabel)
 
@@ -169,12 +207,13 @@ class DetailViewController: UIViewController {
         ])
         metaStackView.addArrangedSubview(genreBadgeContainer)
 
-        // Description & Starring
-        descriptionLabel.numberOfLines = 0
+        // Description
+        descriptionLabel.numberOfLines = 4
         descriptionLabel.font = .systemFont(ofSize: 14, weight: .regular)
         descriptionLabel.textColor = UIColor(white: 0.85, alpha: 1.0)
         contentView.addSubview(descriptionLabel)
 
+        // Starring / Creator
         starringLabel.numberOfLines = 2
         contentView.addSubview(starringLabel)
 
@@ -199,8 +238,8 @@ class DetailViewController: UIViewController {
 
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.itemSize = CGSize(width: 350, height: 260)
-        layout.minimumLineSpacing = 30
+        layout.itemSize = CGSize(width: 280, height: 290)
+        layout.minimumLineSpacing = 20
         layout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
 
         similarCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -212,9 +251,26 @@ class DetailViewController: UIViewController {
         similarCollectionView.register(SimilarShowCell.self, forCellWithReuseIdentifier: SimilarShowCell.reuseIdentifier)
         contentView.addSubview(similarCollectionView)
 
-        // Hamburger Menu Button
-        menuButton.addTarget(self, action: #selector(toggleSideMenu), for: .primaryActionTriggered)
-        view.addSubview(menuButton)
+        // Related Videos Section
+        relatedTitleLabel.text = "More From This Creator"
+        relatedTitleLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 22) ?? .systemFont(ofSize: 22, weight: .bold)
+        relatedTitleLabel.textColor = .white
+        contentView.addSubview(relatedTitleLabel)
+
+        let relatedLayout = UICollectionViewFlowLayout()
+        relatedLayout.scrollDirection = .horizontal
+        relatedLayout.itemSize = CGSize(width: 190, height: 340)
+        relatedLayout.minimumLineSpacing = 30
+        relatedLayout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
+
+        relatedVideosCollectionView = UICollectionView(frame: .zero, collectionViewLayout: relatedLayout)
+        relatedVideosCollectionView.backgroundColor = .clear
+        relatedVideosCollectionView.showsHorizontalScrollIndicator = false
+        relatedVideosCollectionView.dataSource = self
+        relatedVideosCollectionView.delegate = self
+        relatedVideosCollectionView.clipsToBounds = false
+        relatedVideosCollectionView.register(RelatedVideoCell.self, forCellWithReuseIdentifier: RelatedVideoCell.reuseIdentifier)
+        contentView.addSubview(relatedVideosCollectionView)
 
         // Dim Overlay
         dimView.backgroundColor = UIColor.black.withAlphaComponent(0.65)
@@ -242,12 +298,10 @@ class DetailViewController: UIViewController {
             btn.addTarget(self, action: #selector(sideItemTapped(_:)), for: .primaryActionTriggered)
             btn.translatesAutoresizingMaskIntoConstraints = false
             btn.heightAnchor.constraint(equalToConstant: 48).isActive = true
-            
-            // Login button (id == 5) se theek pehle Gaming ke baad 35pt ka extra space
-            if item.id == 5, let previousButton = sideMenuStack.arrangedSubviews.last {
-                sideMenuStack.setCustomSpacing(35, after: previousButton)
+
+            if item.id == 5, let prev = sideMenuStack.arrangedSubviews.last {
+                sideMenuStack.setCustomSpacing(35, after: prev)
             }
-            
             sideMenuStack.addArrangedSubview(btn)
         }
     }
@@ -262,39 +316,46 @@ class DetailViewController: UIViewController {
 
     // MARK: - Populate Data
     private func populateData() {
-        let movie = viewModel.movieDetail
+        let movie = viewModel.videoDetail
         titleLabel.text = movie.title
         ratingLabel.text = movie.rating
         yearLabel.text = movie.year
         durationLabel.text = movie.duration
         genreLabel.text = movie.genre
         descriptionLabel.text = movie.description
-        bannerImageView.image = UIImage(named: movie.bannerImageName) ?? UIImage(named: "hero_back")
+
+        if movie.bannerImageUrl.hasPrefix("http") {
+            bannerImageView.setImage(from: movie.bannerImageUrl, placeholder: "hero_back", isHeroBanner: true)
+        } else {
+            bannerImageView.image = UIImage(named: movie.bannerImageUrl) ?? UIImage(named: "hero_back")
+        }
 
         let starringAttributedString = NSMutableAttributedString(
-            string: "Starring: ",
-            attributes: [.font: UIFont.systemFont(ofSize: 13, weight: .bold), .foregroundColor: UIColor.white]
+            string: "Creator: ",
+            attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .bold), .foregroundColor: UIColor.white]
         )
         starringAttributedString.append(NSAttributedString(
             string: movie.starring,
-            attributes: [.font: UIFont.systemFont(ofSize: 13, weight: .regular), .foregroundColor: UIColor(white: 0.8, alpha: 1.0)]
+            attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .regular), .foregroundColor: UIColor(white: 0.8, alpha: 1.0)]
         ))
         starringLabel.attributedText = starringAttributedString
+
+        similarCollectionView.reloadData()
     }
 
     // MARK: - Constraints
     private func setupConstraints() {
-        [scrollView, contentView, bannerImageView, menuButton,
+        [scrollView, contentView, bannerImageView, backButton,
          titleLabel, metaStackView, descriptionLabel, starringLabel,
          actionButtonStack, playButton, visitProfileButton,
          similarTitleLabel, similarCollectionView,
+         relatedTitleLabel, relatedVideosCollectionView,
          dimView, sideMenuView, logoImageView, sideMenuStack
         ].forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
 
         sideMenuLeadingConstraint = sideMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: -sideMenuWidth)
 
         NSLayoutConstraint.activate([
-            // Scroll & Content
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -306,19 +367,16 @@ class DetailViewController: UIViewController {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
 
-            // Top Menu Button
-            menuButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            menuButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            menuButton.widthAnchor.constraint(equalToConstant: 48),
-            menuButton.heightAnchor.constraint(equalToConstant: 48),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            backButton.widthAnchor.constraint(equalToConstant: 48),
+            backButton.heightAnchor.constraint(equalToConstant: 48),
 
-            // Hero Banner
             bannerImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             bannerImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             bannerImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             bannerImageView.heightAnchor.constraint(equalToConstant: 680),
 
-            // Labels
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -40),
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 220),
@@ -328,13 +386,12 @@ class DetailViewController: UIViewController {
 
             descriptionLabel.topAnchor.constraint(equalTo: metaStackView.bottomAnchor, constant: 16),
             descriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
-            descriptionLabel.widthAnchor.constraint(equalToConstant: 520),
+            descriptionLabel.widthAnchor.constraint(equalToConstant: 580),
 
             starringLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 18),
             starringLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
             starringLabel.trailingAnchor.constraint(equalTo: descriptionLabel.trailingAnchor),
 
-            // Action Buttons Stack (Play + Visit Profile)
             actionButtonStack.topAnchor.constraint(equalTo: starringLabel.bottomAnchor, constant: 22),
             actionButtonStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 40),
             actionButtonStack.heightAnchor.constraint(equalToConstant: 46),
@@ -342,23 +399,29 @@ class DetailViewController: UIViewController {
             playButton.widthAnchor.constraint(equalToConstant: 130),
             visitProfileButton.widthAnchor.constraint(equalToConstant: 160),
 
-            // Similar Content
-            similarTitleLabel.topAnchor.constraint(equalTo: bannerImageView.bottomAnchor, constant: 20),
+            similarTitleLabel.topAnchor.constraint(equalTo: actionButtonStack.bottomAnchor, constant: 28),
             similarTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
 
             similarCollectionView.topAnchor.constraint(equalTo: similarTitleLabel.bottomAnchor, constant: 14),
             similarCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             similarCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            similarCollectionView.heightAnchor.constraint(equalToConstant: 280),
-            similarCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
+            similarCollectionView.heightAnchor.constraint(equalToConstant: 310),
 
-            // Dim Overlay
+            // Related Videos
+            relatedTitleLabel.topAnchor.constraint(equalTo: similarCollectionView.bottomAnchor, constant: 40),
+            relatedTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
+
+            relatedVideosCollectionView.topAnchor.constraint(equalTo: relatedTitleLabel.bottomAnchor, constant: 14),
+            relatedVideosCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            relatedVideosCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            relatedVideosCollectionView.heightAnchor.constraint(equalToConstant: 360),
+            relatedVideosCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -40),
+
             dimView.topAnchor.constraint(equalTo: view.topAnchor),
             dimView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             dimView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             dimView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            // Side Drawer
             sideMenuLeadingConstraint,
             sideMenuView.topAnchor.constraint(equalTo: view.topAnchor),
             sideMenuView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -377,28 +440,39 @@ class DetailViewController: UIViewController {
 
     // MARK: - Focus Guides
     private func setupFocusGuides() {
-        view.addLayoutGuide(playToSimilarFocusGuide)
-        view.addLayoutGuide(backToPlayFocusGuide)
+        view.addLayoutGuide(actionToSimilarFocusGuide)
+        view.addLayoutGuide(backToActionFocusGuide)
+        view.addLayoutGuide(similarToPlayFocusGuide)
 
         NSLayoutConstraint.activate([
-            playToSimilarFocusGuide.topAnchor.constraint(equalTo: actionButtonStack.bottomAnchor),
-            playToSimilarFocusGuide.bottomAnchor.constraint(equalTo: similarCollectionView.topAnchor),
-            playToSimilarFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            playToSimilarFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            actionToSimilarFocusGuide.topAnchor.constraint(equalTo: actionButtonStack.bottomAnchor),
+            actionToSimilarFocusGuide.bottomAnchor.constraint(equalTo: similarCollectionView.topAnchor),
+            actionToSimilarFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            actionToSimilarFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 
-            backToPlayFocusGuide.topAnchor.constraint(equalTo: menuButton.bottomAnchor),
-            backToPlayFocusGuide.bottomAnchor.constraint(equalTo: actionButtonStack.topAnchor),
-            backToPlayFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backToPlayFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            backToActionFocusGuide.topAnchor.constraint(equalTo: backButton.bottomAnchor),
+            backToActionFocusGuide.bottomAnchor.constraint(equalTo: actionButtonStack.topAnchor),
+            backToActionFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            backToActionFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+            similarToPlayFocusGuide.topAnchor.constraint(equalTo: view.topAnchor),
+            similarToPlayFocusGuide.bottomAnchor.constraint(equalTo: similarCollectionView.topAnchor),
+            similarToPlayFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            similarToPlayFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
 
-        playToSimilarFocusGuide.preferredFocusEnvironments = [similarCollectionView]
-        backToPlayFocusGuide.preferredFocusEnvironments = [menuButton]
+        actionToSimilarFocusGuide.preferredFocusEnvironments = [similarCollectionView]
+        backToActionFocusGuide.preferredFocusEnvironments = [playButton]
+        similarToPlayFocusGuide.preferredFocusEnvironments = [playButton]
+    }
+
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        super.didUpdateFocus(in: context, with: coordinator)
     }
 
     // MARK: - Actions
-    @objc private func toggleSideMenu() {
-        homeViewModel.isSideMenuOpen ? closeSideMenu() : openSideMenu()
+    @objc private func didTapBack() {
+        navigationController?.popViewController(animated: true)
     }
 
     private func openSideMenu() {
@@ -433,12 +507,10 @@ class DetailViewController: UIViewController {
     @objc private func sideItemTapped(_ sender: UIButton) {
         let selectedIndex = sender.tag
         HomeViewModel.shared.selectSideMenu(at: selectedIndex)
-
         closeSideMenu()
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
             guard let self = self else { return }
-
             if let nav = self.navigationController {
                 nav.popToRootViewController(animated: true)
             } else {
@@ -448,18 +520,43 @@ class DetailViewController: UIViewController {
     }
 
     @objc private func didTapPlay() {
-        print("Play Movie Triggered")
+        presentVideoPlayer()
+    }
+
+    private func presentVideoPlayer(for show: ShowItem? = nil) {
+        let videoDetail = viewModel.videoDetail
+
+        guard let videoUrlString = show?.videoUrl ?? videoDetail.videoUrl,
+              let videoUrl = URL(string: videoUrlString) else {
+            return
+        }
+
+        let playerVC = TVPlayerViewController()
+
+        playerVC.onDismiss = { [weak self] in
+            print("Player dismissed")
+        }
+
+        let title = show?.title ?? videoDetail.title
+        let episodeInfo = show?.year ?? videoDetail.year
+
+        playerVC.play(
+            url: videoUrl,
+            title: title,
+            episodeInfo: episodeInfo
+        )
+
+        self.present(playerVC, animated: true)
     }
 
     @objc private func didTapVisitProfile() {
-        if let navigationController = navigationController {
-            navigationController.popViewController(animated: true)
+        if let nav = navigationController {
+            nav.popViewController(animated: true)
         } else {
             dismiss(animated: true, completion: nil)
         }
     }
 
-    // MARK: - Preferred Focus
     override var preferredFocusEnvironments: [UIFocusEnvironment] {
         if homeViewModel.isSideMenuOpen {
             if let selectedBtn = sideMenuStack.arrangedSubviews.first(where: { ($0 as? UIButton)?.tag == homeViewModel.selectedSideMenuIndex }) {
@@ -469,22 +566,107 @@ class DetailViewController: UIViewController {
         }
         return [playButton]
     }
+
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        for press in presses {
+            if press.type == .menu {
+                didTapBack()
+                return
+            }
+        }
+        super.pressesBegan(presses, with: event)
+    }
 }
 
-// MARK: - CollectionView DataSource & Delegate
+// MARK: - CollectionView Delegate & DataSource
 extension DetailViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfSimilarShows()
+        if collectionView == similarCollectionView {
+            return similarVideos.count
+        } else if collectionView == relatedVideosCollectionView {
+            return viewModel.numberOfSimilarVideos()
+        }
+        return 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SimilarShowCell.reuseIdentifier, for: indexPath) as! SimilarShowCell
-        let item = viewModel.similarShow(at: indexPath.item)
-        cell.configure(with: item)
-        return cell
+        if collectionView == similarCollectionView {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SimilarShowCell.reuseIdentifier, for: indexPath) as! SimilarShowCell
+            let video = similarVideos[indexPath.item]
+            cell.configure(with: video)
+            cell.onPlayButtonTapped = { [weak self] in
+                self?.playSimilarVideo(video)
+            }
+            return cell
+        } else if collectionView == relatedVideosCollectionView {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RelatedVideoCell.reuseIdentifier, for: indexPath) as! RelatedVideoCell
+            let video = viewModel.similarVideo(at: indexPath.item)
+            cell.configure(with: video)
+            cell.onPlayButtonTapped = { [weak self] in
+                self?.presentVideoPlayer(for: video)
+            }
+            return cell
+        }
+        return UICollectionViewCell()
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == similarCollectionView {
+            let selectedVideo = similarVideos[indexPath.item]
+            playVideo(from: selectedVideo)
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, canFocusItemAt indexPath: IndexPath) -> Bool {
         return true
     }
+
+    func collectionView(_ collectionView: UICollectionView, shouldUpdateFocusIn context: UICollectionViewFocusUpdateContext) -> Bool {
+        return true
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didUpdateFocusIn context: UICollectionViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        if let indexPath = context.nextFocusedIndexPath {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+            }
+        }
+    }
+
+    private func playSimilarVideo(_ video: RelatedVideo) {
+        guard let videoUrl = URL(string: video.videoFile) else { return }
+
+        let playerVC = TVPlayerViewController()
+
+        playerVC.onDismiss = { [weak self] in
+            print("Player dismissed")
+        }
+
+        playerVC.play(
+            url: videoUrl,
+            title: video.title,
+            episodeInfo: video.user_name
+        )
+
+        self.present(playerVC, animated: true)
+    }
+
+    private func playVideo(from video: RelatedVideo) {
+        guard let videoUrl = URL(string: video.videoFile) else { return }
+
+        let playerVC = TVPlayerViewController()
+
+        playerVC.onDismiss = { [weak self] in
+            print("Player dismissed")
+        }
+
+        playerVC.play(
+            url: videoUrl,
+            title: video.title,
+            episodeInfo: video.user_name
+        )
+
+        self.present(playerVC, animated: true)
+    }
+
 }
