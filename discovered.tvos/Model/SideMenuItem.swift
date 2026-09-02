@@ -19,5 +19,5 @@ struct SideMenuItemss {
     let id: Int
     let iconName: String
     let title: String
-    let mode: CategoryMode? // Yeh nayi property add karein
+    let mode: CategoryMode?
 }

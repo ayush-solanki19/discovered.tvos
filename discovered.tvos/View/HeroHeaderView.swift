@@ -22,7 +22,7 @@ final class HeroHeaderView: UIView {
 
     private func setupLayout() {
         clipsToBounds = true
-        layer.cornerRadius = 28
+        layer.cornerRadius = 28         
         backgroundColor = UIColor(red: 0.07, green: 0.08, blue: 0.11, alpha: 1)
 
         heroImageView.contentMode = .scaleAspectFill

@@ -29,7 +29,7 @@ class CustomProfileButton: UIButton {
         layer.borderWidth = 1.2
         layer.borderColor = UIColor(white: 0.38, alpha: 1.0).cgColor
         clipsToBounds = true
-    }
+    }   
 
     override var canBecomeFocused: Bool { true }
 
