@@ -143,6 +143,8 @@ final class ViewController: UIViewController {
         sliderContainerView.spacing = 24
         sliderContainerView.distribution = .fill
         sliderContainerView.alignment = .fill
+        sliderContainerView.layoutMargins = UIEdgeInsets(top: 40, left: 0, bottom: 24, right: 0)
+        sliderContainerView.isLayoutMarginsRelativeArrangement = true
         sliderContainerView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(sliderContainerView)
 
@@ -495,13 +497,17 @@ final class ViewController: UIViewController {
         containerStack.layoutIfNeeded()
 
         let frameInScroll = collectionView.convert(collectionView.bounds, to: scrollView)
-        let targetY = frameInScroll.origin.y - 16
+        let titleLabel = parentStack.arrangedSubviews.first(where: { $0 is UILabel })
+        let titleHeight = titleLabel?.bounds.height ?? 24
+        let titleSpacing = parentStack.spacing
+
+        let targetY = frameInScroll.origin.y - titleHeight - titleSpacing - 16
         let maxY = max(0, scrollView.contentSize.height - scrollView.bounds.height)
 
         if targetY < scrollView.contentOffset.y {
             scrollView.setContentOffset(CGPoint(x: 0, y: min(maxY, max(0, targetY))), animated: animated)
-        } else if targetY + frameInScroll.height > scrollView.contentOffset.y + scrollView.bounds.height {
-            let newY = targetY + frameInScroll.height + 32 - scrollView.bounds.height
+        } else if targetY + frameInScroll.height + titleHeight + titleSpacing > scrollView.contentOffset.y + scrollView.bounds.height {
+            let newY = targetY + frameInScroll.height + titleHeight + titleSpacing + 32 - scrollView.bounds.height
             scrollView.setContentOffset(CGPoint(x: 0, y: min(maxY, max(0, newY))), animated: animated)
         }
     }

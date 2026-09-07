@@ -121,14 +121,20 @@ class TVPlayerEngine: NSObject {
     }
 
     func release() {
+        player.pause()
+
         if let timeObserver = timeObserver {
             player.removeTimeObserver(timeObserver)
+            self.timeObserver = nil
         }
 
         statusObservation?.invalidate()
         durationObservation?.invalidate()
         bufferingObservation?.invalidate()
         rateObservation?.invalidate()
+
+        player.replaceCurrentItem(with: nil)
+        state = .idle
     }
 
     // MARK: - Private Methods

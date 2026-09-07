@@ -19,7 +19,7 @@ struct PremiumPlayerView: View {
     @State private var remainingTime: String = "0:00"
     @State private var progress: Double = 0
     @State private var showEndOfVideo = false
-    @State private var endOfVideoCountdown: Int = 12
+    @State private var endOfVideoCountdown: Int = 1
     @State private var playerEngine = TVPlayerEngine()
     // TVPlayerEngine deliberately holds its delegate weakly. Keep this bridge alive
     // for the lifetime of the SwiftUI player so progress callbacks are delivered.
@@ -29,6 +29,9 @@ struct PremiumPlayerView: View {
     @State private var isLoadingSuggestions = false
     @State private var isPlaying = false
     @State private var nextVideoInQueue: VideoRecommendation?
+    @State private var availableQualities: [String] = []
+    @State private var selectedQuality: String = "Auto"
+    @State private var isQualityMenuOpen = false
     @FocusState private var focusedElement: FocusedElement?
 
     enum FocusedElement: Hashable {
@@ -73,6 +76,11 @@ struct PremiumPlayerView: View {
                             .focused($focusedElement, equals: .backButton)
                             .onPlayPauseCommand {
                                 onBackTapped?()
+                            }
+                            .onMoveCommand { direction in
+                                if direction == .down {
+                                    focusedElement = .videoArea
+                                }
                             }
 
                             Spacer()
@@ -129,8 +137,6 @@ struct PremiumPlayerView: View {
                         togglePlayPause()
                     }
 
-                    Spacer()
-
                     // Bottom controls
                     if showControls {
                         PremiumPlayerControlsView(
@@ -139,9 +145,19 @@ struct PremiumPlayerView: View {
                             progress: progress,
                             isPlaying: $isPlaying,
                             totalTime: totalTime,
+                            availableQualities: availableQualities,
+                            selectedQuality: $selectedQuality,
                             onPlayPause: togglePlayPause,
                             onSeekForward: seekForward,
-                            onSeekBackward: seekBackward
+                            onSeekBackward: seekBackward,
+                            onQualityMenuStateChanged: { isOpen in
+                                isQualityMenuOpen = isOpen
+                                if isOpen {
+                                    controlsHideTimer?.invalidate()
+                                } else {
+                                    resetControlsHideTimer()
+                                }
+                            }
                         )
                         .focused($focusedElement, equals: .controls)
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
@@ -227,7 +243,15 @@ struct PremiumPlayerView: View {
             resetControlsHideTimer()
         }
         .onMoveCommand { direction in
-            resetControlsHideTimer()
+            controlsHideTimer?.invalidate()
+            showControls = true
+        }
+        .onExitCommand {
+            controlsHideTimer?.invalidate()
+            countdownTimer?.invalidate()
+            playerEngine.release()
+            isPlaying = false
+            onBackTapped?()
         }
         .onAppear {
             setupPlayer()
@@ -238,6 +262,10 @@ struct PremiumPlayerView: View {
             controlsHideTimer?.invalidate()
             countdownTimer?.invalidate()
             playerEngine.release()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            playerEngine.pause()
+            isPlaying = false
         }
     }
 
@@ -258,12 +286,18 @@ struct PremiumPlayerView: View {
     }
 
     private func resetControlsHideTimer() {
+        if isQualityMenuOpen {
+            return
+        }
+
         controlsHideTimer?.invalidate()
         showControls = true
 
         controlsHideTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { _ in
-            withAnimation(.easeInOut(duration: 0.3)) {
-                showControls = false
+            if !isQualityMenuOpen {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    showControls = false
+                }
             }
         }
     }
@@ -292,6 +326,7 @@ struct PremiumPlayerView: View {
                     }
                     if nextVideoInQueue != nil && !showEndOfVideo {
                         showEndOfVideo = true
+                        startCountdownTimer()
                     }
                 }
             }
@@ -307,8 +342,42 @@ struct PremiumPlayerView: View {
 
         if let url = videoURL {
             playerEngine.load(url: url)
+            extractQualitiesFromHLS(url: url)
             playerEngine.play()
             isPlaying = true
+        }
+    }
+
+    private func extractQualitiesFromHLS(url: URL) {
+        if url.absoluteString.contains(".m3u8") {
+            URLSession.shared.dataTask(with: url) { data, _, error in
+                guard let data = data, error == nil,
+                      let content = String(data: data, encoding: .utf8) else { return }
+
+                var qualities = ["Auto"]
+                let lines = content.components(separatedBy: .newlines)
+
+                for (index, line) in lines.enumerated() {
+                    if line.contains("RESOLUTION=") {
+                        if let match = line.range(of: "RESOLUTION=\\d+x(\\d+)", options: .regularExpression) {
+                            let resolution = String(line[match])
+                            qualities.append(resolution)
+                        }
+                    }
+                }
+
+                DispatchQueue.main.async {
+                    self.availableQualities = Array(Set(qualities)).sorted(by: { a, b in
+                        if a == "Auto" { return true }
+                        if b == "Auto" { return false }
+                        return a > b
+                    })
+                }
+            }.resume()
+        } else {
+            DispatchQueue.main.async {
+                self.availableQualities = ["Auto", "1080p", "720p", "480p"]
+            }
         }
     }
 
@@ -369,12 +438,12 @@ struct PremiumPlayerView: View {
 
     private func startCountdownTimer() {
         countdownTimer?.invalidate()
-        endOfVideoCountdown = 12
+        endOfVideoCountdown = 1
 
         countdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             DispatchQueue.main.async {
-                if self.endOfVideoCountdown > 0 {
-                    self.endOfVideoCountdown -= 1
+                if self.endOfVideoCountdown < 10 {
+                    self.endOfVideoCountdown += 1
                 } else {
                     self.countdownTimer?.invalidate()
                     self.countdownTimer = nil

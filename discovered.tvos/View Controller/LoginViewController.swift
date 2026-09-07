@@ -6,14 +6,6 @@
 //
 
 import Foundation
-//
-//  LoginViewController.swift
-//  discovered.tvos
-//
-//  Created by mac mini on 01/09/26.
-//
-
-import Foundation
 import UIKit
 
 final class LoginViewController: UIViewController {
@@ -34,8 +26,12 @@ final class LoginViewController: UIViewController {
     private let forgotButton = UIButton(type: .system)
     private let loginButton = UIButton(type: .system)
     private let backButton = UIButton(type: .system)          // ← Back button add kiya
-    
+    private let errorLabel = UILabel()
+    private let activityIndicator = UIActivityIndicatorView(style: .medium)
+
     var onLoginSuccess: (() -> Void)?
+
+    private let viewModel = LoginViewModel()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -43,6 +39,7 @@ final class LoginViewController: UIViewController {
         setupBackground()
         setupCard()
         setupConstraints()
+        bindViewModel()
     }
     
     // MARK: - Background
@@ -126,6 +123,20 @@ final class LoginViewController: UIViewController {
         forgotButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         forgotButton.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(forgotButton)
+
+        // Error Label
+        errorLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        errorLabel.textColor = .systemRed
+        errorLabel.textAlignment = .center
+        errorLabel.numberOfLines = 2
+        errorLabel.alpha = 0
+        errorLabel.translatesAutoresizingMaskIntoConstraints = false
+        cardView.addSubview(errorLabel)
+
+        // Activity Indicator
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        cardView.addSubview(activityIndicator)
         
         // ===== Back Button =====
         var backConfig = UIButton.Configuration.filled()
@@ -203,9 +214,16 @@ final class LoginViewController: UIViewController {
             
             forgotButton.topAnchor.constraint(equalTo: passwordContainer.bottomAnchor, constant: 16),
             forgotButton.trailingAnchor.constraint(equalTo: passwordContainer.trailingAnchor),
-            
+
+            errorLabel.topAnchor.constraint(equalTo: forgotButton.bottomAnchor, constant: 12),
+            errorLabel.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 40),
+            errorLabel.trailingAnchor.constraint(equalTo: cardView.trailingAnchor, constant: -40),
+
+            activityIndicator.centerYAnchor.constraint(equalTo: loginButton.centerYAnchor),
+            activityIndicator.trailingAnchor.constraint(equalTo: loginButton.leadingAnchor, constant: -16),
+
             // ===== Back + Login Buttons (equal width + 15 spacing) =====
-            backButton.topAnchor.constraint(equalTo: forgotButton.bottomAnchor, constant: 42),
+            backButton.topAnchor.constraint(equalTo: errorLabel.bottomAnchor, constant: 30),
             backButton.leadingAnchor.constraint(equalTo: cardView.leadingAnchor, constant: 40),
             backButton.heightAnchor.constraint(equalToConstant: 58),
             backButton.bottomAnchor.constraint(equalTo: cardView.bottomAnchor, constant: -48),
@@ -234,23 +252,44 @@ final class LoginViewController: UIViewController {
         }
     }
     
+    // MARK: - ViewModel Binding
+    private func bindViewModel() {
+        viewModel.onLoginStarted = { [weak self] in
+            guard let self else { return }
+            self.errorLabel.alpha = 0
+            self.loginButton.isEnabled = false
+            self.activityIndicator.startAnimating()
+        }
+
+        viewModel.onLoginFailure = { [weak self] message in
+            guard let self else { return }
+            self.activityIndicator.stopAnimating()
+            self.loginButton.isEnabled = true
+            self.errorLabel.text = message
+            UIView.animate(withDuration: 0.2) {
+                self.errorLabel.alpha = 1
+            }
+        }
+
+        viewModel.onLoginSuccess = { [weak self] in
+            guard let self else { return }
+            self.activityIndicator.stopAnimating()
+            self.loginButton.isEnabled = true
+            self.dismiss(animated: true) {
+                self.onLoginSuccess?()
+            }
+        }
+    }
+
     // MARK: - Actions
     @objc private func backTapped() {
         dismiss(animated: true)
     }
-    
+
     @objc private func loginTapped() {
         let email = emailTextField.text ?? ""
         let password = passwordTextField.text ?? ""
-        
-        guard !email.isEmpty, !password.isEmpty else { return }
-        
-        AuthManager.shared.isLoggedIn = true
-        AuthManager.shared.userName = "Alex"
-        
-        dismiss(animated: true) {
-            self.onLoginSuccess?()
-        }
+        viewModel.login(email: email, password: password)
     }
     
     // Menu button se dismiss

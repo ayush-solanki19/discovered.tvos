@@ -14,6 +14,7 @@ struct APIConstants {
     // MARK: - Endpoints
     struct Endpoints {
         static let homeVideoSpotlight = "appdashboard/homeVideoSpotlight"
+        static let allowLoginAccess = "authentication/allow_login_access"
     }
     
     // MARK: - Full URL Generator

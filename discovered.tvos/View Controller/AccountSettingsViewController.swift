@@ -91,12 +91,12 @@ final class AccountSettingsViewController: UIViewController {
         premiumBadge.translatesAutoresizingMaskIntoConstraints = false
         profileCard.addSubview(premiumBadge)
         
-        memberSinceLabel.text = "Member Since          Oct 2021"
+        memberSinceLabel.text = AuthManager.shared.userEmail ?? "—"
         memberSinceLabel.font = .systemFont(ofSize: 18, weight: .regular)
         memberSinceLabel.textColor = UIColor(white: 0.7, alpha: 1)
         memberSinceLabel.translatesAutoresizingMaskIntoConstraints = false
         profileCard.addSubview(memberSinceLabel)
-        
+
         watchTimeLabel.text = "Total Watch Time    1,402 hrs"
         watchTimeLabel.font = .systemFont(ofSize: 18, weight: .regular)
         watchTimeLabel.textColor = UIColor(white: 0.7, alpha: 1)

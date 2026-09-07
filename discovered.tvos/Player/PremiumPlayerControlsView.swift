@@ -9,20 +9,25 @@ import SwiftUI
 
 struct PremiumPlayerControlsView: View {
     @FocusState private var focusedControl: FocusedControl?
+    @State private var isQualityMenuOpen = false
 
     var currentTime: String = "0:00"
     var remainingTime: String = "0:00"
     var progress: Double = 0
     @Binding var isPlaying: Bool
     var totalTime: String = "0:00"
+    var availableQualities: [String] = []
+    @Binding var selectedQuality: String
     var onPlayPause: (() -> Void)?
     var onSeekForward: (() -> Void)?
     var onSeekBackward: (() -> Void)?
+    var onQualityMenuStateChanged: ((Bool) -> Void)?
 
     enum FocusedControl: Hashable {
         case backward
         case playButton
         case forward
+        case quality
         case cc
         case audio
         case settings
@@ -120,7 +125,48 @@ struct PremiumPlayerControlsView: View {
 
                 // Right side: Quality and settings
                 HStack(spacing: 24) {
-                    QualityBadge(quality: "4K", audio: "5.1")
+                    if !availableQualities.isEmpty {
+                        Menu {
+                            ForEach(availableQualities, id: \.self) { quality in
+                                Button(action: {
+                                    selectedQuality = quality
+                                    isQualityMenuOpen = false
+                                    onQualityMenuStateChanged?(false)
+                                }) {
+                                    if selectedQuality == quality {
+                                        Label(quality, systemImage: "checkmark")
+                                    } else {
+                                        Text(quality)
+                                    }
+                                }
+                            }
+                        } label: {
+                            Text(selectedQuality.isEmpty ? "Quality" : selectedQuality)
+                                .font(.system(size: 11, weight: .semibold))
+                                .foregroundColor(isQualityMenuOpen ? .black : .white)
+                                .frame(minWidth: 70, alignment: .center)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background(isQualityMenuOpen ? Color.white : Color(red: 1, green: 1, blue: 1, opacity: focusedControl == .quality ? 0.2 : 0.08))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .stroke(Color(red: 1, green: 1, blue: 1, opacity: focusedControl == .quality ? 0.3 : 0.15), lineWidth: 0.8)
+                                )
+                                .cornerRadius(6)
+                        }
+                        .scaleEffect(focusedControl == .quality ? 1.08 : 1.0)
+                        .animation(.easeInOut(duration: 0.15), value: focusedControl == .quality)
+                        .focused($focusedControl, equals: .quality)
+                        .onChange(of: focusedControl) { oldValue, newValue in
+                            if newValue == .quality {
+                                isQualityMenuOpen = true
+                                onQualityMenuStateChanged?(true)
+                            } else if oldValue == .quality {
+                                isQualityMenuOpen = false
+                                onQualityMenuStateChanged?(false)
+                            }
+                        }
+                    }
 
                     Button(action: {}) {
                         Image(systemName: "captions.bubble")
@@ -166,8 +212,7 @@ struct PremiumPlayerControlsView: View {
                 endPoint: .top
             )
         )
-        .padding(.horizontal, -40)
-        .padding(.vertical, -12)
+        .padding(.horizontal, 0)
     }
 
     private func onForward() {
@@ -267,6 +312,8 @@ struct QualityBadge: View {
             PremiumPlayerControlsView(
                 progress: 0.45,
                 isPlaying: .constant(true),
+                availableQualities: ["Auto", "1080p", "720p"],
+                selectedQuality: .constant("Auto"),
                 onPlayPause: {}
             )
         }

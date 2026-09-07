@@ -75,7 +75,7 @@ struct EndOfVideoCardView: View {
             HStack(spacing: 16) {
                 ZStack {
                     Circle()
-                        .trim(from: 0, to: CGFloat(countdown) / 30.0)
+                        .trim(from: 0, to: CGFloat(countdown) / 10.0)
                         .stroke(
                             LinearGradient(
                                 gradient: Gradient(colors: [
