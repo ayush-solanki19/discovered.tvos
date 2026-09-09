@@ -99,7 +99,9 @@ class HomeViewModel {
                                         description: video.description,
                                         duration: video.videoDuration,
                                         genre: video.genreName,
-                                        userName: video.userName
+                                        userName: video.userName,
+                                        userId: video.userId,
+                                        userPic: video.userPic
                                     )
                                     videos.append(item)
                                     allVideos.append(item)

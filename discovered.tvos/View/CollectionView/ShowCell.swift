@@ -118,37 +118,211 @@ class ShowCell: UICollectionViewCell {
     }
 }
 
-extension UIImageView {
-    func setImage(from urlString: String?, placeholder: String = "", isHeroBanner: Bool = false) {
-        self.image = UIImage(named: placeholder)
-        
-        guard let urlString = urlString, !urlString.isEmpty else { return }
-        
-        var finalUrlString = urlString
-        if isHeroBanner {
-            finalUrlString = urlString
-                .replacingOccurrences(of: "_thumbnail_thumb", with: "_original_thumbnail")
-                .replacingOccurrences(of: "_thumb", with: "")
-        }
-        
-        guard let url = URL(string: finalUrlString) else { return }
+// MARK: - Image Loading
 
-        URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-            guard let data = data, error == nil, let image = UIImage(data: data) else {
-                // Agar original image fail ho toh fallback to original url
-                if isHeroBanner, let fallbackUrl = URL(string: urlString) {
-                    URLSession.shared.dataTask(with: fallbackUrl) { fallbackData, _, _ in
-                        if let fData = fallbackData, let fbImg = UIImage(data: fData) {
-                            DispatchQueue.main.async { self?.image = fbImg }
-                        }
-                    }.resume()
-                }
+/// Shared, cached image loader.
+///
+/// Every remote image used to be downloaded again on each cell reuse and
+/// then decoded on the main thread (assigning a freshly created `UIImage`
+/// defers decoding to the next render pass). On tvOS that showed up as a
+/// long hitch whenever a batch of new cells appeared at once — e.g. when
+/// the hero collapses and the rail area suddenly grows.
+final class ImageLoader {
+
+    static let shared = ImageLoader()
+
+    private let cache = NSCache<NSString, UIImage>()
+
+    private init() {
+        cache.countLimit = 240
+    }
+
+    func cachedImage(for key: String) -> UIImage? {
+        cache.object(forKey: key as NSString)
+    }
+
+    @discardableResult
+    func load(
+        _ urlString: String,
+        completion: @escaping (UIImage?) -> Void
+    ) -> URLSessionDataTask? {
+
+        if let cached = cachedImage(for: urlString) {
+            completion(cached)
+            return nil
+        }
+
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return nil
+        }
+
+        let task = URLSession.shared.dataTask(
+            with: url
+        ) { [weak self] data, _, _ in
+
+            guard
+                let data,
+                let raw = UIImage(data: data)
+            else {
+                DispatchQueue.main.async { completion(nil) }
                 return
             }
-            
-            DispatchQueue.main.async {
-                self?.image = image
+
+            // Force the (expensive) decode here, off the main thread.
+            let ready = raw.preparingForDisplay() ?? raw
+
+            self?.cache.setObject(
+                ready,
+                forKey: urlString as NSString
+            )
+
+            DispatchQueue.main.async { completion(ready) }
+        }
+
+        task.resume()
+
+        return task
+    }
+}
+
+private enum ImageViewAssociatedKeys {
+    nonisolated(unsafe) static var task: UInt8 = 0
+    nonisolated(unsafe) static var urlString: UInt8 = 0
+}
+
+extension UIImageView {
+
+    private var inFlightImageTask: URLSessionDataTask? {
+
+        get {
+            objc_getAssociatedObject(
+                self,
+                &ImageViewAssociatedKeys.task
+            ) as? URLSessionDataTask
+        }
+
+        set {
+            objc_setAssociatedObject(
+                self,
+                &ImageViewAssociatedKeys.task,
+                newValue,
+                .OBJC_ASSOCIATION_RETAIN_NONATOMIC
+            )
+        }
+    }
+
+    private var currentImageURLString: String? {
+
+        get {
+            objc_getAssociatedObject(
+                self,
+                &ImageViewAssociatedKeys.urlString
+            ) as? String
+        }
+
+        set {
+            objc_setAssociatedObject(
+                self,
+                &ImageViewAssociatedKeys.urlString,
+                newValue,
+                .OBJC_ASSOCIATION_RETAIN_NONATOMIC
+            )
+        }
+    }
+
+    func setImage(
+        from urlString: String?,
+        placeholder: String = "",
+        isHeroBanner: Bool = false
+    ) {
+
+        // A reused cell must not be filled in by its previous request.
+        inFlightImageTask?.cancel()
+        inFlightImageTask = nil
+
+        guard
+            let urlString,
+            !urlString.isEmpty
+        else {
+            currentImageURLString = nil
+            image = placeholder.isEmpty
+                ? nil
+                : UIImage(named: placeholder)
+            return
+        }
+
+        var finalUrlString = urlString
+
+        if isHeroBanner {
+            finalUrlString = urlString
+                .replacingOccurrences(
+                    of: "_thumbnail_thumb",
+                    with: "_original_thumbnail"
+                )
+                .replacingOccurrences(
+                    of: "_thumb",
+                    with: ""
+                )
+        }
+
+        // Already showing exactly this image — nothing to do.
+        if currentImageURLString == finalUrlString,
+           image != nil {
+            return
+        }
+
+        currentImageURLString = finalUrlString
+
+        if let cached =
+            ImageLoader.shared.cachedImage(for: finalUrlString) {
+
+            image = cached
+            return
+        }
+
+        image = placeholder.isEmpty
+            ? nil
+            : UIImage(named: placeholder)
+
+        inFlightImageTask = ImageLoader.shared.load(
+            finalUrlString
+        ) { [weak self] loaded in
+
+            guard
+                let self,
+                self.currentImageURLString == finalUrlString
+            else {
+                return
             }
-        }.resume()
+
+            if let loaded {
+                self.image = loaded
+                return
+            }
+
+            // Hero banners fall back to the unmodified URL.
+            guard
+                isHeroBanner,
+                finalUrlString != urlString
+            else {
+                return
+            }
+
+            self.inFlightImageTask = ImageLoader.shared.load(
+                urlString
+            ) { [weak self] fallback in
+
+                guard
+                    let self,
+                    self.currentImageURLString == finalUrlString,
+                    let fallback
+                else {
+                    return
+                }
+
+                self.image = fallback
+            }
+        }
     }
 }

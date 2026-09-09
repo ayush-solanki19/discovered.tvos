@@ -41,6 +41,8 @@ struct HomeVideoSection: Codable {
 // Individual Video Item Model
 struct VideoItem: Codable {
     let postId: String?
+    let userId: String?
+    let userPic: String?
     let title: String?
     let thumbImage: String?
     let videoFile: String?
@@ -53,6 +55,8 @@ struct VideoItem: Codable {
 
     enum CodingKeys: String, CodingKey {
         case postId = "post_id"
+        case userId = "user_id"
+        case userPic = "user_pic"
         case title
         case thumbImage = "ThumbImage"
         case videoFile
@@ -68,6 +72,8 @@ struct VideoItem: Codable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         postId = try? container.decode(String.self, forKey: .postId)
+        userId = try? container.decode(String.self, forKey: .userId)
+        userPic = try? container.decode(String.self, forKey: .userPic)
         title = try? container.decode(String.self, forKey: .title)
         thumbImage = try? container.decode(String.self, forKey: .thumbImage)
         videoFile = try? container.decode(String.self, forKey: .videoFile)

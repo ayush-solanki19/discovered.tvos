@@ -18,6 +18,8 @@ struct VideoDetailDisplayModel {
     let bannerImageUrl: String
     let videoUrl: String?
     let userCategory: String
+    let userId: String?
+    let userPic: String?
     let similarVideos: [ShowItem]
 }
 
@@ -53,6 +55,8 @@ class DetailViewModel {
             bannerImageUrl: selectedVideo.imageName,
             videoUrl: selectedVideo.videoUrl,
             userCategory: "Brand",
+            userId: selectedVideo.userId,
+            userPic: selectedVideo.userPic,
             similarVideos: related.isEmpty ? HomeViewModel.shared.shows : related
         )
     }

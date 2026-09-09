@@ -149,4 +149,135 @@ class NetworkManager {
             }
         }.resume()
     }
+
+    // MARK: - Get User Profile
+    func getUserProfile(
+        userId: String = "215",
+        timeZoneOffset: String = "-530",
+        completion: @escaping (Result<UserProfileResponse, Error>) -> Void
+    ) {
+        guard let token = AuthManager.shared.authToken else {
+            completion(.failure(NetworkError.server(message: "No auth token available")))
+            return
+        }
+
+        let baseURLString = APIConstants.getFullURL(for: APIConstants.Endpoints.getUserProfile)
+        let principal = "83d63cf713964c3eccf7e87480ee5b7d0fd02a23a46f16a0f619d280c0492563"
+        let urlString = "\(baseURLString)?principal=\(principal)"
+
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NetworkError.invalidURL))
+            return
+        }
+
+        // Create form-data body
+        let boundary = "Boundary-\(UUID().uuidString)"
+        var body = Data()
+
+        // Add user_id parameter
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"user_id\"\r\n\r\n".data(using: .utf8)!)
+        body.append("\(userId)\r\n".data(using: .utf8)!)
+
+        // Add TimeZoneOffset parameter
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"TimeZoneOffset\"\r\n\r\n".data(using: .utf8)!)
+        body.append("\(timeZoneOffset)\r\n".data(using: .utf8)!)
+
+        // End boundary
+        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue(token, forHTTPHeaderField: "Authorization")
+        request.setValue("ANDROID", forHTTPHeaderField: "device")
+        request.httpBody = body
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let data = data else {
+                completion(.failure(NetworkError.noData))
+                return
+            }
+
+            do {
+                let decodedResponse = try JSONDecoder().decode(UserProfileResponse.self, from: data)
+                completion(.success(decodedResponse))
+            } catch {
+                print("Get Profile Decoding Error: \(error)")
+                print("Response: \(String(data: data, encoding: .utf8) ?? "Unable to decode")")
+                completion(.failure(NetworkError.decodingFailed))
+            }
+        }.resume()
+    }
+
+    // MARK: - My Channel
+
+    /// Loads a creator's channel (profile + their videos).
+    ///
+    /// The endpoint accepts requests without an Authorization header, so this
+    /// also works while logged out; the token is sent when one is available.
+    func fetchMyChannel(
+        userId: String,
+        completion: @escaping (Result<ChannelResponse, Error>) -> Void
+    ) {
+        let baseURLString = APIConstants.getFullURL(for: APIConstants.Endpoints.myChannel)
+        let principal = "83d63cf713964c3eccf7e87480ee5b7d0fd02a23a46f16a0f619d280c0492563"
+        let urlString = "\(baseURLString)?principal=\(principal)"
+
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NetworkError.invalidURL))
+            return
+        }
+
+        let boundary = "Boundary-\(UUID().uuidString)"
+        var body = Data()
+
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"user_id\"\r\n\r\n".data(using: .utf8)!)
+        body.append("\(userId)\r\n".data(using: .utf8)!)
+        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue("ANDROID", forHTTPHeaderField: "device")
+        if let token = AuthManager.shared.authToken {
+            request.setValue(token, forHTTPHeaderField: "Authorization")
+        }
+        request.httpBody = body
+
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let data = data else {
+                completion(.failure(NetworkError.noData))
+                return
+            }
+
+            do {
+                let decoded = try JSONDecoder().decode(ChannelResponse.self, from: data)
+
+                guard decoded.status == 1 else {
+                    completion(.failure(NetworkError.server(
+                        message: decoded.message ?? "Unable to load this channel."
+                    )))
+                    return
+                }
+
+                completion(.success(decoded))
+            } catch {
+                print("My Channel Decoding Error: \(error)")
+                completion(.failure(NetworkError.decodingFailed))
+            }
+        }.resume()
+    }
 }

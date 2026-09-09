@@ -83,7 +83,11 @@ class SimilarShowCell: UICollectionViewCell {
     }
 
     func configure(with item: ShowItem) {
-        posterImageView.image = UIImage(named: item.imageName) ?? UIImage(named: "")
+        if item.imageName.hasPrefix("http") {
+            posterImageView.setImage(from: item.imageName)
+        } else {
+            posterImageView.image = UIImage(named: item.imageName) ?? UIImage(named: "")
+        }
         titleLabel.text = item.title
     }
 

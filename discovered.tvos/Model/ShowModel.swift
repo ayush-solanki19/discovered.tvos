@@ -19,6 +19,9 @@ struct ShowItem {
     let userName: String?
     let rating: String?
     let year: String?
+    /// Channel owner. Needed to open the creator's channel screen.
+    let userId: String?
+    let userPic: String?
 
     init(
         title: String,
@@ -29,7 +32,9 @@ struct ShowItem {
         genre: String? = nil,
         userName: String? = nil,
         rating: String? = "4.5/5",
-        year: String? = "2026"
+        year: String? = "2026",
+        userId: String? = nil,
+        userPic: String? = nil
     ) {
         self.title = title
         self.imageName = imageName
@@ -40,6 +45,8 @@ struct ShowItem {
         self.userName = userName
         self.rating = rating
         self.year = year
+        self.userId = userId
+        self.userPic = userPic
     }
 }
 

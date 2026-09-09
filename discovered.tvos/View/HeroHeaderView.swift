@@ -10,6 +10,7 @@ final class HeroHeaderView: UIView {
     private let descriptionLabel = UILabel()
     private var player: AVPlayer?
     private var playerLayer: AVPlayerLayer?
+    private var currentVideoUrlString: String?
 
     override init(frame: CGRect) { super.init(frame: frame); setupLayout() }
     required init?(coder: NSCoder) { super.init(coder: coder); setupLayout() }
@@ -76,9 +77,20 @@ final class HeroHeaderView: UIView {
     }
 
     func updateHeroData(title: String, imageName: String, videoUrl: String? = nil, genre: String? = nil) {
+        updateHeroText(title: title, genre: genre)
+        updateHeroMedia(imageName: imageName, videoUrl: videoUrl)
+    }
+
+    /// Cheap part — safe to run on every focus change.
+    func updateHeroText(title: String, genre: String? = nil) {
         titleLabel.text = title
         metaLabel.text = genre ?? "Drama"
         descriptionLabel.text = "A heartwarming tale of love, dreams and unexpected journeys that change everything."
+    }
+
+    /// Expensive part — a full-resolution image download plus a new
+    /// `AVPlayerItem`. Callers should debounce this while focus is moving.
+    func updateHeroMedia(imageName: String, videoUrl: String?) {
         setImage(imageName)
         playVideo(urlString: videoUrl)
     }
@@ -95,7 +107,18 @@ final class HeroHeaderView: UIView {
     }
 
     private func playVideo(urlString: String?) {
-        guard let urlString, let url = URL(string: urlString) else { player?.pause(); return }
+        guard let urlString, let url = URL(string: urlString) else {
+            currentVideoUrlString = nil
+            player?.pause()
+            player?.replaceCurrentItem(with: nil)
+            return
+        }
+
+        // Rebuilding the player item for a video that is already playing
+        // is pure main-thread cost for no visible change.
+        guard currentVideoUrlString != urlString else { return }
+        currentVideoUrlString = urlString
+
         let item = AVPlayerItem(url: url)
         if player == nil { player = AVPlayer(playerItem: item); playerLayer?.player = player }
         else { player?.replaceCurrentItem(with: item) }

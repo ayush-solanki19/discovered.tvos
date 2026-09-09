@@ -14,8 +14,9 @@ class DetailViewController: UIViewController {
 
     // Focus Guides
     private let actionToSimilarFocusGuide = UIFocusGuide()
-    private let backToActionFocusGuide = UIFocusGuide()
-    private let similarToPlayFocusGuide = UIFocusGuide()
+    private let actionToBackFocusGuide = UIFocusGuide()
+
+    private weak var lastFocusedActionButton: UIButton?
 
     // Side Drawer Views
     private let dimView = UIView()
@@ -86,6 +87,13 @@ class DetailViewController: UIViewController {
 
         sideMenuLeadingConstraint.constant = -sideMenuWidth
         dimView.alpha = 0
+        setSideMenuFocusable(false)
+    }
+
+    private func setSideMenuFocusable(_ focusable: Bool) {
+        sideMenuView.isHidden = !focusable
+        sideMenuView.isUserInteractionEnabled = focusable
+        dimView.isUserInteractionEnabled = focusable
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -93,6 +101,7 @@ class DetailViewController: UIViewController {
         view.bringSubviewToFront(dimView)
         view.bringSubviewToFront(sideMenuView)
         view.bringSubviewToFront(backButton)
+        setSideMenuFocusable(homeViewModel.isSideMenuOpen)
 
         setNeedsFocusUpdate()
         updateFocusIfNeeded()
@@ -110,8 +119,7 @@ class DetailViewController: UIViewController {
         }
     }
 
-    private func bindViewModel() {
-    }
+    private func bindViewModel() {}
 
     // MARK: - Fetch Similar Content
     private func fetchSimilarContent() {
@@ -149,9 +157,12 @@ class DetailViewController: UIViewController {
 
         // Back Button
         var backConfig = UIButton.Configuration.plain()
-        backConfig.image = UIImage(systemName: "chevron.left")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 24, weight: .semibold))
+        backConfig.image = UIImage(systemName: "chevron.left")?
+            .withConfiguration(UIImage.SymbolConfiguration(pointSize: 28, weight: .semibold))
         backConfig.baseForegroundColor = .white
+        backConfig.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16)
         backButton.configuration = backConfig
+        backButton.contentHorizontalAlignment = .center
         backButton.addTarget(self, action: #selector(didTapBack), for: .primaryActionTriggered)
         view.addSubview(backButton)
 
@@ -161,7 +172,7 @@ class DetailViewController: UIViewController {
         titleLabel.textColor = .white
         contentView.addSubview(titleLabel)
 
-        // Metadata Stack (Stars, Rating, Year, Duration, Genre)
+        // Metadata Stack
         metaStackView.axis = .horizontal
         metaStackView.spacing = 14
         metaStackView.alignment = .center
@@ -217,7 +228,7 @@ class DetailViewController: UIViewController {
         starringLabel.numberOfLines = 2
         contentView.addSubview(starringLabel)
 
-        // Action Buttons (Play & Visit Profile)
+        // Action Buttons
         actionButtonStack.axis = .horizontal
         actionButtonStack.spacing = 16
         actionButtonStack.alignment = .fill
@@ -367,10 +378,11 @@ class DetailViewController: UIViewController {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
 
+            // Back Button - 80 width for better focus geometry
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            backButton.widthAnchor.constraint(equalToConstant: 48),
-            backButton.heightAnchor.constraint(equalToConstant: 48),
+            backButton.widthAnchor.constraint(equalToConstant: 80),
+            backButton.heightAnchor.constraint(equalToConstant: 64),
 
             bannerImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             bannerImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -407,7 +419,6 @@ class DetailViewController: UIViewController {
             similarCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             similarCollectionView.heightAnchor.constraint(equalToConstant: 310),
 
-            // Related Videos
             relatedTitleLabel.topAnchor.constraint(equalTo: similarCollectionView.bottomAnchor, constant: 40),
             relatedTitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
 
@@ -438,45 +449,78 @@ class DetailViewController: UIViewController {
         ])
     }
 
-    // MARK: - Focus Guides
+    // MARK: - Focus Guides (Most Reliable Version)
+
     private func setupFocusGuides() {
+        // Important: Attach the back guide to actionButtonStack
+        actionButtonStack.addLayoutGuide(actionToBackFocusGuide)
         view.addLayoutGuide(actionToSimilarFocusGuide)
-        view.addLayoutGuide(backToActionFocusGuide)
-        view.addLayoutGuide(similarToPlayFocusGuide)
 
         NSLayoutConstraint.activate([
+            // Back Button Guide - covers large area above the action buttons
+            actionToBackFocusGuide.topAnchor.constraint(equalTo: actionButtonStack.topAnchor, constant: -500),
+            actionToBackFocusGuide.bottomAnchor.constraint(equalTo: actionButtonStack.topAnchor),
+            actionToBackFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            actionToBackFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+            // Similar Content Guide
             actionToSimilarFocusGuide.topAnchor.constraint(equalTo: actionButtonStack.bottomAnchor),
             actionToSimilarFocusGuide.bottomAnchor.constraint(equalTo: similarCollectionView.topAnchor),
             actionToSimilarFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             actionToSimilarFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-
-            backToActionFocusGuide.topAnchor.constraint(equalTo: backButton.bottomAnchor),
-            backToActionFocusGuide.bottomAnchor.constraint(equalTo: actionButtonStack.topAnchor),
-            backToActionFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            backToActionFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-
-            similarToPlayFocusGuide.topAnchor.constraint(equalTo: view.topAnchor),
-            similarToPlayFocusGuide.bottomAnchor.constraint(equalTo: similarCollectionView.topAnchor),
-            similarToPlayFocusGuide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            similarToPlayFocusGuide.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
 
+        // Initial preferred
+        actionToBackFocusGuide.preferredFocusEnvironments = [backButton]
         actionToSimilarFocusGuide.preferredFocusEnvironments = [similarCollectionView]
-        backToActionFocusGuide.preferredFocusEnvironments = [playButton]
-        similarToPlayFocusGuide.preferredFocusEnvironments = [playButton]
+    }
+
+    private func isActionRowView(_ view: UIView) -> Bool {
+        return view.isDescendant(of: actionButtonStack)
+    }
+
+    private func updateFocusGuides(for focused: UIView?) {
+        let actionTarget: UIFocusEnvironment = lastFocusedActionButton ?? playButton
+
+        guard let focused else {
+            actionToBackFocusGuide.preferredFocusEnvironments = [backButton]
+            actionToSimilarFocusGuide.preferredFocusEnvironments = [similarCollectionView]
+            return
+        }
+
+        if isActionRowView(focused) {
+            lastFocusedActionButton = focused as? UIButton
+
+            // From Play / Visit Profile → Up goes to Back Button
+            actionToBackFocusGuide.preferredFocusEnvironments = [backButton]
+            actionToSimilarFocusGuide.preferredFocusEnvironments = [similarCollectionView]
+            return
+        }
+
+        if focused === backButton {
+            // From Back Button → Down goes to last action button
+            actionToBackFocusGuide.preferredFocusEnvironments = [actionTarget]
+            return
+        }
+
+        if focused.isDescendant(of: similarCollectionView) {
+            actionToSimilarFocusGuide.preferredFocusEnvironments = [actionTarget]
+        }
     }
 
     override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
         super.didUpdateFocus(in: context, with: coordinator)
+        updateFocusGuides(for: context.nextFocusedView)
     }
 
     // MARK: - Actions
     @objc private func didTapBack() {
-        navigationController?.popViewController(animated: true)
+        self.dismiss(animated: true)
     }
 
     private func openSideMenu() {
         homeViewModel.isSideMenuOpen = true
+        setSideMenuFocusable(true)
         sideMenuLeadingConstraint.constant = 0
 
         view.bringSubviewToFront(dimView)
@@ -499,6 +543,7 @@ class DetailViewController: UIViewController {
             self.dimView.alpha = 0
             self.view.layoutIfNeeded()
         } completion: { _ in
+            self.setSideMenuFocusable(false)
             self.setNeedsFocusUpdate()
             self.updateFocusIfNeeded()
         }
@@ -550,10 +595,24 @@ class DetailViewController: UIViewController {
     }
 
     @objc private func didTapVisitProfile() {
+        let detail = viewModel.videoDetail
+
+        guard let userId = detail.userId, !userId.isEmpty else {
+            print("Visit Profile: no user_id on this video")
+            return
+        }
+
+        let channelVC = ChannelViewController(
+            userId: userId,
+            userName: detail.starring,
+            userPic: detail.userPic
+        )
+        channelVC.modalPresentationStyle = .fullScreen
+
         if let nav = navigationController {
-            nav.popViewController(animated: true)
+            nav.pushViewController(channelVC, animated: true)
         } else {
-            dismiss(animated: true, completion: nil)
+            present(channelVC, animated: true)
         }
     }
 
@@ -668,5 +727,4 @@ extension DetailViewController: UICollectionViewDataSource, UICollectionViewDele
 
         self.present(playerVC, animated: true)
     }
-
 }
