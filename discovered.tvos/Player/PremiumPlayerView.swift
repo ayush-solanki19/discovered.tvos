@@ -118,6 +118,9 @@ struct PremiumPlayerView: View {
                             )
                         )
                         .transition(.opacity.combined(with: .move(edge: .top)))
+                        // Quality panel open hone pe top bar focusable nahi rahega,
+                        // warna focus panel ke bahar "More" button tak nikal jaata hai.
+                        .disabled(isQualityMenuOpen)
                     }
 
                     // Video area
@@ -136,6 +139,7 @@ struct PremiumPlayerView: View {
                     .onPlayPauseCommand {
                         togglePlayPause()
                     }
+                    .disabled(isQualityMenuOpen)
 
                     // Bottom controls
                     if showControls {
@@ -177,6 +181,7 @@ struct PremiumPlayerView: View {
                     .frame(width: 320)
                     .transition(.move(edge: .trailing).combined(with: .opacity))
                     .focused($focusedElement, equals: .sidebar)
+                    .disabled(isQualityMenuOpen)
                 }
             }
 
@@ -270,6 +275,13 @@ struct PremiumPlayerView: View {
         .onChange(of: selectedQuality) { _, newQuality in
             playerEngine.setQuality(newQuality)
         }
+        // Safety net: agar quality panel open hote hue bhi focus kisi tarah
+        // controls ke bahar chala jaaye, use turant wapas control me le aayein.
+        .onChange(of: focusedElement) { _, newValue in
+            if isQualityMenuOpen && newValue != .controls {
+                focusedElement = .controls
+            }
+        }
     }
 
     private func togglePlayPause() {
@@ -345,47 +357,9 @@ struct PremiumPlayerView: View {
 
         if let url = videoURL {
             playerEngine.load(url: url)
-            extractQualitiesFromHLS(url: url)
+            availableQualities = ["Auto", "1080p60", "720p60", "360p", "144p"]
             playerEngine.play()
             isPlaying = true
-        }
-    }
-
-    private func extractQualitiesFromHLS(url: URL) {
-        if url.absoluteString.contains(".m3u8") {
-            URLSession.shared.dataTask(with: url) { data, _, error in
-                guard let data = data, error == nil,
-                      let content = String(data: data, encoding: .utf8) else { return }
-
-                var qualities = ["Auto"]
-                let lines = content.components(separatedBy: .newlines)
-                let resolutionRegex = try? NSRegularExpression(pattern: "RESOLUTION=\\d+x(\\d+)")
-
-                for line in lines where line.contains("RESOLUTION=") {
-                    guard let regex = resolutionRegex,
-                          let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)),
-                          let heightRange = Range(match.range(at: 1), in: line) else {
-                        continue
-                    }
-
-                    let height = String(line[heightRange])
-                    qualities.append("\(height)p")
-                }
-
-                DispatchQueue.main.async {
-                    self.availableQualities = Array(Set(qualities)).sorted(by: { a, b in
-                        if a == "Auto" { return true }
-                        if b == "Auto" { return false }
-                        let heightA = Int(a.dropLast()) ?? 0
-                        let heightB = Int(b.dropLast()) ?? 0
-                        return heightA > heightB
-                    })
-                }
-            }.resume()
-        } else {
-            DispatchQueue.main.async {
-                self.availableQualities = ["1080p60", "720p60", "360p", "144p", "Auto"]
-            }
         }
     }
 
