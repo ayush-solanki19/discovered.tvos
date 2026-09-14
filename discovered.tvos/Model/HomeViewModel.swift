@@ -11,6 +11,7 @@ class HomeViewModel {
     var onSideMenuSelectionChanged: ((Int) -> Void)?
     var onDataUpdated: (() -> Void)?
     var onError: ((String) -> Void)?
+    var onLoadingChanged: ((Bool) -> Void)?
 
     private(set) var heroData: HeroContent!
     private(set) var sideMenuItems: [SideMenuItem] = []
@@ -62,8 +63,10 @@ class HomeViewModel {
 
     // MARK: - Dynamic API Call
     func fetchVideos(forMode mode: Int) {
+        onLoadingChanged?(true)
         NetworkManager.shared.fetchHomeVideoSpotlight(mode: mode, limit: 10, start: 0, timeZoneOffset: "+250") { [weak self] result in
             DispatchQueue.main.async {
+                self?.onLoadingChanged?(false)
                 switch result {
                 case .success(let response):
                     print("✅ API Response Success - status: \(response.status ?? 0)")

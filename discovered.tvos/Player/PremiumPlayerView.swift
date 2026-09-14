@@ -267,6 +267,9 @@ struct PremiumPlayerView: View {
             playerEngine.pause()
             isPlaying = false
         }
+        .onChange(of: selectedQuality) { _, newQuality in
+            playerEngine.setQuality(newQuality)
+        }
     }
 
     private func togglePlayPause() {
@@ -356,27 +359,32 @@ struct PremiumPlayerView: View {
 
                 var qualities = ["Auto"]
                 let lines = content.components(separatedBy: .newlines)
+                let resolutionRegex = try? NSRegularExpression(pattern: "RESOLUTION=\\d+x(\\d+)")
 
-                for (index, line) in lines.enumerated() {
-                    if line.contains("RESOLUTION=") {
-                        if let match = line.range(of: "RESOLUTION=\\d+x(\\d+)", options: .regularExpression) {
-                            let resolution = String(line[match])
-                            qualities.append(resolution)
-                        }
+                for line in lines where line.contains("RESOLUTION=") {
+                    guard let regex = resolutionRegex,
+                          let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)),
+                          let heightRange = Range(match.range(at: 1), in: line) else {
+                        continue
                     }
+
+                    let height = String(line[heightRange])
+                    qualities.append("\(height)p")
                 }
 
                 DispatchQueue.main.async {
                     self.availableQualities = Array(Set(qualities)).sorted(by: { a, b in
                         if a == "Auto" { return true }
                         if b == "Auto" { return false }
-                        return a > b
+                        let heightA = Int(a.dropLast()) ?? 0
+                        let heightB = Int(b.dropLast()) ?? 0
+                        return heightA > heightB
                     })
                 }
             }.resume()
         } else {
             DispatchQueue.main.async {
-                self.availableQualities = ["Auto", "1080p", "720p", "480p"]
+                self.availableQualities = ["1080p60", "720p60", "360p", "144p", "Auto"]
             }
         }
     }

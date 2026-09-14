@@ -17,6 +17,7 @@ struct APIConstants {
         static let allowLoginAccess = "authentication/allow_login_access"
         static let getUserProfile = "appdashboard/profile"
         static let myChannel = "appdashboard/my_channel"
+        static let searchContent = "appdashboard/get_mysearch_content_new"
     }
     
     // MARK: - Full URL Generator

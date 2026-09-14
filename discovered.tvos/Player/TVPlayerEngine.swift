@@ -37,6 +37,7 @@ class TVPlayerEngine: NSObject {
     private var rateObservation: NSKeyValueObservation?
 
     private let seekInterval: TimeInterval = 10.0
+    private var preferredQuality: String = "Auto"
 
     // MARK: - Init
     override init() {
@@ -75,9 +76,17 @@ class TVPlayerEngine: NSObject {
 
         let asset = AVAsset(url: url)
         let playerItem = AVPlayerItem(asset: asset)
+        applyQualityRestriction(to: playerItem)
 
         observePlayerItem(playerItem)
         player.replaceCurrentItem(with: playerItem)
+    }
+
+    func setQuality(_ quality: String) {
+        preferredQuality = quality
+        if let item = player.currentItem {
+            applyQualityRestriction(to: item)
+        }
     }
 
     func play() {
@@ -172,6 +181,19 @@ class TVPlayerEngine: NSObject {
                 self.delegate?.playerEngine(self, bufferingRangeDidChange: timeRange)
             }
         }
+    }
+
+    private func applyQualityRestriction(to item: AVPlayerItem) {
+        if preferredQuality.lowercased() == "auto" {
+            item.preferredMaximumResolution = .zero
+        } else if let height = heightValue(from: preferredQuality) {
+            item.preferredMaximumResolution = CGSize(width: .greatestFiniteMagnitude, height: height)
+        }
+    }
+
+    private func heightValue(from quality: String) -> Double? {
+        guard let pIndex = quality.firstIndex(where: { $0 == "p" || $0 == "P" }) else { return nil }
+        return Double(quality[..<pIndex])
     }
 
     private func updateDuration(from item: AVPlayerItem) {

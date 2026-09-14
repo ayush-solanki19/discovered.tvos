@@ -19,7 +19,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="discovered_logo" translatesAutoresizingMaskIntoConstraints="NO" id="icN-hZ-Ry6">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AppIcon-HomeScreen-400x240-Front" translatesAutoresizingMaskIntoConstraints="NO" id="icN-hZ-Ry6">
                                 <rect key="frame" x="500" y="500" width="920" height="80"/>
                             </imageView>
                         </subviews>
@@ -39,7 +39,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="discovered_logo" width="199" height="47"/>
+        <image name="AppIcon-HomeScreen-400x240-Front" width="400" height="240"/>
         <systemColor name="viewFlipsideBackgroundColor">
             <color red="0.12156862745098039" green="0.12941176470588237" blue="0.14117647058823529" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

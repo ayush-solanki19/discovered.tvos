@@ -1,10 +1,12 @@
 {
   "images" : [
     {
+      "filename" : "AppIcon-HomeScreen-400x240-Front.png",
       "idiom" : "tv",
       "scale" : "1x"
     },
     {
+      "filename" : "AppIcon-HomeScreen-800x480-Front.png",
       "idiom" : "tv",
       "scale" : "2x"
     }

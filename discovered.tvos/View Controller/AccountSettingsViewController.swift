@@ -194,9 +194,12 @@ final class AccountSettingsViewController: UIViewController {
 
     private func fetchUserProfile() {
         isLoading = true
+        profileCard.showLoadingIndicator()
+
         NetworkManager.shared.getUserProfile { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
+                self?.profileCard.hideLoadingIndicator()
                 switch result {
                 case .success(let response):
                     self?.userProfile = UserProfile(from: response)

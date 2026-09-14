@@ -344,6 +344,12 @@ final class ViewController: UIViewController {
             for: .primaryActionTriggered
         )
 
+        searchButton.addTarget(
+            self,
+            action: #selector(searchTapped),
+            for: .primaryActionTriggered
+        )
+
         header.addSubview(searchButton)
         header.addSubview(profileButton)
 
@@ -774,6 +780,21 @@ final class ViewController: UIViewController {
 
             self.restoreHeaderFocusIfNeeded()
         }
+
+        viewModel.onError = { [weak self] message in
+            print("Home Error: \(message)")
+            self?.dashboardCard.hideLoadingIndicator()
+        }
+
+        viewModel.onLoadingChanged = { [weak self] isLoading in
+            guard let self = self else { return }
+
+            if isLoading {
+                self.dashboardCard.showLoadingIndicator()
+            } else {
+                self.dashboardCard.hideLoadingIndicator()
+            }
+        }
     }
 
     // MARK: - Sliders
@@ -1156,6 +1177,15 @@ final class ViewController: UIViewController {
     }
 
     // MARK: - Profile
+
+    @objc
+    private func searchTapped() {
+
+        let searchVC = SearchViewController()
+        let nav = UINavigationController(rootViewController: searchVC)
+        nav.modalPresentationStyle = .overFullScreen
+        present(nav, animated: true)
+    }
 
     @objc
     private func profileTapped() {

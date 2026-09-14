@@ -280,4 +280,76 @@ class NetworkManager {
             }
         }.resume()
     }
+
+    // MARK: - Search Content
+
+    @discardableResult
+    func searchContent(
+        query: String,
+        start: Int = 0,
+        limit: Int = 20,
+        completion: @escaping (Result<SearchResponse, Error>) -> Void
+    ) -> URLSessionDataTask? {
+        let urlString = APIConstants.getFullURL(for: APIConstants.Endpoints.searchContent)
+
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NetworkError.invalidURL))
+            return nil
+        }
+
+        let boundary = "Boundary-\(UUID().uuidString)"
+        var body = Data()
+        let formFields: [(String, String)] = [
+            ("search_query", query),
+            ("start", String(start)),
+            ("limit", String(limit))
+        ]
+
+        for (name, value) in formFields {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!)
+            body.append("\(value)\r\n".data(using: .utf8)!)
+        }
+        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+
+        var request = URLRequest(url: url, timeoutInterval: 60)
+        request.httpMethod = "POST"
+        request.httpBody = body
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.setValue("TIZEN", forHTTPHeaderField: "device")
+
+        if let token = AuthManager.shared.authToken {
+            request.setValue(token, forHTTPHeaderField: "Authorization")
+        }
+
+        let task = URLSession.shared.dataTask(with: request) { data, _, error in
+            if let error = error as NSError?, error.code != NSURLErrorCancelled {
+                completion(.failure(error))
+                return
+            }
+
+            guard let data = data else {
+                if error == nil {
+                    completion(.failure(NetworkError.noData))
+                }
+                return
+            }
+
+            do {
+                if let arrayResponse = try? JSONDecoder().decode([SearchContentItem].self, from: data) {
+                    completion(.success(SearchResponse(items: arrayResponse)))
+                    return
+                }
+
+                let decoded = try JSONDecoder().decode(SearchResponse.self, from: data)
+                completion(.success(decoded))
+            } catch {
+                print("Search Decoding Error: \(error)")
+                print("Response: \(String(data: data, encoding: .utf8) ?? "Unable to decode")")
+                completion(.failure(NetworkError.decodingFailed))
+            }
+        }
+        task.resume()
+        return task
+    }
 }

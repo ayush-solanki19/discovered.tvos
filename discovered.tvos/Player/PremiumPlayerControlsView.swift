@@ -2,14 +2,12 @@
 //  PremiumPlayerControlsView.swift
 //  discovered.tvos
 //
-//  Premium Apple TV video player controls with reference design
-//
 
 import SwiftUI
 
 struct PremiumPlayerControlsView: View {
     @FocusState private var focusedControl: FocusedControl?
-    @State private var isQualityMenuOpen = false
+    @State private var isSettingsPanelOpen = false
 
     var currentTime: String = "0:00"
     var remainingTime: String = "0:00"
@@ -24,30 +22,40 @@ struct PremiumPlayerControlsView: View {
     var onQualityMenuStateChanged: ((Bool) -> Void)?
 
     enum FocusedControl: Hashable {
-        case backward
-        case playButton
-        case forward
-        case quality
-        case cc
-        case audio
-        case settings
+        case backward, playButton, forward, cc, settings
+        case panelBack
+        case quality(Int)
+    }
+
+    private var sortedQualities: [String] {
+        let unique = Array(Set(availableQualities))
+        return unique.sorted { a, b in
+            if a.lowercased() == "auto" { return true }
+            if b.lowercased() == "auto" { return false }
+            let numA = Int(a.filter(\.isNumber)) ?? 0
+            let numB = Int(b.filter(\.isNumber)) ?? 0
+            return numA > numB
+        }
+    }
+
+    private func isHD(_ quality: String) -> Bool {
+        quality.contains("1080")
     }
 
     var body: some View {
         VStack(spacing: 8) {
-            // Progress bar at top - full width
+            // Progress
             ZStack(alignment: .leading) {
                 Capsule()
-                    .fill(Color(red: 1, green: 1, blue: 1, opacity: 0.1))
+                    .fill(Color.white.opacity(0.1))
                     .frame(height: 4)
-
                 Capsule()
                     .fill(
                         LinearGradient(
-                            gradient: Gradient(colors: [
+                            colors: [
                                 Color(red: 1, green: 0.42, blue: 0.21),
                                 Color(red: 1, green: 0.55, blue: 0.35)
-                            ]),
+                            ],
                             startPoint: .leading,
                             endPoint: .trailing
                         )
@@ -56,266 +64,217 @@ struct PremiumPlayerControlsView: View {
             }
             .padding(.horizontal, 40)
 
-            // Time display bar
+            // Time
             HStack {
                 Text(currentTime)
                     .font(.system(size: 11, weight: .medium, design: .monospaced))
                     .foregroundColor(.white)
-
                 Spacer()
-
                 Text(remainingTime)
                     .font(.system(size: 11, weight: .medium, design: .monospaced))
-                    .foregroundColor(Color(red: 1, green: 1, blue: 1, opacity: 0.6))
+                    .foregroundColor(.white.opacity(0.6))
             }
             .padding(.horizontal, 40)
 
-            // Main controls bar
+            // Main controls (yeh hamesha focusable rahenge jab panel band ho)  
             HStack(spacing: 0) {
-                // Left: Time info
                 VStack(spacing: 0) {
                     Text(currentTime)
                         .font(.system(size: 14, weight: .semibold, design: .monospaced))
                         .foregroundColor(.white)
                     Text("/ \(totalTime)")
                         .font(.system(size: 11, weight: .medium, design: .monospaced))
-                        .foregroundColor(Color(red: 1, green: 1, blue: 1, opacity: 0.6))
+                        .foregroundColor(.white.opacity(0.6))
                 }
                 .frame(width: 70, alignment: .leading)
                 .padding(.leading, 40)
 
                 Spacer()
 
-                // Center: Playback controls - perfectly centered
                 HStack(spacing: 50) {
-                    // Rewind button
                     Button(action: onBackward) {
                         Image(systemName: "gobackward.10")
                             .font(.system(size: 22, weight: .semibold))
                             .foregroundColor(.white)
                             .scaleEffect(focusedControl == .backward ? 1.12 : 1.0)
-                            .animation(.easeInOut(duration: 0.15), value: focusedControl == .backward)
                     }
                     .focused($focusedControl, equals: .backward)
 
-                    // Play/Pause button (centered, prominent)
-                    Button(action: {
-                        onPlayPause?()
-                    }) {
+                    Button(action: { onPlayPause?() }) {
                         Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                             .font(.system(size: 28, weight: .semibold))
                             .foregroundColor(.white)
                             .scaleEffect(focusedControl == .playButton ? 1.12 : 1.0)
-                            .animation(.easeInOut(duration: 0.15), value: focusedControl == .playButton)
                     }
                     .focused($focusedControl, equals: .playButton)
 
-                    // Forward button
                     Button(action: onForward) {
                         Image(systemName: "goforward.10")
                             .font(.system(size: 22, weight: .semibold))
                             .foregroundColor(.white)
                             .scaleEffect(focusedControl == .forward ? 1.12 : 1.0)
-                            .animation(.easeInOut(duration: 0.15), value: focusedControl == .forward)
                     }
                     .focused($focusedControl, equals: .forward)
                 }
 
                 Spacer()
 
-                // Right side: Quality and settings
                 HStack(spacing: 24) {
-                    if !availableQualities.isEmpty {
-                        Menu {
-                            ForEach(availableQualities, id: \.self) { quality in
-                                Button(action: {
-                                    selectedQuality = quality
-                                    isQualityMenuOpen = false
-                                    onQualityMenuStateChanged?(false)
-                                }) {
-                                    if selectedQuality == quality {
-                                        Label(quality, systemImage: "checkmark")
-                                    } else {
-                                        Text(quality)
-                                    }
-                                }
-                            }
-                        } label: {
-                            Text(selectedQuality.isEmpty ? "Quality" : selectedQuality)
-                                .font(.system(size: 11, weight: .semibold))
-                                .foregroundColor(isQualityMenuOpen ? .black : .white)
-                                .frame(minWidth: 70, alignment: .center)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 8)
-                                .background(isQualityMenuOpen ? Color.white : Color(red: 1, green: 1, blue: 1, opacity: focusedControl == .quality ? 0.2 : 0.08))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 6)
-                                        .stroke(Color(red: 1, green: 1, blue: 1, opacity: focusedControl == .quality ? 0.3 : 0.15), lineWidth: 0.8)
-                                )
-                                .cornerRadius(6)
-                        }
-                        .scaleEffect(focusedControl == .quality ? 1.08 : 1.0)
-                        .animation(.easeInOut(duration: 0.15), value: focusedControl == .quality)
-                        .focused($focusedControl, equals: .quality)
-                        .onChange(of: focusedControl) { oldValue, newValue in
-                            if newValue == .quality {
-                                isQualityMenuOpen = true
-                                onQualityMenuStateChanged?(true)
-                            } else if oldValue == .quality {
-                                isQualityMenuOpen = false
-                                onQualityMenuStateChanged?(false)
-                            }
-                        }
-                    }
-
                     Button(action: {}) {
                         Image(systemName: "captions.bubble")
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
                             .frame(width: 48, height: 48)
                             .scaleEffect(focusedControl == .cc ? 1.12 : 1.0)
-                            .animation(.easeInOut(duration: 0.15), value: focusedControl == .cc)
                     }
                     .focused($focusedControl, equals: .cc)
 
-                    Button(action: {}) {
-                        Image(systemName: "speaker.wave.2")
-                            .font(.system(size: 20, weight: .semibold))
-                            .foregroundColor(.white)
-                            .frame(width: 48, height: 48)
-                            .scaleEffect(focusedControl == .audio ? 1.12 : 1.0)
-                            .animation(.easeInOut(duration: 0.15), value: focusedControl == .audio)
-                    }
-                    .focused($focusedControl, equals: .audio)
-
-                    Button(action: {}) {
+                    Button(action: {
+                        isSettingsPanelOpen = true
+                        onQualityMenuStateChanged?(true)
+                    }) {
                         Image(systemName: "gearshape")
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
                             .frame(width: 48, height: 48)
                             .scaleEffect(focusedControl == .settings ? 1.12 : 1.0)
-                            .animation(.easeInOut(duration: 0.15), value: focusedControl == .settings)
                     }
                     .focused($focusedControl, equals: .settings)
                 }
                 .padding(.trailing, 40)
             }
             .padding(.vertical, 12)
+            .animation(.easeInOut(duration: 0.15), value: focusedControl)
+            // Panel open hone pe yeh controls focus nahi lenge
+            .opacity(isSettingsPanelOpen ? 0.4 : 1.0)
+            .allowsHitTesting(!isSettingsPanelOpen)
         }
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [
-                    Color.black.opacity(0.8),
-                    Color.black.opacity(0.4)
-                ]),
+                colors: [Color.black.opacity(0.8), Color.black.opacity(0.4)],
                 startPoint: .bottom,
                 endPoint: .top
             )
         )
-        .padding(.horizontal, 0)
-    }
-
-    private func onForward() {
-        onSeekForward?()
-    }
-
-    private func onBackward() {
-        onSeekBackward?()
-    }
-}
-
-struct ControlButton: View {
-    let icon: String
-    let label: String
-    let isFocused: Bool
-    let isLarge: Bool
-
-    var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.system(size: isLarge ? 26 : 22, weight: .semibold))
-                .foregroundColor(.white)
-                .frame(width: isLarge ? 64 : 56, height: isLarge ? 64 : 56)
-                .scaleEffect(isFocused ? 1.1 : 1.0)
-                .animation(.easeInOut(duration: 0.15), value: isFocused)
-
-            if isFocused {
-                Text(label)
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(.white)
-                    .lineLimit(1)
-                    .transition(.opacity)
+        .overlay(alignment: .bottomTrailing) {
+            if isSettingsPanelOpen {
+                settingsPanel
+                    .padding(.trailing, 40)
+                    .padding(.bottom, 110)
+                    .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .bottomTrailing)))
+            }
+        }
+        .onChange(of: isSettingsPanelOpen) { _, open in
+            if open {
+                let startIndex = sortedQualities.firstIndex(of: selectedQuality) ?? 0
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    focusedControl = .quality(startIndex)
+                }
+            } else {
+                focusedControl = .settings
             }
         }
     }
-}
 
-struct PrimaryPlayButton: View {
-    let isPlaying: Bool
-    let isFocused: Bool
+    // MARK: - Quality Panel
+    private var settingsPanel: some View {
+        let qualities = sortedQualities
 
-    var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                .font(.system(size: 26, weight: .semibold))
-                .foregroundColor(.white)
-                .frame(width: 68, height: 68)
-                .background(
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color(red: 1, green: 0.42, blue: 0.21),
-                            Color(red: 1, green: 0.55, blue: 0.35)
-                        ]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .cornerRadius(12)
-                .scaleEffect(isFocused ? 1.15 : 1.0)
-                .animation(.easeInOut(duration: 0.15), value: isFocused)
+        return VStack(alignment: .leading, spacing: 0) {
+            SettingsPanelRow(isFocused: focusedControl == .panelBack) {
+                closeSettingsPanel()
+            } content: {
+                HStack(spacing: 10) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 14, weight: .semibold))
+                    Text("Quality")
+                        .font(.system(size: 17, weight: .semibold))
+                    Spacer()
+                }
+            }
+            .focused($focusedControl, equals: .panelBack)
 
-            if isFocused {
-                Text(isPlaying ? "Pause" : "Play")
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundColor(.white)
-                    .transition(.opacity)
+            Rectangle()
+                .fill(Color.white.opacity(0.12))
+                .frame(height: 1)
+
+            ForEach(Array(qualities.enumerated()), id: \.offset) { index, quality in
+                SettingsPanelRow(isFocused: focusedControl == .quality(index)) {
+                    selectedQuality = quality
+                    closeSettingsPanel()
+                } content: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 13, weight: .bold))
+                            .frame(width: 16)
+                            .opacity(selectedQuality == quality ? 1 : 0)
+
+                        Text(quality)
+                            .font(.system(size: 15, weight: .medium))
+
+                        if isHD(quality) {
+                            Text("HD")
+                                .font(.system(size: 9, weight: .bold))
+                                .baselineOffset(6)
+                        }
+                        Spacer()
+                    }
+                }
+                .focused($focusedControl, equals: .quality(index))
             }
         }
+        .frame(width: 260)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(red: 0.12, green: 0.12, blue: 0.14).opacity(0.97))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white.opacity(0.12), lineWidth: 1)
+        )
+        .onMoveCommand(perform: movePanelFocus)
+        .onExitCommand(perform: closeSettingsPanel)
+        .focusSection()
     }
+
+    private func movePanelFocus(_ direction: MoveCommandDirection) {
+        // Rows are stacked vertically in the same focus section, so tvOS's
+        // native focus engine already moves up/down between adjacent rows.
+        // Only left/right (which has no natural target here) needs handling.
+        guard case .quality = focusedControl else { return }
+
+        switch direction {
+        case .left, .right:
+            focusedControl = .panelBack
+        default:
+            break
+        }
+    }
+
+    private func closeSettingsPanel() {
+        isSettingsPanelOpen = false
+        onQualityMenuStateChanged?(false)
+    }
+
+    private func onForward() { onSeekForward?() }
+    private func onBackward() { onSeekBackward?() }
 }
 
-struct QualityBadge: View {
-    let quality: String
-    let audio: String
+// MARK: - Row
+struct SettingsPanelRow<Content: View>: View {
+    let isFocused: Bool
+    let action: () -> Void
+    @ViewBuilder let content: () -> Content
 
     var body: some View {
-        Text("\(quality) • \(audio)")
-            .font(.system(size: 11, weight: .semibold))
+        content()
             .foregroundColor(.white)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(Color(red: 1, green: 1, blue: 1, opacity: 0.08))
-            .overlay(
-                RoundedRectangle(cornerRadius: 6)
-                    .stroke(Color(red: 1, green: 1, blue: 1, opacity: 0.15), lineWidth: 0.8)
-            )
-            .cornerRadius(6)
-    }
-}
-
-#Preview {
-    ZStack {
-        Color.black.ignoresSafeArea()
-
-        VStack {
-            Spacer()
-            PremiumPlayerControlsView(
-                progress: 0.45,
-                isPlaying: .constant(true),
-                availableQualities: ["Auto", "1080p", "720p"],
-                selectedQuality: .constant("Auto"),
-                onPlayPause: {}
-            )
-        }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+            .background(isFocused ? Color.white.opacity(0.16) : Color.clear)
+            .focusable(true)
+            .onTapGesture(perform: action)
     }
 }

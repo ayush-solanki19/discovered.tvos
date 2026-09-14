@@ -125,11 +125,17 @@ class DetailViewController: UIViewController {
     private func fetchSimilarContent() {
         let userId = viewModel.videoDetail.starring
 
+        similarCollectionView.showLoadingIndicator()
+
         suggestionAPIService.fetchRelatedVideos(userId: userId, start: 0, limit: 20) { [weak self] videos in
             DispatchQueue.main.async {
+                guard let self else { return }
+
+                self.similarCollectionView.hideLoadingIndicator()
+
                 if let videos = videos {
-                    self?.similarVideos = videos
-                    self?.similarCollectionView.reloadData()
+                    self.similarVideos = videos
+                    self.similarCollectionView.reloadData()
                 }
             }
         }
