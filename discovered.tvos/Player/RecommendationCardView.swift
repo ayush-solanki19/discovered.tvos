@@ -108,7 +108,7 @@ struct RecommendationCardView: View {
                                                 ]),
                                                 startPoint: .leading,
                                                 endPoint: .trailing
-                                            )
+                                            )   
                                         )
                                         .frame(width: geo.size.width * progress)
                                 }

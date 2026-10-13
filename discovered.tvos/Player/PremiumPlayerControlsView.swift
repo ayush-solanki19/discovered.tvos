@@ -292,7 +292,7 @@ struct ClearFocusButtonStyle: ButtonStyle {
         configuration.label
     }
 }
-
+    
 // MARK: - Row
 // Purely presentational — the panel's single Button owns focus and selection,
 // this just renders the highlight for whichever index is currently selected.

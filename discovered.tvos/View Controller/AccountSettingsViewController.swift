@@ -315,11 +315,11 @@ final class AccountSettingsViewController: UIViewController {
         contentView.addSubview(optionsStack)
 
         let options: [(icon: String, title: String, subtitle: String, active: Bool, tag: Int)] = [
-            ("person.crop.circle", "Account Details", "Update email, password, and personal info", false, 0),
-            ("gearshape", "Playback Settings", "Adjust video quality, subtitles, and audio", false, 1),
-            ("headphones", "Help & Support", "FAQs, troubleshooting, and contact us", false, 2),
-            ("lock.shield", "Privacy Policy", "Read how we handle your data", false, 3),
-            ("doc.text", "Terms & Conditions", "Rules and guidelines of the service", false, 4)
+         //   ("person.crop.circle", "Account Details", "Update email, password, and personal info", false, 0),
+//            ("gearshape", "Playback Settings", "Adjust video quality, subtitles, and audio", false, 1),
+            ("headphones", "Help & Support", "FAQs, troubleshooting, and contact us", false, 1),
+            ("lock.shield", "Privacy Policy", "Read how we handle your data", false, 2),
+            ("doc.text", "Terms & Conditions", "Rules and guidelines of the service", false, 3)
         ]
 
         for option in options {
@@ -668,18 +668,18 @@ final class AccountSettingsViewController: UIViewController {
         case 0:
             print("Account Details tapped")
             
-        case 1:
-            print("Playback Settings tapped")
+//        case 1:
+//            print("Playback Settings tapped")
             
-        case 2:
+        case 1:
             // Help & Support
             openInfoPage(title: "Help & Support", body: HELP_TEXT)
             
-        case 3:
+        case 2:
             // Privacy Policy
             openInfoPage(title: "Privacy Policy", body: POLICY_TEXT)
             
-        case 4:
+        case 3:
             // Terms & Conditions
             openInfoPage(title: "Terms & Conditions", body: TERMS_TEXT)
             
