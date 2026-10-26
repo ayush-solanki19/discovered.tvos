@@ -15,12 +15,12 @@ struct RecommendationsGridView: View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 12) {
                 Text(title)
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.app(size: 32, weight: .bold))
                     .foregroundColor(.white)
                     .tracking(-1)
 
                 Text("Carefully selected for you")
-                    .font(.system(size: 14, weight: .regular))
+                    .font(.app(size: 14, weight: .regular))
                     .foregroundColor(.gray2)
                     .tracking(0.5)
                     .textCase(.uppercase)

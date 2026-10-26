@@ -76,7 +76,7 @@ final class LoginViewController: UIViewController {
         view.addSubview(cardView)
         
         titleLabel.text = "DISCOVERED.TV"
-        titleLabel.font = .systemFont(ofSize: 34, weight: .bold)
+        titleLabel.font = .appFont(ofSize: 34, weight: .bold)
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -89,7 +89,7 @@ final class LoginViewController: UIViewController {
         cardView.addSubview(emailContainer)
         
         emailTextField.placeholder = "Email or Mobile Number"
-        emailTextField.font = .systemFont(ofSize: 20, weight: .regular)
+        emailTextField.font = .appFont(ofSize: 20, weight: .regular)
         emailTextField.textColor = .white
         emailTextField.tintColor = .clear
         emailTextField.backgroundColor = .clear
@@ -107,7 +107,7 @@ final class LoginViewController: UIViewController {
         cardView.addSubview(passwordContainer)
         
         passwordTextField.placeholder = "Password"
-        passwordTextField.font = .systemFont(ofSize: 20, weight: .regular)
+        passwordTextField.font = .appFont(ofSize: 20, weight: .regular)
         passwordTextField.textColor = .white
         passwordTextField.tintColor = .clear
         passwordTextField.isSecureTextEntry = true
@@ -120,12 +120,12 @@ final class LoginViewController: UIViewController {
         // Forgot Password
         forgotButton.setTitle("Forgot Password?", for: .normal)
         forgotButton.setTitleColor(.orange, for: .normal)
-        forgotButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+        forgotButton.titleLabel?.font = .appFont(ofSize: 17, weight: .medium)
         forgotButton.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(forgotButton)
 
         // Error Label
-        errorLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        errorLabel.font = .appFont(ofSize: 16, weight: .medium)
         errorLabel.textColor = .systemRed
         errorLabel.textAlignment = .center
         errorLabel.numberOfLines = 2
@@ -148,7 +148,7 @@ final class LoginViewController: UIViewController {
         
         backConfig.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
-            outgoing.font = .systemFont(ofSize: 21, weight: .semibold)
+            outgoing.font = .appFont(ofSize: 21, weight: .semibold)
             return outgoing
         }
         
@@ -167,7 +167,7 @@ final class LoginViewController: UIViewController {
         
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
             var outgoing = incoming
-            outgoing.font = .systemFont(ofSize: 21, weight: .semibold)
+            outgoing.font = .appFont(ofSize: 21, weight: .semibold)
             return outgoing
         }
         

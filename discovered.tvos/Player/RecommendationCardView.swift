@@ -124,18 +124,18 @@ struct RecommendationCardView: View {
             // Info
             VStack(alignment: .leading, spacing: 8) {
                 Text(video.title)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.app(size: 16, weight: .semibold))
                     .foregroundColor(.white)
                     .lineLimit(2)
                     .tracking(-0.3)
 
                 HStack(spacing: 12) {
                     Text(video.year)
-                        .font(.system(size: 13))
+                        .font(.app(size: 13))
                         .foregroundColor(.gray2)
 
                     Text(video.duration)
-                        .font(.system(size: 13))
+                        .font(.app(size: 13))
                         .foregroundColor(.gray2)
                 }
                 .tracking(0.3)

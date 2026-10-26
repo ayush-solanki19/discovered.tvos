@@ -26,13 +26,13 @@ struct PlayerTopBarView: View {
 
             VStack(alignment: .leading, spacing: 8) {
                 Text(title)
-                    .font(.system(size: 28, weight: .semibold))
+                    .font(.app(size: 28, weight: .semibold))
                     .foregroundColor(.white)
                     .lineLimit(1)
                     .tracking(-0.5)
 
                 Text(episodeInfo)
-                    .font(.system(size: 14, weight: .regular))
+                    .font(.app(size: 14, weight: .regular))
                     .foregroundColor(.gray2)
                     .lineLimit(1)
                     .tracking(0.5)

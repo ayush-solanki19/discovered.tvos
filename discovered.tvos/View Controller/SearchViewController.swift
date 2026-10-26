@@ -175,13 +175,13 @@ final class SearchViewController: UIViewController {
             textField.layer.cornerRadius = 18
             textField.layer.masksToBounds = true
             textField.textColor = .white
-            textField.font = .systemFont(ofSize: 26)
+            textField.font = .appFont(ofSize: 26)
 
             textField.attributedPlaceholder = NSAttributedString(
                 string: "Search for TV shows, movies, actor",
                 attributes: [
                     .foregroundColor: UIColor.lightGray,
-                    .font: UIFont.systemFont(ofSize: 24)
+                    .font: UIFont.appFont(ofSize: 24)
                 ]
             )
 
@@ -219,7 +219,7 @@ final class SearchViewController: UIViewController {
 
         emptyLabel.text = "No Results Found"
         emptyLabel.textColor = .lightGray
-        emptyLabel.font = .systemFont(
+        emptyLabel.font = .appFont(
             ofSize: 24,
             weight: .medium
         )
@@ -446,7 +446,7 @@ final class SearchViewController: UIViewController {
         label.text = title
         label.textColor = .white
 
-        label.font = .systemFont(
+        label.font = .appFont(
             ofSize: 26,
             weight: .medium
         )
@@ -772,7 +772,7 @@ final class PopularCell: UICollectionViewCell {
 
         titleLabel.textColor = .white
 
-        titleLabel.font = .systemFont(
+        titleLabel.font = .appFont(
             ofSize: 18,
             weight: .semibold
         )

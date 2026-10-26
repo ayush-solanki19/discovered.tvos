@@ -70,7 +70,7 @@ final class InfoContentViewController: UIViewController {
 
         // Title
         titleLabel.text = pageTitle
-        titleLabel.font = .systemFont(ofSize: 36, weight: .bold)
+        titleLabel.font = .appFont(ofSize: 36, weight: .bold)
         titleLabel.textColor = .white
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
@@ -82,7 +82,7 @@ final class InfoContentViewController: UIViewController {
 
         // Content Label
         contentLabel.text = bodyText
-        contentLabel.font = .systemFont(ofSize: 22, weight: .regular)
+        contentLabel.font = .appFont(ofSize: 22, weight: .regular)
         contentLabel.textColor = UIColor(white: 0.85, alpha: 1)
         contentLabel.numberOfLines = 0
         contentLabel.translatesAutoresizingMaskIntoConstraints = false

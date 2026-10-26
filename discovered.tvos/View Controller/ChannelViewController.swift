@@ -151,7 +151,7 @@ final class ChannelViewController: UIViewController {
         contentView.addSubview(avatarImageView)
 
         // Channel name
-        channelNameLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 46) ?? .systemFont(ofSize: 46, weight: .bold)
+        channelNameLabel.font = .appFont(ofSize: 46, weight: .bold)
         channelNameLabel.textColor = .white
         channelNameLabel.numberOfLines = 2
         contentView.addSubview(channelNameLabel)
@@ -162,14 +162,14 @@ final class ChannelViewController: UIViewController {
         metaStackView.alignment = .center
         contentView.addSubview(metaStackView)
 
-        videoCountLabel.font = .systemFont(ofSize: 13, weight: .semibold)
+        videoCountLabel.font = .appFont(ofSize: 13, weight: .semibold)
         videoCountLabel.textColor = UIColor(white: 0.8, alpha: 1.0)
         metaStackView.addArrangedSubview(videoCountLabel)
 
         tagBadgeContainer.layer.borderWidth = 1
         tagBadgeContainer.layer.borderColor = UIColor(white: 0.45, alpha: 1.0).cgColor
         tagBadgeContainer.layer.cornerRadius = 3
-        tagLabel.font = .systemFont(ofSize: 11, weight: .bold)
+        tagLabel.font = .appFont(ofSize: 11, weight: .bold)
         tagLabel.textColor = UIColor(white: 0.85, alpha: 1.0)
         tagLabel.translatesAutoresizingMaskIntoConstraints = false
         tagBadgeContainer.addSubview(tagLabel)
@@ -183,13 +183,13 @@ final class ChannelViewController: UIViewController {
 
         // Description
         descriptionLabel.numberOfLines = 4
-        descriptionLabel.font = .systemFont(ofSize: 14, weight: .regular)
+        descriptionLabel.font = .appFont(ofSize: 14, weight: .regular)
         descriptionLabel.textColor = UIColor(white: 0.85, alpha: 1.0)
         contentView.addSubview(descriptionLabel)
 
         // Videos section
         videosTitleLabel.text = "Channel Videos"
-        videosTitleLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 22) ?? .systemFont(ofSize: 22, weight: .bold)
+        videosTitleLabel.font = .appFont(ofSize: 22, weight: .bold)
         videosTitleLabel.textColor = .white
         contentView.addSubview(videosTitleLabel)
 
@@ -214,7 +214,7 @@ final class ChannelViewController: UIViewController {
         loadingIndicator.hidesWhenStopped = true
         contentView.addSubview(loadingIndicator)
 
-        statusLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        statusLabel.font = .appFont(ofSize: 16, weight: .medium)
         statusLabel.textColor = UIColor(white: 0.7, alpha: 1.0)
         statusLabel.textAlignment = .center
         statusLabel.numberOfLines = 2

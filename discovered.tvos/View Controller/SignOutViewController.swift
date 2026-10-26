@@ -36,7 +36,7 @@ final class SignOutViewController: UIViewController {
         
         let brandLabel = UILabel()
         brandLabel.text = "DISCOVERED.TV"
-        brandLabel.font = .systemFont(ofSize: 22, weight: .bold)
+        brandLabel.font = .appFont(ofSize: 22, weight: .bold)
         brandLabel.textColor = .white
         brandLabel.textAlignment = .center
         brandLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -49,14 +49,14 @@ final class SignOutViewController: UIViewController {
         cardView.addSubview(icon)
         
         titleLabel.text = "Sign Out"
-        titleLabel.font = .systemFont(ofSize: 36, weight: .bold)
+        titleLabel.font = .appFont(ofSize: 36, weight: .bold)
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         cardView.addSubview(titleLabel)
         
         messageLabel.text = "Are you sure you want to sign out of your\naccount on this device?"
-        messageLabel.font = .systemFont(ofSize: 20, weight: .regular)
+        messageLabel.font = .appFont(ofSize: 20, weight: .regular)
         messageLabel.textColor = UIColor(white: 0.65, alpha: 1)
         messageLabel.textAlignment = .center
         messageLabel.numberOfLines = 0

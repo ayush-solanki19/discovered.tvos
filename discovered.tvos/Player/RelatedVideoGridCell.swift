@@ -46,7 +46,7 @@ class RelatedVideoGridCell: UICollectionViewCell {
         config.title = "Play Video"
         config.titleAlignment = .center
         playButtonOverlay.configuration = config
-        playButtonOverlay.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        playButtonOverlay.titleLabel?.font = UIFont.appFont(ofSize: 14, weight: .semibold)
         playButtonOverlay.alpha = 0
         playButtonOverlay.translatesAutoresizingMaskIntoConstraints = false
         playButtonOverlay.addTarget(self, action: #selector(playButtonTapped), for: .primaryActionTriggered)

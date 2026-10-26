@@ -29,9 +29,22 @@
 		9AC3E679302EF35B005512F0 /* discovered.tvosUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = discovered.tvosUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9AC3E6A0302EF35B005512F0 /* Exceptions for "discovered.tvos" folder in "discovered.tvos" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9AC3E65B302EF359005512F0 /* discovered.tvos */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9AC3E65E302EF359005512F0 /* discovered.tvos */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9AC3E6A0302EF35B005512F0 /* Exceptions for "discovered.tvos" folder in "discovered.tvos" target */,
+			);
 			path = discovered.tvos;
 			sourceTree = "<group>";
 		};
@@ -410,6 +423,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=appletvos*]" = P7G47K63W4;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = discovered.tvos/Info.plist;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
@@ -444,6 +458,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=appletvos*]" = P7G47K63W4;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = discovered.tvos/Info.plist;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;

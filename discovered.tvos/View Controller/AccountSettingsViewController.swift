@@ -285,7 +285,7 @@ final class AccountSettingsViewController: UIViewController {
 
         // Title
         titleLabel.text = "Account Settings"
-        titleLabel.font = .systemFont(ofSize: 42, weight: .bold)
+        titleLabel.font = .appFont(ofSize: 42, weight: .bold)
         titleLabel.textColor = .white
         titleLabel.numberOfLines = 1
         titleLabel.adjustsFontSizeToFitWidth = true
@@ -295,7 +295,7 @@ final class AccountSettingsViewController: UIViewController {
 
         // Subtitle
         subtitleLabel.text = "Manage your Cinematic profile and preferences."
-        subtitleLabel.font = .systemFont(ofSize: 20, weight: .regular)
+        subtitleLabel.font = .appFont(ofSize: 20, weight: .regular)
         subtitleLabel.textColor = UIColor(white: 0.65, alpha: 1)
         subtitleLabel.numberOfLines = 1
         subtitleLabel.adjustsFontSizeToFitWidth = true
@@ -373,7 +373,7 @@ final class AccountSettingsViewController: UIViewController {
         profileCard.addSubview(avatarImageView)
 
         nameLabel.text = "Loading..."
-        nameLabel.font = .systemFont(ofSize: 28, weight: .bold)
+        nameLabel.font = .appFont(ofSize: 28, weight: .bold)
         nameLabel.textColor = .white
         nameLabel.textAlignment = .center
         nameLabel.numberOfLines = 1
@@ -383,7 +383,7 @@ final class AccountSettingsViewController: UIViewController {
         profileCard.addSubview(nameLabel)
 
         categoryLabel.text = "—"
-        categoryLabel.font = .systemFont(ofSize: 17, weight: .regular)
+        categoryLabel.font = .appFont(ofSize: 17, weight: .regular)
         categoryLabel.textColor = UIColor(white: 0.7, alpha: 1)
         categoryLabel.textAlignment = .center
         categoryLabel.numberOfLines = 1
@@ -393,7 +393,7 @@ final class AccountSettingsViewController: UIViewController {
         profileCard.addSubview(categoryLabel)
 
         locationLabel.text = "—"
-        locationLabel.font = .systemFont(ofSize: 17, weight: .regular)
+        locationLabel.font = .appFont(ofSize: 17, weight: .regular)
         locationLabel.textColor = UIColor(white: 0.7, alpha: 1)
         locationLabel.textAlignment = .center
         locationLabel.numberOfLines = 1
@@ -428,7 +428,7 @@ final class AccountSettingsViewController: UIViewController {
 
         let optionTitleLabel = UILabel()
         optionTitleLabel.text = title
-        optionTitleLabel.font = .systemFont(ofSize: 22, weight: .semibold)
+        optionTitleLabel.font = .appFont(ofSize: 22, weight: .semibold)
         optionTitleLabel.textColor = .white
         optionTitleLabel.numberOfLines = 1
         optionTitleLabel.lineBreakMode = .byTruncatingTail
@@ -438,7 +438,7 @@ final class AccountSettingsViewController: UIViewController {
 
         let optionSubtitleLabel = UILabel()
         optionSubtitleLabel.text = subtitle
-        optionSubtitleLabel.font = .systemFont(ofSize: 16, weight: .regular)
+        optionSubtitleLabel.font = .appFont(ofSize: 16, weight: .regular)
         optionSubtitleLabel.textColor = secondaryTextColor
         optionSubtitleLabel.numberOfLines = 1
         optionSubtitleLabel.lineBreakMode = .byTruncatingTail
@@ -449,7 +449,7 @@ final class AccountSettingsViewController: UIViewController {
         if isActive {
             let badge = UILabel()
             badge.text = "ACTIVE"
-            badge.font = .systemFont(ofSize: 11, weight: .bold)
+            badge.font = .appFont(ofSize: 11, weight: .bold)
             badge.textColor = .white
             badge.backgroundColor = orangeColor
             badge.textAlignment = .center
@@ -529,7 +529,7 @@ final class AccountSettingsViewController: UIViewController {
             NSAttributedString(
                 string: "LOGOUT",
                 attributes: [
-                    .font: UIFont.systemFont(ofSize: 18, weight: .medium),
+                    .font: UIFont.appFont(ofSize: 18, weight: .medium),
                     .foregroundColor: UIColor(white: 0.7, alpha: 1)
                 ]
             )
@@ -573,7 +573,7 @@ final class AccountSettingsViewController: UIViewController {
             NSAttributedString(
                 string: "LOGOUT",
                 attributes: [
-                    .font: UIFont.systemFont(ofSize: 18, weight: fontWeight),
+                    .font: UIFont.appFont(ofSize: 18, weight: fontWeight),
                     .foregroundColor: textColor
                 ]
             )

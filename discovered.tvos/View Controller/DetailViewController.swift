@@ -174,7 +174,7 @@ class DetailViewController: UIViewController {
 
         // Title
         titleLabel.numberOfLines = 2
-        titleLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 46) ?? .systemFont(ofSize: 46, weight: .bold)
+        titleLabel.font = .appFont(ofSize: 46, weight: .bold)
         titleLabel.textColor = .white
         contentView.addSubview(titleLabel)
 
@@ -186,22 +186,22 @@ class DetailViewController: UIViewController {
 
         starsLabel.text = "★★★★★"
         starsLabel.textColor = UIColor(red: 0.95, green: 0.15, blue: 0.15, alpha: 1.0)
-        starsLabel.font = .systemFont(ofSize: 14, weight: .bold)
+        starsLabel.font = .appFont(ofSize: 14, weight: .bold)
         metaStackView.addArrangedSubview(starsLabel)
 
-        ratingLabel.font = .systemFont(ofSize: 13, weight: .semibold)
+        ratingLabel.font = .appFont(ofSize: 13, weight: .semibold)
         ratingLabel.textColor = .white
         metaStackView.addArrangedSubview(ratingLabel)
 
         metaStackView.addArrangedSubview(makeSeparator())
 
-        yearLabel.font = .systemFont(ofSize: 13, weight: .medium)
+        yearLabel.font = .appFont(ofSize: 13, weight: .medium)
         yearLabel.textColor = UIColor(white: 0.8, alpha: 1.0)
         metaStackView.addArrangedSubview(yearLabel)
 
         metaStackView.addArrangedSubview(makeSeparator())
 
-        durationLabel.font = .systemFont(ofSize: 13, weight: .medium)
+        durationLabel.font = .appFont(ofSize: 13, weight: .medium)
         durationLabel.textColor = UIColor(white: 0.8, alpha: 1.0)
         metaStackView.addArrangedSubview(durationLabel)
 
@@ -211,7 +211,7 @@ class DetailViewController: UIViewController {
         genreBadgeContainer.layer.borderColor = UIColor(white: 0.45, alpha: 1.0).cgColor
         genreBadgeContainer.layer.cornerRadius = 3
 
-        genreLabel.font = .systemFont(ofSize: 11, weight: .bold)
+        genreLabel.font = .appFont(ofSize: 11, weight: .bold)
         genreLabel.textColor = UIColor(white: 0.85, alpha: 1.0)
         genreLabel.translatesAutoresizingMaskIntoConstraints = false
         genreBadgeContainer.addSubview(genreLabel)
@@ -226,7 +226,7 @@ class DetailViewController: UIViewController {
 
         // Description
         descriptionLabel.numberOfLines = 4
-        descriptionLabel.font = .systemFont(ofSize: 14, weight: .regular)
+        descriptionLabel.font = .appFont(ofSize: 14, weight: .regular)
         descriptionLabel.textColor = UIColor(white: 0.85, alpha: 1.0)
         contentView.addSubview(descriptionLabel)
 
@@ -249,7 +249,7 @@ class DetailViewController: UIViewController {
 
         // Similar Content
         similarTitleLabel.text = "Similar Content"
-        similarTitleLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 22) ?? .systemFont(ofSize: 22, weight: .bold)
+        similarTitleLabel.font = .appFont(ofSize: 22, weight: .bold)
         similarTitleLabel.textColor = .white
         contentView.addSubview(similarTitleLabel)
 
@@ -270,7 +270,7 @@ class DetailViewController: UIViewController {
 
         // Related Videos Section
         relatedTitleLabel.text = "More From This Creator"
-        relatedTitleLabel.font = UIFont(name: "TimesNewRomanPS-BoldMT", size: 22) ?? .systemFont(ofSize: 22, weight: .bold)
+        relatedTitleLabel.font = .appFont(ofSize: 22, weight: .bold)
         relatedTitleLabel.textColor = .white
         contentView.addSubview(relatedTitleLabel)
 
@@ -327,7 +327,7 @@ class DetailViewController: UIViewController {
         let label = UILabel()
         label.text = "|"
         label.textColor = UIColor(white: 0.4, alpha: 1.0)
-        label.font = .systemFont(ofSize: 12)
+        label.font = .appFont(ofSize: 12)
         return label
     }
 
@@ -349,11 +349,11 @@ class DetailViewController: UIViewController {
 
         let starringAttributedString = NSMutableAttributedString(
             string: "Creator: ",
-            attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .bold), .foregroundColor: UIColor.white]
+            attributes: [.font: UIFont.appFont(ofSize: 14, weight: .bold), .foregroundColor: UIColor.white]
         )
         starringAttributedString.append(NSAttributedString(
             string: movie.starring,
-            attributes: [.font: UIFont.systemFont(ofSize: 14, weight: .regular), .foregroundColor: UIColor(white: 0.8, alpha: 1.0)]
+            attributes: [.font: UIFont.appFont(ofSize: 14, weight: .regular), .foregroundColor: UIColor(white: 0.8, alpha: 1.0)]
         ))
         starringLabel.attributedText = starringAttributedString
 

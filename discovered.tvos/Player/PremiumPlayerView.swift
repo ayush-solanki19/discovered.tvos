@@ -67,7 +67,7 @@ struct PremiumPlayerView: View {
                                     Image(systemName: "chevron.left")
                                         .font(.system(size: 14, weight: .semibold))
                                     Text("Back")
-                                        .font(.system(size: 16, weight: .medium))
+                                        .font(.app(size: 16, weight: .medium))
                                 }
                             }
                             .foregroundColor(.white)
@@ -92,7 +92,7 @@ struct PremiumPlayerView: View {
                             }) {
                                 HStack(spacing: 8) {
                                     Text(showSidebar ? "Hide" : "More")
-                                        .font(.system(size: 16, weight: .medium))
+                                        .font(.app(size: 16, weight: .medium))
                                     Image(systemName: showSidebar ? "xmark" : "list.bullet")
                                         .font(.system(size: 14, weight: .semibold))
                                 }
@@ -538,12 +538,12 @@ struct RecommendationsSidebar: View {
             // Header
             VStack(alignment: .leading, spacing: 6) {
                 Text("More Like This")
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.app(size: 20, weight: .bold))
                     .foregroundColor(.white)
                     .tracking(-0.6)
 
                 Text("Recommended for you")
-                    .font(.system(size: 11, weight: .medium))
+                    .font(.app(size: 11, weight: .medium))
                     .foregroundColor(.gray2)
                     .tracking(0.3)
                     .textCase(.uppercase)
@@ -651,21 +651,21 @@ struct RecommendationSidebarCard: View {
             // Info
             VStack(alignment: .leading, spacing: 6) {
                 Text(video.title)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.app(size: 13, weight: .semibold))
                     .foregroundColor(.white)
                     .lineLimit(2)
                     .tracking(-0.2)
 
                 HStack(spacing: 8) {
                     Text(video.year)
-                        .font(.system(size: 11))
+                        .font(.app(size: 11))
                         .foregroundColor(.gray2)
 
                     Text("•")
                         .foregroundColor(.gray2)
 
                     Text(video.duration)
-                        .font(.system(size: 11))
+                        .font(.app(size: 11))
                         .foregroundColor(.gray2)
                 }
                 .tracking(0.2)

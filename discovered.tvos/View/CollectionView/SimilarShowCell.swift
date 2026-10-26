@@ -39,7 +39,7 @@ class SimilarShowCell: UICollectionViewCell {
         contentView.addSubview(posterImageView)
 
         titleLabel.numberOfLines = 2
-        titleLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        titleLabel.font = UIFont.appFont(ofSize: 13, weight: .semibold)
         titleLabel.textColor = .white
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(titleLabel)

@@ -22,7 +22,7 @@ class CustomPlayButton: UIButton {
 
     private func setupView() {
         setTitle(" ▶   Play", for: .normal)
-        titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+        titleLabel?.font = .appFont(ofSize: 16, weight: .bold)
         setTitleColor(.white, for: .normal)
         backgroundColor = UIColor(red: 0.88, green: 0.08, blue: 0.08, alpha: 1.0)
         layer.cornerRadius = 8

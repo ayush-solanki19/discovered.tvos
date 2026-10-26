@@ -37,7 +37,7 @@ class SideMenuCapsuleButton: UIButton {
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(iconImageView)
 
-        nameLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        nameLabel.font = .appFont(ofSize: 16, weight: .medium)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(nameLabel)
 

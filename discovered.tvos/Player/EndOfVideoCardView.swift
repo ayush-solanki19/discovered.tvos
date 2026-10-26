@@ -54,19 +54,19 @@ struct EndOfVideoCardView: View {
             // Info
             VStack(alignment: .leading, spacing: 12) {
                 Text("Next Episode")
-                    .font(.system(size: 12, weight: .medium))
+                    .font(.app(size: 12, weight: .medium))
                     .foregroundColor(.gray2)
                     .tracking(0.5)
                     .textCase(.uppercase)
 
                 Text(nextEpisodeTitle)
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.app(size: 18, weight: .semibold))
                     .foregroundColor(.white)
                     .lineLimit(2)
                     .tracking(-0.3)
 
                 Text(episodeInfo)
-                    .font(.system(size: 13))
+                    .font(.app(size: 13))
                     .foregroundColor(Color(red: 0.69, green: 0.69, blue: 0.69))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -93,20 +93,20 @@ struct EndOfVideoCardView: View {
                         .stroke(Color(red: 1, green: 0.42, blue: 0.21, opacity: 0.2), lineWidth: 1)
 
                     Text("\(countdown)")
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.app(size: 16, weight: .bold))
                         .foregroundColor(Color(red: 1, green: 0.42, blue: 0.21))
                 }
                 .frame(width: 44, height: 44)
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Plays in")
-                        .font(.system(size: 11, weight: .medium))
+                        .font(.app(size: 11, weight: .medium))
                         .foregroundColor(.gray2)
                         .tracking(0.3)
                         .textCase(.uppercase)
 
                     Text("\(countdown)s")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.app(size: 14, weight: .semibold))
                         .foregroundColor(Color(red: 1, green: 0.42, blue: 0.21))
                 }
             }
@@ -124,7 +124,7 @@ struct EndOfVideoCardView: View {
                     onPlayNext?()
                 }) {
                     Text("Play Next")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.app(size: 14, weight: .semibold))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .frame(height: 44)
@@ -152,7 +152,7 @@ struct EndOfVideoCardView: View {
                     onDismiss?()
                 }) {
                     Text("Cancel")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.app(size: 14, weight: .semibold))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .frame(height: 44)

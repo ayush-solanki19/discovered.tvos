@@ -45,7 +45,7 @@ class RelatedVideoCell: UICollectionViewCell {
         playButtonOverlay.translatesAutoresizingMaskIntoConstraints = false
         posterImageView.addSubview(playButtonOverlay)
 
-        titleLabel.font = .systemFont(ofSize: 12, weight: .semibold)
+        titleLabel.font = .appFont(ofSize: 12, weight: .semibold)
         titleLabel.textColor = .white
         titleLabel.numberOfLines = 2
         titleLabel.translatesAutoresizingMaskIntoConstraints = false

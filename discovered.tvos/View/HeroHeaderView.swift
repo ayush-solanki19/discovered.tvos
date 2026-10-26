@@ -43,7 +43,7 @@ final class HeroHeaderView: UIView {
 
         featuredBadge.text = "fgh"
         featuredBadge.textAlignment = .center
-        featuredBadge.font = .systemFont(ofSize: 12, weight: .bold)
+        featuredBadge.font = .appFont(ofSize: 12, weight: .bold)
         featuredBadge.textColor = UIColor.white.withAlphaComponent(0.9)
         featuredBadge.backgroundColor = UIColor.white.withAlphaComponent(0.13)
         featuredBadge.layer.cornerRadius = 11
@@ -51,16 +51,16 @@ final class HeroHeaderView: UIView {
         featuredBadge.translatesAutoresizingMaskIntoConstraints = false
         addSubview(featuredBadge)
 
-        titleLabel.font = .systemFont(ofSize: 48, weight: .bold)
+        titleLabel.font = .appFont(ofSize: 48, weight: .bold)
         titleLabel.textColor = .white
         titleLabel.numberOfLines = 2
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(titleLabel)
-        metaLabel.font = .systemFont(ofSize: 15, weight: .medium)
+        metaLabel.font = .appFont(ofSize: 15, weight: .medium)
         metaLabel.textColor = UIColor.white.withAlphaComponent(0.8)
         metaLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(metaLabel)
-        descriptionLabel.font = .systemFont(ofSize: 17, weight: .regular)
+        descriptionLabel.font = .appFont(ofSize: 17, weight: .regular)
         descriptionLabel.textColor = UIColor.white.withAlphaComponent(0.88)
         descriptionLabel.numberOfLines = 2
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false

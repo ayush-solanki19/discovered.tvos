@@ -71,11 +71,11 @@ struct PremiumPlayerControlsView: View {
             // Time
             HStack {
                 Text(currentTime)
-                    .font(.system(size: 11, weight: .medium, design: .monospaced))
+                    .font(.app(size: 11, weight: .medium).monospacedDigit())
                     .foregroundColor(.white)
                 Spacer()
                 Text(remainingTime)
-                    .font(.system(size: 11, weight: .medium, design: .monospaced))
+                    .font(.app(size: 11, weight: .medium).monospacedDigit())
                     .foregroundColor(.white.opacity(0.6))
             }
             .padding(.horizontal, 40)
@@ -84,10 +84,10 @@ struct PremiumPlayerControlsView: View {
             HStack(spacing: 0) {
                 VStack(spacing: 0) {
                     Text(currentTime)
-                        .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                        .font(.app(size: 14, weight: .semibold).monospacedDigit())
                         .foregroundColor(.white)
                     Text("/ \(totalTime)")
-                        .font(.system(size: 11, weight: .medium, design: .monospaced))
+                        .font(.app(size: 11, weight: .medium).monospacedDigit())
                         .foregroundColor(.white.opacity(0.6))
                 }
                 .frame(width: 70, alignment: .leading)
@@ -197,7 +197,7 @@ struct PremiumPlayerControlsView: View {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 14, weight: .semibold))
                         Text("Quality")
-                            .font(.system(size: 17, weight: .semibold))
+                            .font(.app(size: 17, weight: .semibold))
                         Spacer()
                     }
                 }
@@ -215,11 +215,11 @@ struct PremiumPlayerControlsView: View {
                                 .opacity(selectedQuality == quality ? 1 : 0)
 
                             Text(quality)
-                                .font(.system(size: 15, weight: .medium))
+                                .font(.app(size: 15, weight: .medium))
 
                             if isHD(quality) {
                                 Text("HD")
-                                    .font(.system(size: 9, weight: .bold))
+                                    .font(.app(size: 9, weight: .bold))
                                     .baselineOffset(6)
                             }
                             Spacer()

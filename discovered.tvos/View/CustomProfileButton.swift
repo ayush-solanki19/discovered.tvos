@@ -22,7 +22,7 @@ class CustomProfileButton: UIButton {
 
     private func setupView() {
         setTitle("Visit Profile", for: .normal)
-        titleLabel?.font = .systemFont(ofSize: 15, weight: .semibold)
+        titleLabel?.font = .appFont(ofSize: 15, weight: .semibold)
         setTitleColor(.white, for: .normal)
         backgroundColor = UIColor(white: 0.16, alpha: 0.95)
         layer.cornerRadius = 8

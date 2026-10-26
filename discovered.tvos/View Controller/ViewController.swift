@@ -15,32 +15,20 @@ final class ViewController: UIViewController {
         /// Space between the rail title and its collection view.
         static let railSpacing: CGFloat = 10
 
-        /// Height of a single rail collection view.
-        ///
-        /// Must fit the focus-scaled card (230 * 1.04 = 239.2) plus both
-        /// section insets, otherwise the focused cell pokes out of the
-        /// rail and UIKit scrolls the outer scroll view to reveal it —
-        /// which looked like the page jumping up and back on every
-        /// left/right step.
-        static let collectionHeight: CGFloat = 286
-
         /// Vertical section inset inside a rail. Gives the focused
         /// cell (scaled 1.04) room to grow without being clipped.
         static let sectionVerticalInset: CGFloat = 18
-
-        static let itemSize = CGSize(width: 140, height: 230)
-
-        static let itemSpacing: CGFloat = 22
 
         /// Vertical space between two rails.
         static let interRailSpacing: CGFloat = 24
 
         /// Height required to show one complete rail (title + cards).
+        /// Uses the tallest rail style so the hero math is always safe.
         static var fullRailHeight: CGFloat {
             railTopInset
             + railTitleHeight
             + railSpacing
-            + collectionHeight
+            + RailStyle.poster.collectionHeight
         }
 
         /// Everything above the scroll view except the hero itself:
@@ -48,6 +36,75 @@ final class ViewController: UIViewController {
         /// + header→hero gap (20) + hero→scroll gap (24)
         /// + card bottom (2) + scroll bottom (8)
         static let verticalChrome: CGFloat = 130
+    }
+
+    // MARK: - Rail Style
+
+    /// Look of a home rail (see the Netflix-style reference):
+    /// - landscape: wide 16:9 thumbnails ("Continue Watching")
+    /// - poster:    tall 2:3 posters ("Trending Now")
+    /// - ranked:    big outlined numbers + poster ("Top 10")
+    private enum RailStyle {
+
+        case landscape
+        case poster
+        case ranked
+
+        /// Top 10 rails only ever show ten cards.
+        static let maxRankedItems = 10
+
+        static func style(
+            for slider: VideoSlider,
+            at index: Int
+        ) -> RailStyle {
+
+            let name = (slider.type ?? "").lowercased()
+
+            if name.contains("top") {
+                return .ranked
+            }
+
+            if index == 0 {
+                return .landscape
+            }
+
+            return .poster
+        }
+
+        var itemSize: CGSize {
+            switch self {
+            case .landscape:
+                return CGSize(width: 304, height: 171)
+            case .poster:
+                return CGSize(width: 160, height: 240)
+            case .ranked:
+                return CGSize(
+                    width: RankedShowCell.posterWidth + 96,
+                    height: 225
+                )
+            }
+        }
+
+        var itemSpacing: CGFloat {
+            switch self {
+            case .landscape: return 22
+            case .poster: return 18
+            case .ranked: return 8
+            }
+        }
+
+        /// Height of the rail's collection view.
+        ///
+        /// Must fit the focus-scaled card (height * 1.04) plus both
+        /// section insets, otherwise the focused cell pokes out of the
+        /// rail and UIKit scrolls the outer scroll view to reveal it —
+        /// which looked like the page jumping up and back on every
+        /// left/right step.
+        var collectionHeight: CGFloat {
+            (itemSize.height * 1.04).rounded(.up)
+            + Metrics.sectionVerticalInset * 2
+            + 10
+        }
     }
 
     // MARK: - Properties
@@ -72,6 +129,7 @@ final class ViewController: UIViewController {
 
     private var collectionViews: [UICollectionView] = []
     private var railStacks: [UIStackView] = []
+    private var railStyles: [RailStyle] = []
 
     private var featuredIndex = 0
     private var selectedShow: ShowItem?
@@ -231,7 +289,7 @@ final class ViewController: UIViewController {
         // --------------------------------------------------
 
         brandLabel.text = "DiscoveredTV"
-        brandLabel.font = .systemFont(ofSize: 24, weight: .bold)
+        brandLabel.font = .appFont(ofSize: 24, weight: .bold)
         brandLabel.textColor = UIColor(white: 0.91, alpha: 1)
         brandLabel.translatesAutoresizingMaskIntoConstraints = false
 
@@ -288,7 +346,7 @@ final class ViewController: UIViewController {
 
             var attributes = AttributeContainer()
 
-            attributes.font = .systemFont(
+            attributes.font = .appFont(
                 ofSize: 16,
                 weight: .semibold
             )
@@ -721,7 +779,7 @@ final class ViewController: UIViewController {
                     var outgoing = incoming
 
                     outgoing.font =
-                        .systemFont(
+                        .appFont(
                             ofSize: 18,
                             weight: .bold
                         )
@@ -808,6 +866,7 @@ final class ViewController: UIViewController {
 
         collectionViews.removeAll()
         railStacks.removeAll()
+        railStyles.removeAll()
 
         activeSliderIndex = nil
 
@@ -818,6 +877,11 @@ final class ViewController: UIViewController {
             else {
                 continue
             }
+
+            let style = RailStyle.style(
+                for: slider,
+                at: sliderIndex
+            )
 
             let sliderStack = UIStackView()
 
@@ -832,13 +896,12 @@ final class ViewController: UIViewController {
                 slider.type ?? "Videos"
 
             titleLabel.font =
-                .systemFont(
-                    ofSize: 24,
+                .appFont(
+                    ofSize: 26,
                     weight: .bold
                 )
 
-            titleLabel.textColor =
-                UIColor(white: 0.9, alpha: 1)
+            titleLabel.textColor = .white
 
             titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
@@ -849,12 +912,15 @@ final class ViewController: UIViewController {
             ).isActive = true
 
             let collectionView =
-                createCollectionView(tag: sliderIndex)
+                createCollectionView(
+                    tag: sliderIndex,
+                    style: style
+                )
 
             sliderStack.addArrangedSubview(collectionView)
 
             collectionView.heightAnchor.constraint(
-                equalToConstant: Metrics.collectionHeight
+                equalToConstant: style.collectionHeight
             ).isActive = true
 
             sliderContainerView.addArrangedSubview(
@@ -863,13 +929,15 @@ final class ViewController: UIViewController {
 
             railStacks.append(sliderStack)
             collectionViews.append(collectionView)
+            railStyles.append(style)
         }
 
         view.layoutIfNeeded()
     }
 
     private func createCollectionView(
-        tag: Int
+        tag: Int,
+        style: RailStyle
     ) -> UICollectionView {
 
         let layout =
@@ -877,9 +945,9 @@ final class ViewController: UIViewController {
 
         layout.scrollDirection = .horizontal
 
-        layout.itemSize = Metrics.itemSize
+        layout.itemSize = style.itemSize
 
-        layout.minimumLineSpacing = Metrics.itemSpacing
+        layout.minimumLineSpacing = style.itemSpacing
 
         layout.sectionInset = UIEdgeInsets(
             top: Metrics.sectionVerticalInset,
@@ -916,6 +984,12 @@ final class ViewController: UIViewController {
             ShowCell.self,
             forCellWithReuseIdentifier:
                 ShowCell.reuseIdentifier
+        )
+
+        collectionView.register(
+            RankedShowCell.self,
+            forCellWithReuseIdentifier:
+                RankedShowCell.reuseIdentifier
         )
 
         collectionView.translatesAutoresizingMaskIntoConstraints =
@@ -1518,13 +1592,73 @@ extension ViewController:
             return 0
         }
 
+        if railStyle(for: collectionView) == .ranked {
+            return min(
+                slider.videos.count,
+                RailStyle.maxRankedItems
+            )
+        }
+
         return slider.videos.count
+    }
+
+    private func railStyle(
+        for collectionView: UICollectionView
+    ) -> RailStyle {
+
+        let index = collectionView.tag
+
+        guard index < railStyles.count else {
+            return .poster
+        }
+
+        return railStyles[index]
     }
 
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
+
+        let show =
+            viewModel.slider(at: collectionView.tag)
+                .flatMap {
+                    indexPath.item < $0.videos.count
+                        ? $0.videos[indexPath.item]
+                        : nil
+                }
+
+        let playAction: () -> Void = { [weak self] in
+
+            guard let show else {
+                return
+            }
+
+            self?.selectedShow = show
+
+            self?.presentVideoPlayer()
+        }
+
+        if railStyle(for: collectionView) == .ranked {
+
+            let cell =
+                collectionView.dequeueReusableCell(
+                    withReuseIdentifier:
+                        RankedShowCell.reuseIdentifier,
+                    for: indexPath
+                ) as! RankedShowCell
+
+            if let show {
+                cell.configure(
+                    with: show,
+                    rank: indexPath.item + 1
+                )
+            }
+
+            cell.onPlayButtonTapped = playAction
+
+            return cell
+        }
 
         let cell =
             collectionView.dequeueReusableCell(
@@ -1533,29 +1667,13 @@ extension ViewController:
                 for: indexPath
             ) as! ShowCell
 
-        guard let slider =
-                viewModel.slider(
-                    at: collectionView.tag
-                ),
-              indexPath.item < slider.videos.count
-        else {
-            return cell
+        if let show {
+            cell.configure(
+                with: show
+            )
         }
 
-        let show =
-            slider.videos[indexPath.item]
-
-        cell.configure(
-            with: show
-        )
-
-        cell.onPlayButtonTapped =
-            { [weak self] in
-
-                self?.selectedShow = show
-
-                self?.presentVideoPlayer()
-            }
+        cell.onPlayButtonTapped = playAction
 
         return cell
     }
